@@ -48,12 +48,12 @@ DMAnalysis::DMAnalysis() : SCycleBase(),
     DeclareProperty( "GenParticleName",           m_genParticleName          = "genParticle" );
     
     
-    DeclareProperty( "Elec1PtCut",                m_Elec1PtCut               =  40. );
-    DeclareProperty( "Elec2PtCut",                m_Elec2PtCut               =  25. );
+    DeclareProperty( "Elec1PtCut",                m_Elec1PtCut               =  30. );
+    DeclareProperty( "Elec2PtCut",                m_Elec2PtCut               =  20. );
     DeclareProperty( "ElecPtCut",                 m_ElecPtCut                =  10. );
     DeclareProperty( "ElecEtaCut",                m_ElecEtaCut               =  2.5 );
     DeclareProperty( "Muon1PtCut",                m_Muon1PtCut               =  30. );
-    DeclareProperty( "Muon2PtCut",                m_Muon2PtCut               =  10. );
+    DeclareProperty( "Muon2PtCut",                m_Muon2PtCut               =  20. );
     DeclareProperty( "MuonPtCut",                 m_MuonPtCut                =  10. );
     DeclareProperty( "MuonEtaCut",                m_MuonEtaCut               =  2.4 );
     DeclareProperty( "TauPtCut",                  m_TauPtCut                 =  18. );
