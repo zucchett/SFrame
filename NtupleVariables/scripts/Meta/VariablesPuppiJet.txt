@@ -1,0 +1,29 @@
+# Variable definition file for jets with puppi
+#
+# expected format:
+# detail_level  C++_type  name  [default]
+#
+# Do not add variables here which are defined in Particle.h.
+#
+
+Basic	floatingnumber*	jetAK8_puppi_pt
+Basic	floatingnumber*	jetAK8_puppi_eta
+Basic	floatingnumber*	jetAK8_puppi_mass
+Basic	floatingnumber*	jetAK8_puppi_phi
+Basic	floatingnumber*	jetAK8_puppi_e
+
+Analysis	floatingnumber*	jetAK8_puppi_tau1
+Analysis	floatingnumber*	jetAK8_puppi_tau2
+Analysis	floatingnumber*	jetAK8_puppi_tau3
+Analysis	floatingnumber*	jetAK8_puppi_softdrop_mass
+Analysis	floatingnumber*	jetAK8_puppi_softdrop_massCorr
+Analysis	floatingnumber*	jetAK8_puppi_softdrop_jec
+
+SoftdropSubjets	int*	jetAK8_subjet_puppi_softdrop_N
+SoftdropSubjets	std::vector<floatingnumber>*	jetAK8_subjet_puppi_softdrop_pt
+SoftdropSubjets	std::vector<floatingnumber>*	jetAK8_subjet_puppi_softdrop_eta
+SoftdropSubjets	std::vector<floatingnumber>*	jetAK8_subjet_puppi_softdrop_phi
+SoftdropSubjets	std::vector<floatingnumber>*	jetAK8_subjet_puppi_softdrop_e
+SoftdropSubjets	std::vector<floatingnumber>*	jetAK8_subjet_puppi_softdrop_m
+SoftdropSubjets	std::vector<floatingnumber>*	jetAK8_subjet_puppi_softdrop_csv
+SoftdropSubjets	std::vector<int>*	jetAK8_subjet_puppi_softdrop_charge

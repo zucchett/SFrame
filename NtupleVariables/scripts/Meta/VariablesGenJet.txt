@@ -1,0 +1,14 @@
+# Variable definition file for jets with puppi
+#
+# expected format:
+# detail_level  C++_type  name  [default]
+#
+# Do not add variables here which are defined in Particle.h.
+#
+
+
+Truth	int*    genJetAK8_softdropmass
+Truth	int*    genJetAK8_pt
+Truth	int*    genJetAK8_phi
+Truth	int*    genJetAK8_eta
+Truth	int*    genJetAK8_e
