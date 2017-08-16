@@ -153,6 +153,7 @@ class DMAnalysis : public SCycleBase {
         double m_AK8EtaCut;
         double m_MEtPtCut;
         double m_VPtCut;
+        int m_nJetsCut;
 
         // file names
         std::string m_JSONFileName;
@@ -220,6 +221,9 @@ class DMAnalysis : public SCycleBase {
         float MinMETMHT;
         float MinMETNoMuMHTNoMu;
         float MinJetMetDPhi;
+        float mZ;
+        float mT;
+        float mT2;
         
         // --- Tree Variables ---
         TLorentzVector Lepton1;

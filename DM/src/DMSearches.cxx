@@ -34,7 +34,7 @@ DMAnalysis::DMAnalysis() : SCycleBase(),
     // Read configuration details from XML file
     DeclareProperty( "RecoTreeName",              m_recoTreeName = "physics" );
     // Declare trees
-    DeclareProperty( "OutputTreeName",            m_outputTreeName = "AZh");
+    DeclareProperty( "OutputTreeName",            m_outputTreeName = "DM");
 
     // Declare varibles in trees
     DeclareProperty( "IsData",                    m_isData                   = false );
@@ -62,6 +62,7 @@ DMAnalysis::DMAnalysis() : SCycleBase(),
     DeclareProperty( "AK4EtaCut",                 m_AK4EtaCut                =  2.4 );
     DeclareProperty( "MEtPtCut",                  m_MEtPtCut                 =  250. );
     DeclareProperty( "VPtCut",                    m_VPtCut                   = -1. );
+    DeclareProperty( "nJetsCut",                  m_nJetsCut                 = 2 );
     
     // External objects name
     DeclareProperty( "JSONFileName",              m_JSONFileName             = "../GoodRunsLists/JSON/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt" ); //Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt
@@ -168,7 +169,9 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     m_logger << INFO << "AK4EtaCut:\t" <<             m_AK4EtaCut            << SLogger::endmsg;
     m_logger << INFO << "MEtPtCut:\t" <<              m_MEtPtCut             << SLogger::endmsg;
     m_logger << INFO << "VPtCut:\t" <<                m_VPtCut               << SLogger::endmsg;
+    m_logger << INFO << "nJetsCut:\t" <<              m_nJetsCut             << SLogger::endmsg;
     
+
     // External objects name
     m_logger << INFO << "JSONFileName:\t" <<          m_JSONFileName         << SLogger::endmsg;
 
@@ -248,6 +251,9 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( ST,                  "ST",  m_outputTreeName.c_str());
     DeclareVariable( HT,                  "HT",  m_outputTreeName.c_str());
     DeclareVariable( MinJetMetDPhi,       "MinDPhi",  m_outputTreeName.c_str());
+    DeclareVariable( mZ,                  "mZ",  m_outputTreeName.c_str());
+    DeclareVariable( mT,                  "mT",  m_outputTreeName.c_str());
+    DeclareVariable( mT2,                 "mT2",  m_outputTreeName.c_str());
     
     DeclareVariable( Lepton1,             "Lepton1",  m_outputTreeName.c_str());
     DeclareVariable( Lepton2,             "Lepton2",  m_outputTreeName.c_str());
@@ -270,100 +276,137 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     // Histograms in main directory
     Book( TH1F( "Events", ";;Events", 1, 0, 1));
     // Cutflow
-    std::vector<std::string> labelsZtoNN = {"All", "Trigger", "MET", "Lepton veto", "Tau veto", "Cleaning", "X_{T} mass", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
+    std::vector<std::string> labelsZtoNN = {"All", "Trigger", "0l", "Lepton veto", "Tau veto", "Cleaning", "X_{T} mass", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
     std::vector<std::string> labelsZtoEE = {"All", "Trigger", "Ele reco", "Ele p_{T}", "Ele Id+Iso", "Z(ee) candidate", "Z p_{T}", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
     std::vector<std::string> labelsZtoMM = {"All", "Trigger", "Muon reco", "Muon p_{T}", "Muon Id", "Muon Iso", "Z(#mu#mu) candidate", "Z p_{T}", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
     
-    Book( TH1F( "Events", ";;Events;log", labelsZtoNN.size(), 0, labelsZtoNN.size()), "MET" );
-    Book( TH1F( "Events", ";;Events;log", labelsZtoEE.size(), 0, labelsZtoEE.size()), "Electrons" );
-    Book( TH1F( "Events", ";;Events;log", labelsZtoMM.size(), 0, labelsZtoMM.size()), "Muons" );
+    Book( TH1F( "Events", ";;Events;log", labelsZtoNN.size(), 0, labelsZtoNN.size()), "0l" );
+    Book( TH1F( "Events", ";;Events;log", labelsZtoEE.size(), 0, labelsZtoEE.size()), "2e" );
+    Book( TH1F( "Events", ";;Events;log", labelsZtoMM.size(), 0, labelsZtoMM.size()), "2m" );
     
-    for(unsigned int i = 0; i < labelsZtoNN.size(); i++) Hist("Events", "MET")->GetXaxis()->SetBinLabel(i+1, labelsZtoNN[i].c_str());
-    for(unsigned int i = 0; i < labelsZtoEE.size(); i++) Hist("Events", "Electrons")->GetXaxis()->SetBinLabel(i+1, labelsZtoEE[i].c_str());
-    for(unsigned int i = 0; i < labelsZtoMM.size(); i++) Hist("Events", "Muons")->GetXaxis()->SetBinLabel(i+1, labelsZtoMM[i].c_str());
+    for(unsigned int i = 0; i < labelsZtoNN.size(); i++) Hist("Events", "0l")->GetXaxis()->SetBinLabel(i+1, labelsZtoNN[i].c_str());
+    for(unsigned int i = 0; i < labelsZtoEE.size(); i++) Hist("Events", "2e")->GetXaxis()->SetBinLabel(i+1, labelsZtoEE[i].c_str());
+    for(unsigned int i = 0; i < labelsZtoMM.size(); i++) Hist("Events", "2m")->GetXaxis()->SetBinLabel(i+1, labelsZtoMM[i].c_str());
     
     // ---------- SEMILEPTONIC Z->nn CHANNEL ----------
-    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "MET" );
-    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "MET" );
-    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "MET" );
-    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "MET" );
-    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "MET" );
-    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "MET" );
-    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "MET" );
-    Book( TH1F( "Jet1_chf", ";jet charged hadron fraction;Events", 25, 0, 1), "MET" );
-    Book( TH1F( "Jet1_nhf", ";jet neutral hadron fraction;Events", 25, 0, 1), "MET" );
-    Book( TH1F( "Jet1_phf", ";jet photon fraction;Events", 25, 0, 1), "MET" );
-    Book( TH1F( "Jet1_muf", ";jet muon fraction;Events", 25, 0, 1), "MET" );
-    Book( TH1F( "Jet1_emf", ";jet electron fraction;Events", 25, 0, 1), "MET" );
-    Book( TH1F( "Jet1_chm", ";jet charged hadron multiplicity;Events", 100, 0, 100), "MET" );
-    Book( TH1F( "Jet2_chf", ";jet charged hadron fraction;Events", 25, 0, 1), "MET" );
-    Book( TH1F( "Jet2_nhf", ";jet neutral hadron fraction;Events", 25, 0, 1), "MET" );
-    Book( TH1F( "Jet2_phf", ";jet photon fraction;Events", 25, 0, 1), "MET" );
-    Book( TH1F( "Jet2_muf", ";jet muon fraction;Events", 25, 0, 1), "MET" );
-    Book( TH1F( "Jet2_emf", ";jet electron fraction;Events", 25, 0, 1), "MET" );
-    Book( TH1F( "Jet2_chm", ";jet charged hadron multiplicity;Events", 100, 0, 100), "MET" );
-    Book( TH1F( "Jet1MetDPhi", ";#Delta #varphi (jet1-#slash{E}_{T});Events", 28, 0, 3.15), "MET" );
-    Book( TH1F( "Jet2MetDPhi", ";#Delta #varphi (jet1-#slash{E}_{T});Events", 28, 0, 3.15), "MET" );
-    Book( TH1F( "MinJetMetDPhi", ";min #Delta #varphi (jet-#slash{E}_{T});Events;log", 28, 0, 3.15), "MET" );
-    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "MET" );
-    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "MET" );
-    Book( TH1F( "X_Mt", ";m_{X} (GeV);Events", 100, 100, 1100), "MET" );
-    Book( TH1F( "X_MtKinH", ";m_{X} (GeV);Events", 100, 100, 1100), "MET" );
-    Book( TH1F( "METFilters", "Events;", 15, -0.5, 14.5), "MET" );
+    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "0l" );
+    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "0l" );
+    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "0l" );
+    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "0l" );
+    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "0l" );
+    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "0l" );
+    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "0l" );
+    Book( TH1F( "Jet1_chf", ";jet charged hadron fraction;Events", 25, 0, 1), "0l" );
+    Book( TH1F( "Jet1_nhf", ";jet neutral hadron fraction;Events", 25, 0, 1), "0l" );
+    Book( TH1F( "Jet1_phf", ";jet photon fraction;Events", 25, 0, 1), "0l" );
+    Book( TH1F( "Jet1_muf", ";jet muon fraction;Events", 25, 0, 1), "0l" );
+    Book( TH1F( "Jet1_emf", ";jet electron fraction;Events", 25, 0, 1), "0l" );
+    Book( TH1F( "Jet1_chm", ";jet charged hadron multiplicity;Events", 100, 0, 100), "0l" );
+    Book( TH1F( "Jet2_chf", ";jet charged hadron fraction;Events", 25, 0, 1), "0l" );
+    Book( TH1F( "Jet2_nhf", ";jet neutral hadron fraction;Events", 25, 0, 1), "0l" );
+    Book( TH1F( "Jet2_phf", ";jet photon fraction;Events", 25, 0, 1), "0l" );
+    Book( TH1F( "Jet2_muf", ";jet muon fraction;Events", 25, 0, 1), "0l" );
+    Book( TH1F( "Jet2_emf", ";jet electron fraction;Events", 25, 0, 1), "0l" );
+    Book( TH1F( "Jet2_chm", ";jet charged hadron multiplicity;Events", 100, 0, 100), "0l" );
+    Book( TH1F( "Jet1MetDPhi", ";#Delta #varphi (jet1-#slash{E}_{T});Events", 28, 0, 3.15), "0l" );
+    Book( TH1F( "Jet2MetDPhi", ";#Delta #varphi (jet1-#slash{E}_{T});Events", 28, 0, 3.15), "0l" );
+    Book( TH1F( "MinJetMetDPhi", ";min #Delta #varphi (jet-#slash{E}_{T});Events;log", 28, 0, 3.15), "0l" );
+    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "0l" );
+    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "0l" );
+    Book( TH1F( "METFilters", "Events;", 15, -0.5, 14.5), "0l" );
     
+    // ---------- SEMILEPTONIC W->en CHANNEL ----------
+    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "1e" );
+    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "1e" );
+    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "1e" );
+    Book( TH1F( "Electron1_Id", ";electron 1 Id;Events;log", 5, -0.5, 4.5), "1e" );
+    Book( TH1F( "Electron1_pfIso", ";electron 1 PFIso;Events;log", 25, 0, 5.), "1e" );
+    Book( TH1F( "W_pt", ";p_{T}^{W} (GeV);Events;log", 100, 0, 2000), "1e" );
+    Book( TH1F( "W_mass", ";W mass (GeV);Events", 40, 70, 110), "1e" );
+    Book( TH1F( "W_tmass", ";m_{T}^{W} (GeV);Events", 40, 70, 110), "1e" );
+
+    // ---------- SEMILEPTONIC Z->mm CHANNEL ----------
+    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "1m" );
+    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "1m" );
+    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "1m" );
+    Book( TH1F( "Muon1_Id", ";muon 1 Id;Events;log", 5, -0.5, 4.5), "1m" );
+    Book( TH1F( "Muon1_pfIso", ";muon 1 PFIso;Events;log", 50, 0, 5.), "1m" );
+    Book( TH1F( "W_pt", ";p_{T}^{W} (GeV);Events;log", 100, 0, 2000), "1m" );
+    Book( TH1F( "W_mass", ";W mass (GeV);Events", 40, 70, 110), "1m" );
+    Book( TH1F( "W_tmass", ";m_{T}^{W} (GeV);Events", 40, 70, 110), "1m" );
+
     
     // ---------- SEMILEPTONIC Z->ee CHANNEL ----------
-    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "Electrons" );
-    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "Electrons" );
-    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "Electrons" );
-    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "Electrons" );
-    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "Electrons" );
-    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "Electrons" );
-    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "Electrons" );
-    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "Electrons" );
-    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "Electrons" );
-    Book( TH1F( "Electron1_Id", ";electron 1 Id;Events;log", 5, -0.5, 4.5), "Electrons" );
-    Book( TH1F( "Electron2_Id", ";electron 2 Id;Events;log", 5, -0.5, 4.5), "Electrons" );
-    Book( TH1F( "Electron1_pfIso", ";electron 1 PFIso;Events;log", 25, 0, 5.), "Electrons" );
-    Book( TH1F( "Electron2_pfIso", ";electron 2 PFIso;Events;log", 25, 0, 5.), "Electrons" );
-    Book( TH1F( "Z_pt", ";p_{T}^{Z} (GeV);Events;log", 100, 0, 2000), "Electrons" );
-    Book( TH1F( "Z_mass", ";Z mass (GeV);Events", 40, 70, 110), "Electrons" );
-    Book( TH1F( "Z_massRaw", ";Z mass [uncorrected] (GeV);Events", 40, 70, 110), "Electrons" );
-    Book( TH1F( "Z_massBB", ";Z mass [barrel-barrel] (GeV);Events", 40, 70, 110), "Electrons" );
-    Book( TH1F( "Z_massBE", ";Z mass [barrel-endcaps] (GeV);Events", 40, 70, 110), "Electrons" );
-    Book( TH1F( "Z_massEB", ";Z mass [endcaps-barrel] (GeV);Events", 40, 70, 110), "Electrons" );
-    Book( TH1F( "Z_massEE", ";Z mass [endcaps-endcaps] (GeV);Events", 40, 70, 110), "Electrons" );
-    Book( TH1F( "X_mass", ";m_{X} (GeV);Events", 100, 100, 1100), "Electrons" );
-    Book( TH1F( "X_massKinV", ";m_{X} (GeV);Events", 100, 100, 1100), "Electrons" );
-    Book( TH1F( "X_massKinH", ";m_{X} (GeV);Events", 100, 100, 1100), "Electrons" );
-    Book( TH1F( "X_massKinVH", ";m_{X} (GeV);Events", 100, 100, 1100), "Electrons" );
+    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "2e" );
+    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "2e" );
+    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "2e" );
+    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "2e" );
+    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "2e" );
+    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "2e" );
+    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "2e" );
+    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "2e" );
+    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "2e" );
+    Book( TH1F( "Electron1_Id", ";electron 1 Id;Events;log", 5, -0.5, 4.5), "2e" );
+    Book( TH1F( "Electron2_Id", ";electron 2 Id;Events;log", 5, -0.5, 4.5), "2e" );
+    Book( TH1F( "Electron1_pfIso", ";electron 1 PFIso;Events;log", 25, 0, 5.), "2e" );
+    Book( TH1F( "Electron2_pfIso", ";electron 2 PFIso;Events;log", 25, 0, 5.), "2e" );
+    Book( TH1F( "Z_pt", ";p_{T}^{Z} (GeV);Events;log", 100, 0, 2000), "2e" );
+    Book( TH1F( "Z_mass", ";Z mass (GeV);Events", 40, 70, 110), "2e" );
+    Book( TH1F( "Z_massRaw", ";Z mass [uncorrected] (GeV);Events", 40, 70, 110), "2e" );
+    Book( TH1F( "Z_massBB", ";Z mass [barrel-barrel] (GeV);Events", 40, 70, 110), "2e" );
+    Book( TH1F( "Z_massBE", ";Z mass [barrel-endcaps] (GeV);Events", 40, 70, 110), "2e" );
+    Book( TH1F( "Z_massEB", ";Z mass [endcaps-barrel] (GeV);Events", 40, 70, 110), "2e" );
+    Book( TH1F( "Z_massEE", ";Z mass [endcaps-endcaps] (GeV);Events", 40, 70, 110), "2e" );
     
     
     // ---------- SEMILEPTONIC Z->mm CHANNEL ----------
-    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "Muons" );
-    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "Muons" );
-    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "Muons" );
-    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "Muons" );
-    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "Muons" );
-    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "Muons" );
-    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "Muons" );
-    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "Muons" );
-    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "Muons" );
-    Book( TH1F( "Muon1_Id", ";muon 1 Id;Events;log", 5, -0.5, 4.5), "Muons" );
-    Book( TH1F( "Muon2_Id", ";muon 2 Id;Events;log", 5, -0.5, 4.5), "Muons" );
-    Book( TH1F( "Muon1_pfIso", ";muon 1 PFIso;Events;log", 50, 0, 5.), "Muons" );
-    Book( TH1F( "Muon2_pfIso", ";muon 2 PFIso;Events;log", 50, 0, 5.), "Muons" );
-    Book( TH1F( "Z_pt", ";p_{T}^{Z} (GeV);Events;log", 100, 0, 2000), "Muons" );
-    Book( TH1F( "Z_mass", ";Z mass (GeV);Events", 40, 70, 110), "Muons" );
-    Book( TH1F( "Z_massRaw", ";Z mass [uncorrected] (GeV);Events", 40, 70, 110), "Muons" );
-    Book( TH1F( "Z_massBB", ";Z mass [barrel-barrel] (GeV);Events", 40, 70, 110), "Muons" );
-    Book( TH1F( "Z_massBE", ";Z mass [barrel-endcaps] (GeV);Events", 40, 70, 110), "Muons" );
-    Book( TH1F( "Z_massEB", ";Z mass [endcaps-barrel] (GeV);Events", 40, 70, 110), "Muons" );
-    Book( TH1F( "Z_massEE", ";Z mass [endcaps-endcaps] (GeV);Events", 40, 70, 110), "Muons" );
-    Book( TH1F( "X_mass", ";m_{X} (GeV);Events", 100, 100, 1100), "Muons" );
-    Book( TH1F( "X_massKinV", ";m_{X} (GeV);Events", 100, 100, 1100), "Muons" );
-    Book( TH1F( "X_massKinH", ";m_{X} (GeV);Events", 100, 100, 1100), "Muons" );
-    Book( TH1F( "X_massKinVH", ";m_{X} (GeV);Events", 100, 100, 1100), "Muons" );
+    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "2m" );
+    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "2m" );
+    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "2m" );
+    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "2m" );
+    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "2m" );
+    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "2m" );
+    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "2m" );
+    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "2m" );
+    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "2m" );
+    Book( TH1F( "Muon1_Id", ";muon 1 Id;Events;log", 5, -0.5, 4.5), "2m" );
+    Book( TH1F( "Muon2_Id", ";muon 2 Id;Events;log", 5, -0.5, 4.5), "2m" );
+    Book( TH1F( "Muon1_pfIso", ";muon 1 PFIso;Events;log", 50, 0, 5.), "2m" );
+    Book( TH1F( "Muon2_pfIso", ";muon 2 PFIso;Events;log", 50, 0, 5.), "2m" );
+    Book( TH1F( "Z_pt", ";p_{T}^{Z} (GeV);Events;log", 100, 0, 2000), "2m" );
+    Book( TH1F( "Z_mass", ";Z mass (GeV);Events", 40, 70, 110), "2m" );
+    Book( TH1F( "Z_massRaw", ";Z mass [uncorrected] (GeV);Events", 40, 70, 110), "2m" );
+    Book( TH1F( "Z_massBB", ";Z mass [barrel-barrel] (GeV);Events", 40, 70, 110), "2m" );
+    Book( TH1F( "Z_massBE", ";Z mass [barrel-endcaps] (GeV);Events", 40, 70, 110), "2m" );
+    Book( TH1F( "Z_massEB", ";Z mass [endcaps-barrel] (GeV);Events", 40, 70, 110), "2m" );
+    Book( TH1F( "Z_massEE", ";Z mass [endcaps-endcaps] (GeV);Events", 40, 70, 110), "2m" );
+
+    // ---------- SEMILEPTONIC T->em CHANNEL ----------
+    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "1e1m" );
+    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "1e1m" );
+    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "1e1m" );
+    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "1e1m" );
+    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "1e1m" );
+    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "1e1m" );
+    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "1e1m" );
+    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "1e1m" );
+    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "1e1m" );
+    Book( TH1F( "Electron1_Id", ";electron 1 Id;Events;log", 5, -0.5, 4.5), "1e1m" );
+    Book( TH1F( "Muon1_Id", ";muon 1 Id;Events;log", 5, -0.5, 4.5), "1e1m" );
+    Book( TH1F( "Electron1_pfIso", ";electron 1 PFIso;Events;log", 50, 0, 5.), "1e1m" );
+    Book( TH1F( "Muon1_pfIso", ";muon 1 PFIso;Events;log", 50, 0, 5.), "1e1m" );
     
     // Gen
     Book( TH1F( "LheV_pt", ";V p_{T} (GeV);Events;log", 400, 0, 4000), "Gen" );
@@ -490,10 +533,10 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         if(i==0 && el.pt() < m_Elec1PtCut) continue;
         if(i==1 && el.pt() < m_Elec2PtCut) continue;
         nElectronsPt++;
-        if(i==0) for(int e=0; e<=(el.isVetoElectron()+el.isLooseElectron()+el.isMediumElectron()+el.isTightElectron()); e++) Hist("Electron1_Id", "Electrons")->Fill(e, EventWeight);
-        if(i==1) for(int e=0; e<=(el.isVetoElectron()+el.isLooseElectron()+el.isMediumElectron()+el.isTightElectron()); e++) Hist("Electron2_Id", "Electrons")->Fill(e, EventWeight);
-        if(i==0) Hist("Electron1_pfIso", "Electrons")->Fill(el.pfRhoCorrRelIso03(), EventWeight);
-        if(i==1) Hist("Electron2_pfIso", "Electrons")->Fill(el.pfRhoCorrRelIso03(), EventWeight);
+        if(i==0) for(int e=0; e<=(el.isVetoElectron()+el.isLooseElectron()+el.isMediumElectron()+el.isTightElectron()); e++) Hist("Electron1_Id", "2e")->Fill(e, EventWeight);
+        if(i==1) for(int e=0; e<=(el.isVetoElectron()+el.isLooseElectron()+el.isMediumElectron()+el.isTightElectron()); e++) Hist("Electron2_Id", "2e")->Fill(e, EventWeight);
+        if(i==0) Hist("Electron1_pfIso", "2e")->Fill(el.pfRhoCorrRelIso03(), EventWeight);
+        if(i==1) Hist("Electron2_pfIso", "2e")->Fill(el.pfRhoCorrRelIso03(), EventWeight);
         if(!(el.isLooseElectron())) continue;
         ST += el.pt();
         ElecVect.push_back(el);
@@ -515,13 +558,13 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         if(i==0 && mu.pt() < m_Muon1PtCut) continue;
         if(i==1 && mu.pt() < m_Muon2PtCut) continue;
         nMuonsPt++;
-        if(i==0) for(int m=0; m<=(mu.isPFMuon()+mu.isLooseMuon()+mu.isMediumMuon()+mu.isTightMuon()); m++) Hist("Muon1_Id", "Muons")->Fill(m, EventWeight);
-        if(i==1) for(int m=0; m<=(mu.isPFMuon()+mu.isLooseMuon()+mu.isMediumMuon()+mu.isTightMuon()); m++) Hist("Muon2_Id", "Muons")->Fill(m, EventWeight);
+        if(i==0) for(int m=0; m<=(mu.isPFMuon()+mu.isLooseMuon()+mu.isMediumMuon()+mu.isTightMuon()); m++) Hist("Muon1_Id", "2m")->Fill(m, EventWeight);
+        if(i==1) for(int m=0; m<=(mu.isPFMuon()+mu.isLooseMuon()+mu.isMediumMuon()+mu.isTightMuon()); m++) Hist("Muon2_Id", "2m")->Fill(m, EventWeight);
         if(i==0 && !(mu.isTightMuon()==1)) continue;
         if(i==1 && !(mu.isLooseMuon()==1)) continue;
         nMuonsId++;
-        if(i==0) Hist("Muon1_pfIso", "Muons")->Fill(mu.pfDeltaCorrRelIso(), EventWeight);
-        if(i==1) Hist("Muon2_pfIso", "Muons")->Fill(mu.pfDeltaCorrRelIso(), EventWeight);
+        if(i==0) Hist("Muon1_pfIso", "2m")->Fill(mu.pfDeltaCorrRelIso(), EventWeight);
+        if(i==1) Hist("Muon2_pfIso", "2m")->Fill(mu.pfDeltaCorrRelIso(), EventWeight);
         if(!(mu.pfDeltaCorrRelIso()<0.25)) continue;
         MuonVect.push_back(mu);
         ST += mu.pt();
@@ -675,10 +718,10 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 Hist("HLT_PFMETNoMu120_PFMHTNoMu120_vs_SingleElectron_DEN", "Trigger")->Fill(MinMETNoMuMHTNoMu, 1.);
                 Hist("HLT_PFMET_OR_vs_SingleElectron_DEN", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
                 Hist("HLT_PFMET_OR_DEN", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
-                if(triggerMap["MET"]) Hist("HLT_PFMET170_vs_SingleElectron_NUM", "Trigger")->Fill(MET.et(), 1.);
+                if(triggerMap["0l"]) Hist("HLT_PFMET170_vs_SingleElectron_NUM", "Trigger")->Fill(MET.et(), 1.);
                 if(triggerMap["METMHT"]) Hist("HLT_PFMET120_PFMHT120_vs_SingleElectron_NUM", "Trigger")->Fill(MinMETMHT, 1.);
                 if(triggerMap["METMHTNoMu"]) Hist("HLT_PFMETNoMu120_PFMHTNoMu120_vs_SingleElectron_NUM", "Trigger")->Fill(MinMETNoMuMHTNoMu, 1.);
-                if(triggerMap["MET"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
+                if(triggerMap["0l"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
                     Hist("HLT_PFMET_OR_vs_SingleElectron_NUM", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
                     Hist("HLT_PFMET_OR_NUM", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
                 }
@@ -690,10 +733,10 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 Hist("HLT_PFMETNoMu120_PFMHTNoMu120_vs_SingleMuon_DEN", "Trigger")->Fill(MinMETNoMuMHTNoMu, 1.);
                 Hist("HLT_PFMET_OR_vs_SingleMuon_DEN", "Trigger")->Fill(MinMETMHT, 1.);
                 Hist("HLT_PFMET_OR_DEN", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
-                if(triggerMap["MET"]) Hist("HLT_PFMET170_vs_SingleMuon_NUM", "Trigger")->Fill(MET.et(), 1.);
+                if(triggerMap["0l"]) Hist("HLT_PFMET170_vs_SingleMuon_NUM", "Trigger")->Fill(MET.et(), 1.);
                 if(triggerMap["METMHT"]) Hist("HLT_PFMET120_PFMHT120_vs_SingleMuon_NUM", "Trigger")->Fill(MinMETMHT, 1.);
                 if(triggerMap["METMHTNoMu"]) Hist("HLT_PFMETNoMu120_PFMHTNoMu120_vs_SingleMuon_NUM", "Trigger")->Fill(MinMETNoMuMHTNoMu, 1.);
-                if(triggerMap["MET"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
+                if(triggerMap["0l"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
                     Hist("HLT_PFMET_OR_vs_SingleMuon_NUM", "Trigger")->Fill(MinMETMHT, 1.);
                     Hist("HLT_PFMET_OR_NUM", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
                 }
@@ -701,7 +744,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
 //            // MET Trigger with JetHT
 //            if(triggerMap["JET"] && JetsVect.size() >= 1 && HT > 1200.) {
 //                Hist("HLT_PFMET_OR_vs_JetHT_DEN", "Trigger")->Fill(MinMETMHT, 1.);
-//                if(triggerMap["MET"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
+//                if(triggerMap["0l"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
 //                    Hist("HLT_PFMET_OR_vs_JetHT_NUM", "Trigger")->Fill(MinMETMHT, 1.);
 //                }
 //            }
@@ -710,28 +753,28 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     }
     
     Hist("Events")->Fill(0., GenWeight);
-    Hist("Events", "MET")->Fill(0., EventWeight);
-    Hist("Events", "Electrons")->Fill(0., EventWeight);
-    Hist("Events", "Muons")->Fill(0., EventWeight);
+    Hist("Events", "0l")->Fill(0., EventWeight);
+    Hist("Events", "2e")->Fill(0., EventWeight);
+    Hist("Events", "2m")->Fill(0., EventWeight);
     
     // Filter by Trigger
     // if(!isMC) {
-    if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"] && !triggerMap["HT"] && !triggerMap["HTWJ"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["0l"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"] && !triggerMap["HT"] && !triggerMap["HTWJ"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     // }
     
     
-    Hist("Events", "MET")->Fill(1., EventWeight);
-    Hist("Events", "Electrons")->Fill(1., EventWeight);
-    Hist("Events", "Muons")->Fill(1., EventWeight);
+    Hist("Events", "0l")->Fill(1., EventWeight);
+    Hist("Events", "2e")->Fill(1., EventWeight);
+    Hist("Events", "2m")->Fill(1., EventWeight);
     
-    if(m_electron.N >= 2) Hist("Events", "Electrons")->Fill(2., EventWeight);
-    if(nElectronsPt >= 2) Hist("Events", "Electrons")->Fill(3., EventWeight);
-    if(ElecVect.size()>=2) Hist("Events", "Electrons")->Fill(4., EventWeight);
+    if(m_electron.N >= 2) Hist("Events", "2e")->Fill(2., EventWeight);
+    if(nElectronsPt >= 2) Hist("Events", "2e")->Fill(3., EventWeight);
+    if(ElecVect.size()>=2) Hist("Events", "2e")->Fill(4., EventWeight);
     
-    if(m_muon.N >= 2) Hist("Events", "Muons")->Fill(2., EventWeight);
-    if(nMuonsPt >= 2) Hist("Events", "Muons")->Fill(3., EventWeight);
-    if(nMuonsId >= 2) Hist("Events", "Muons")->Fill(4., EventWeight);
-    if(MuonVect.size()>=2) Hist("Events", "Muons")->Fill(5., EventWeight);
+    if(m_muon.N >= 2) Hist("Events", "2m")->Fill(2., EventWeight);
+    if(nMuonsPt >= 2) Hist("Events", "2m")->Fill(3., EventWeight);
+    if(nMuonsId >= 2) Hist("Events", "2m")->Fill(4., EventWeight);
+    if(MuonVect.size()>=2) Hist("Events", "2m")->Fill(5., EventWeight);
 
     // -----------------------------------
     //           VECTOR BOSON
@@ -778,18 +821,19 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 Lepton2_pfIso = MuonVect[1].pfDeltaCorrRelIso();
                 V = Lepton1 + Lepton2;
                 // nEvents
-                Hist("Events", "Muons")->Fill(6., EventWeight);
-                Hist("Z_pt", "Muons")->Fill(V.Pt(), EventWeight);
-                Hist("Z_mass", "Muons")->Fill(V.M(), EventWeight);
-                Hist("Z_massRaw", "Muons")->Fill((MuonVect[0].tlv() + MuonVect[1].tlv()).M(), EventWeight);
-                if(fabs(MuonVect[0].eta()) < 1.2 && fabs(MuonVect[1].eta()) < 1.2) Hist("Z_massBB", "Muons")->Fill(V.M(), EventWeight);
-                if(fabs(MuonVect[0].eta()) < 1.2 && fabs(MuonVect[1].eta()) > 1.2) Hist("Z_massBE", "Muons")->Fill(V.M(), EventWeight);
-                if(fabs(MuonVect[0].eta()) > 1.2 && fabs(MuonVect[1].eta()) < 1.2) Hist("Z_massEB", "Muons")->Fill(V.M(), EventWeight);
-                if(fabs(MuonVect[0].eta()) > 1.2 && fabs(MuonVect[1].eta()) > 1.2) Hist("Z_massEE", "Muons")->Fill(V.M(), EventWeight);
+                Hist("Events", "2m")->Fill(6., EventWeight);
+                Hist("Z_pt", "2m")->Fill(V.Pt(), EventWeight);
+                Hist("Z_mass", "2m")->Fill(V.M(), EventWeight);
+                Hist("Z_massRaw", "2m")->Fill((MuonVect[0].tlv() + MuonVect[1].tlv()).M(), EventWeight);
+                if(fabs(MuonVect[0].eta()) < 1.2 && fabs(MuonVect[1].eta()) < 1.2) Hist("Z_massBB", "2m")->Fill(V.M(), EventWeight);
+                if(fabs(MuonVect[0].eta()) < 1.2 && fabs(MuonVect[1].eta()) > 1.2) Hist("Z_massBE", "2m")->Fill(V.M(), EventWeight);
+                if(fabs(MuonVect[0].eta()) > 1.2 && fabs(MuonVect[1].eta()) < 1.2) Hist("Z_massEB", "2m")->Fill(V.M(), EventWeight);
+                if(fabs(MuonVect[0].eta()) > 1.2 && fabs(MuonVect[1].eta()) > 1.2) Hist("Z_massEE", "2m")->Fill(V.M(), EventWeight);
                 if(V.Pt() < m_VPtCut) {m_logger << INFO << " - No V boost" << SLogger::endmsg;}
                 else {
-                    Hist("Events", "Muons")->Fill(7., EventWeight);
+                    Hist("Events", "2m")->Fill(7., EventWeight);
                     isZtoMM = true;
+                    mZ = V.M();
                     m_logger << INFO << " + Z -> mm candidate reconstructed" << SLogger::endmsg;
                 }
             }
@@ -829,18 +873,19 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 Lepton2_pfIso = ElecVect[1].pfRhoCorrRelIso03();
                 V = Lepton1 + Lepton2;
                 // nEvents
-                Hist("Events", "Electrons")->Fill(5., EventWeight);
-                Hist("Z_pt", "Electrons")->Fill(V.Pt(), EventWeight);
-                Hist("Z_mass", "Electrons")->Fill(V.M(), EventWeight);
-                Hist("Z_massRaw", "Electrons")->Fill((ElecVect[0].tlv() + ElecVect[1].tlv()).M(), EventWeight);
-                if(fabs(ElecVect[0].eta()) < 1.4442 && fabs(ElecVect[1].eta()) < 1.4442) Hist("Z_massBB", "Electrons")->Fill(V.M(), EventWeight);
-                if(fabs(ElecVect[0].eta()) < 1.4442 && fabs(ElecVect[1].eta()) > 1.4442) Hist("Z_massBE", "Electrons")->Fill(V.M(), EventWeight);
-                if(fabs(ElecVect[0].eta()) > 1.4442 && fabs(ElecVect[1].eta()) < 1.4442) Hist("Z_massEB", "Electrons")->Fill(V.M(), EventWeight);
-                if(fabs(ElecVect[0].eta()) > 1.4442 && fabs(ElecVect[1].eta()) > 1.4442) Hist("Z_massEE", "Electrons")->Fill(V.M(), EventWeight);
+                Hist("Events", "2e")->Fill(5., EventWeight);
+                Hist("Z_pt", "2e")->Fill(V.Pt(), EventWeight);
+                Hist("Z_mass", "2e")->Fill(V.M(), EventWeight);
+                Hist("Z_massRaw", "2e")->Fill((ElecVect[0].tlv() + ElecVect[1].tlv()).M(), EventWeight);
+                if(fabs(ElecVect[0].eta()) < 1.4442 && fabs(ElecVect[1].eta()) < 1.4442) Hist("Z_massBB", "2e")->Fill(V.M(), EventWeight);
+                if(fabs(ElecVect[0].eta()) < 1.4442 && fabs(ElecVect[1].eta()) > 1.4442) Hist("Z_massBE", "2e")->Fill(V.M(), EventWeight);
+                if(fabs(ElecVect[0].eta()) > 1.4442 && fabs(ElecVect[1].eta()) < 1.4442) Hist("Z_massEB", "2e")->Fill(V.M(), EventWeight);
+                if(fabs(ElecVect[0].eta()) > 1.4442 && fabs(ElecVect[1].eta()) > 1.4442) Hist("Z_massEE", "2e")->Fill(V.M(), EventWeight);
                 if(V.Pt() < m_VPtCut) {m_logger << INFO << " - No V boost" << SLogger::endmsg;}
                 else {
-                    Hist("Events", "Electrons")->Fill(6., EventWeight);
+                    Hist("Events", "2e")->Fill(6., EventWeight);
                     isZtoEE = true;
+                    mZ = V.M();
                     m_logger << INFO << " + Z -> ee candidate reconstructed" << SLogger::endmsg;
                 }
             }
@@ -849,6 +894,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     // ---------- INTERMEZZO: dileptonic Top CR ----------
     if(!isZtoMM && !isZtoEE && MuonVect.size()==1 && ElecVect.size()==1) {
         isTtoEM = true;
+        mZ = (MuonVect[0].tlv() + ElecVect[0].tlv()).M();
         m_logger << INFO << " + TT -> mnen candidate reconstructed" << SLogger::endmsg;
     }
     // ---------- W TO LEPTON and NEUTRINO ----------
@@ -875,6 +921,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             EventWeight *= TriggerWeight * LeptonWeight;
         }
         isWtoMN = true;
+        mT = sqrt(2.*MET.et()*MuonVect[0].pt()*(1.-cos(MuonVect[0].tlv().DeltaPhi(MET_tlv))));
         m_logger << INFO << " + W -> mn candidate reconstructed" << SLogger::endmsg;
     }
     // --- W -> enu ---
@@ -897,29 +944,30 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             EventWeight *= TriggerWeight * LeptonWeight;
         }
         isWtoEN = true;
+        mT = sqrt(2.*MET.et()*ElecVect[0].pt()*(1.-cos(ElecVect[0].tlv().DeltaPhi(MET_tlv))));
         m_logger << INFO << " + W -> en candidate reconstructed" << SLogger::endmsg;
     }
     // ----------- Z TO NEUTRINOS ---------------
-    if(!isZtoMM && !isZtoEE) {
+    if(!isZtoMM && !isZtoEE && !isTtoEM && !isWtoEN && ! isWtoMN) {
         m_logger << INFO << " + Try to reconstruct Z -> nn" << SLogger::endmsg;
         if(MET.et() < m_MEtPtCut) {m_logger << INFO << " - Low MET" << SLogger::endmsg;}
         else {
             // Check trigger consistency
-            if(!isMC && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+            if(!isMC && !triggerMap["0l"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
             // Lepton veto
-            Hist("Events", "MET")->Fill(2., EventWeight);
+            Hist("Events", "0l")->Fill(2., EventWeight);
             if(!(nElectrons==0 && nMuons==0)) m_logger << INFO << " - Iso Leptons" << SLogger::endmsg;
             else {
                 // Tau veto
-                Hist("Events", "MET")->Fill(3., EventWeight);
+                Hist("Events", "0l")->Fill(3., EventWeight);
                 if(!(nTaus==0)) m_logger << INFO << " - Iso Taus" << SLogger::endmsg;
                 else {
                     // Cleaning
-                    Hist("Events", "MET")->Fill(4., EventWeight);
-                    Hist("MinJetMetDPhi", "MET")->Fill(MinJetMetDPhi, EventWeight);
+                    Hist("Events", "0l")->Fill(4., EventWeight);
+                    Hist("MinJetMetDPhi", "0l")->Fill(MinJetMetDPhi, EventWeight);
                     if(!(MinJetMetDPhi >= 0.5)) m_logger << INFO << " - ZtoNN event failed noise cleaning" << SLogger::endmsg;
                     else {
-                        Hist("Events", "MET")->Fill(5., EventWeight);
+                        Hist("Events", "0l")->Fill(5., EventWeight);
                         // Dummy V candidate
                         if(MET.et()!=MET.et()) { m_logger << WARNING << " - MET is nan" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
                         V.SetPtEtaPhiE(MET.et(), 0., MET.phi(), MET.et());
@@ -940,18 +988,21 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
 
 
     std::string category("");
-    if(isZtoNN) category = "MET";
-    else if(isZtoEE) category = "Electrons";
-    else if(isZtoMM) category = "Muons";
+    if(isZtoNN) category = "0l";
+    else if(isWtoEN) category = "1e";
+    else if(isWtoMN) category = "1m";
+    else if(isZtoEE) category = "2e";
+    else if(isZtoMM) category = "2m";
+    else if(isTtoEM) category = "1e1m";
     
-    // Hist("EventWeight", category.c_str())->Fill(EventWeight);
-    // Hist("GenWeight", category.c_str())->Fill(GenWeight);
-    // Hist("TopWeight", category.c_str())->Fill(TopWeight);
-    // Hist("PUWeight", category.c_str())->Fill(PUWeight);
-    // Hist("TriggerWeight", category.c_str())->Fill(TriggerWeight);
-    // Hist("LeptonWeight", category.c_str())->Fill(LeptonWeight);
-    // Hist("nJets", category.c_str())->Fill(nJets, EventWeight);
-    // Hist("HT", category.c_str())->Fill(HT, EventWeight);
+    Hist("EventWeight", category.c_str())->Fill(EventWeight);
+    Hist("GenWeight", category.c_str())->Fill(GenWeight);
+    Hist("TopWeight", category.c_str())->Fill(TopWeight);
+    Hist("PUWeight", category.c_str())->Fill(PUWeight);
+    Hist("TriggerWeight", category.c_str())->Fill(TriggerWeight);
+    Hist("LeptonWeight", category.c_str())->Fill(LeptonWeight);
+    Hist("nJets", category.c_str())->Fill(nJets, EventWeight);
+    Hist("HT", category.c_str())->Fill(HT, EventWeight);
     
     std::vector<UZH::Jet> JetsVectSorted(JetsVect.begin(), JetsVect.end());
     std::sort(JetsVectSorted.begin(), JetsVectSorted.end(), SortByCSV);
@@ -976,6 +1027,9 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Jet3_csv = JetsVectSorted[3].csv();
     }
     
+    // Jet multiplicity selection
+    // if(nJets < m_nJetsCut) { m_logger << INFO << " - Reconstructed jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+
     
     // --- BTV ---
     m_logger << INFO << " + Calculating b-tagging scale factors" << SLogger::endmsg;
@@ -1090,32 +1144,32 @@ bool DMAnalysis::passMETFilters(bool data) {
   
     // using only what's recommended in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2
     if( !(m_eventInfo.PV_filter) ) return false;
-    Hist( "METFilters", "MET" )->Fill(1);
+    Hist( "METFilters", "0l" )->Fill(1);
     if( !(m_eventInfo.passFilter_CSCHalo) ) return false;
-    Hist( "METFilters", "MET" )->Fill(2);
+    Hist( "METFilters", "0l" )->Fill(2);
     if( !(m_eventInfo.passFilter_HBHE) ) return false;
-    Hist( "METFilters", "MET" )->Fill(3);
+    Hist( "METFilters", "0l" )->Fill(3);
     if( !(m_eventInfo.passFilter_HBHEIso) ) return false;
-    Hist( "METFilters", "MET" )->Fill(4);
+    Hist( "METFilters", "0l" )->Fill(4);
     if( !(m_eventInfo.passFilter_ECALDeadCell) ) return false;
-    Hist( "METFilters", "MET" )->Fill(5);
+    Hist( "METFilters", "0l" )->Fill(5);
     if(data) if( !(m_eventInfo.passFilter_EEBadSc) ) return false;
-    Hist( "METFilters", "MET" )->Fill(6);
+    Hist( "METFilters", "0l" )->Fill(6);
     if( !(m_eventInfo.passFilter_globalTightHalo2016) ) return false;
-    Hist( "METFilters", "MET" )->Fill(7);
+    Hist( "METFilters", "0l" )->Fill(7);
     if( !(m_eventInfo.passFilter_muonBadTrack) ) return false;
-    Hist( "METFilters", "MET" )->Fill(8);
+    Hist( "METFilters", "0l" )->Fill(8);
     if( !(m_eventInfo.passFilter_chargedHadronTrackResolution) ) return false;       
-    Hist( "METFilters", "MET" )->Fill(9);
+    Hist( "METFilters", "0l" )->Fill(9);
     //  if( !(m_eventInfo.passFilter_METFilters) ) return false;
     //   Hist( "METFilters" )->Fill(10);
     if(data) {
         if( (!m_eventInfo.flag_badMuons) ) return false;
-        Hist( "METFilters", "MET" )->Fill(10);
+        Hist( "METFilters", "0l" )->Fill(10);
         if( (!m_eventInfo.flag_duplicateMuons) ) return false;
-        Hist( "METFilters", "MET" )->Fill(11);
+        Hist( "METFilters", "0l" )->Fill(11);
         if( (!m_eventInfo.flag_nobadMuons) ) return false;
-        Hist( "METFilters", "MET" )->Fill(12);
+        Hist( "METFilters", "0l" )->Fill(12);
     }
 
     return true;
@@ -1130,6 +1184,7 @@ void DMAnalysis::clearBranches() {
     LheVpt, LheHT, LheNj, LheNl = -1;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
     HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = 0.;
+    mZ = mT = mT2 = 0.;
     MinJetMetDPhi = 10.;
     
     Lepton1 = Lepton2 = Jet1 = Jet2 = Jet3 = Jet4 = V = TLorentzVector();
