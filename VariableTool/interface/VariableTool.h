@@ -22,11 +22,12 @@
 
 
 
-
 class VariableTool  : public SToolBase   {
 
     private:
         std::string m_name;
+
+        Mt2Com_bisect* Mt2cal;
 
     public:
 
@@ -35,7 +36,7 @@ class VariableTool  : public SToolBase   {
         
         void BeginInputData( const SInputData& id ) throw( SError );
         
-        void EventShape(std::vector<UZH::Jet>*, float&, float&);
+        void EventShape(std::vector<TLorentzVector>*, float&, float&);
         std::vector<float> ReturnEventShape(TLorentzVector&, TLorentzVector&, TLorentzVector&, TLorentzVector&, bool);
         float ReturnCentrality(TLorentzVector&, TLorentzVector&, TLorentzVector&, TLorentzVector&);
         float ReturnCosThetaStar(TLorentzVector&, TLorentzVector&);

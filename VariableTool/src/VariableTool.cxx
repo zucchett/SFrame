@@ -1,12 +1,16 @@
-#include "../interface/VariableTool.h"
 #include <cstdlib>
 #include <limits>
 
 #include <TFile.h>
 
+
+
+#include "../interface/VariableTool.h"
+
 VariableTool::VariableTool(SCycleBase* parent, const char* name ): SToolBase( parent ), m_name( name ) {
     SetLogName( name );
-    
+
+    Mt2cal = new Mt2Com_bisect();
 }
 
 
@@ -17,7 +21,7 @@ void VariableTool::BeginInputData( const SInputData& ) throw( SError ) {
 
 
 VariableTool::~VariableTool() {
-
+    delete Mt2cal;
 }
 
 // --------------------------------------------------
@@ -26,35 +30,33 @@ VariableTool::~VariableTool() {
 
 
 // Event Shape Variables, following http://home.fnal.gov/~mrenna/lutp0613man2/node233.html
-void VariableTool::EventShape(std::vector<UZH::Jet>* Jets, float& sphericity, float& thrust) {
+void VariableTool::EventShape(std::vector<TLorentzVector>* Jets, float& sphericity, float& thrust) {
   TLorentzVector Ptot;
-  for(std::vector<UZH::Jet>::const_iterator jet=Jets->begin(); jet!=Jets->end(); ++jet) {
-    TLorentzVector tJet;
-    tJet.SetPtEtaPhiE(jet->pt(), jet->eta(), jet->phi(), jet->e());
-    Ptot(0)+=tJet.Px();
-    Ptot(1)+=tJet.Py();
-    Ptot(2)+=tJet.Pz();
-    Ptot(3)+=tJet.E();
+  for(std::vector<TLorentzVector>::const_iterator ijet=Jets->begin(); ijet!=Jets->end(); ++ijet) {
+    Ptot(0)+=ijet->Px();
+    Ptot(1)+=ijet->Py();
+    Ptot(2)+=ijet->Pz();
+    Ptot(3)+=ijet->E();
   }
 
   TVector3 beta=Ptot.BoostVector();
 
   TMatrixD PTensor(3,3);
   double p2=0.0;
-  for(std::vector<UZH::Jet>::const_iterator jet=Jets->begin(); jet!=Jets->end(); ++jet) {
-    TLorentzVector pj;
-    pj.SetPtEtaPhiE(jet->pt(), jet->eta(), jet->phi(), jet->e());
-    pj.Boost(-beta);
-    p2+=pj.P()*pj.P();
-    PTensor(0,0)+=pj.Px()*pj.Px();
-    PTensor(0,1)+=pj.Px()*pj.Py();
-    PTensor(0,2)+=pj.Px()*pj.Pz();
-    PTensor(1,0)+=pj.Py()*pj.Px();
-    PTensor(1,1)+=pj.Py()*pj.Py();
-    PTensor(1,2)+=pj.Py()*pj.Pz();
-    PTensor(2,0)+=pj.Pz()*pj.Px();
-    PTensor(2,1)+=pj.Pz()*pj.Py();
-    PTensor(2,2)+=pj.Pz()*pj.Pz();
+  for(std::vector<TLorentzVector>::const_iterator ijet=Jets->begin(); ijet!=Jets->end(); ++ijet) {
+    TLorentzVector* jet = new TLorentzVector(*ijet);
+    jet->Boost(-beta);
+    p2+=jet->P()*jet->P();
+    PTensor(0,0)+=jet->Px()*jet->Px();
+    PTensor(0,1)+=jet->Px()*jet->Py();
+    PTensor(0,2)+=jet->Px()*jet->Pz();
+    PTensor(1,0)+=jet->Py()*jet->Px();
+    PTensor(1,1)+=jet->Py()*jet->Py();
+    PTensor(1,2)+=jet->Py()*jet->Pz();
+    PTensor(2,0)+=jet->Pz()*jet->Px();
+    PTensor(2,1)+=jet->Pz()*jet->Py();
+    PTensor(2,2)+=jet->Pz()*jet->Pz();
+    delete jet;
   }
   PTensor(0,0)/=p2;
   PTensor(0,1)/=p2;
@@ -298,4 +300,5 @@ float VariableTool::ReturnPhi1(TLorentzVector& theX, TLorentzVector& theL1, TLor
   if(value!=value || isinf(value)) return -5.;
   return value;
 }
+
 
