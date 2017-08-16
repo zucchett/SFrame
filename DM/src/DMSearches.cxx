@@ -1028,7 +1028,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     }
     
     // Jet multiplicity selection
-    // if(nJets < m_nJetsCut) { m_logger << INFO << " - Reconstructed jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    if(nJets < m_nJetsCut) { m_logger << INFO << " - Reconstructed jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
 
     
     // --- BTV ---
