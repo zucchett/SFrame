@@ -224,7 +224,8 @@ class DMAnalysis : public SCycleBase {
         float mZ;
         float mT;
         float mT2;
-        
+        float V_pt;
+
         // --- Tree Variables ---
         TLorentzVector Lepton1;
         TLorentzVector Lepton2;
@@ -234,8 +235,14 @@ class DMAnalysis : public SCycleBase {
         TLorentzVector Jet4;
         TLorentzVector MEt;
         TLorentzVector V;
+        float Lepton1_pt;
+        float Lepton2_pt;
         float Lepton1_pfIso;
         float Lepton2_pfIso;
+        float Jet1_pt;
+        float Jet2_pt;
+        float Jet3_pt;
+        float Jet4_pt;
         float Jet1_csv;
         float Jet2_csv;
         float Jet3_csv;

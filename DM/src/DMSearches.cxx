@@ -255,19 +255,19 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( mT,                  "mT",  m_outputTreeName.c_str());
     DeclareVariable( mT2,                 "mT2",  m_outputTreeName.c_str());
     
-    DeclareVariable( Lepton1,             "Lepton1",  m_outputTreeName.c_str());
-    DeclareVariable( Lepton2,             "Lepton2",  m_outputTreeName.c_str());
+    DeclareVariable( Lepton1_pt,          "Lepton1_pt",  m_outputTreeName.c_str());
+    DeclareVariable( Lepton2_pt,          "Lepton2_pt",  m_outputTreeName.c_str());
     DeclareVariable( Lepton1_pfIso,       "Lepton1_pfIso",  m_outputTreeName.c_str());
     DeclareVariable( Lepton2_pfIso,       "Lepton2_pfIso",  m_outputTreeName.c_str());
-    DeclareVariable( Jet1,                "Jet1",  m_outputTreeName.c_str());
-    DeclareVariable( Jet2,                "Jet2",  m_outputTreeName.c_str());
-    DeclareVariable( Jet3,                "Jet3",  m_outputTreeName.c_str());
-    DeclareVariable( Jet4,                "Jet4",  m_outputTreeName.c_str());
+    DeclareVariable( Jet1_pt,             "Jet1_pt",  m_outputTreeName.c_str());
+    DeclareVariable( Jet2_pt,             "Jet2_pt",  m_outputTreeName.c_str());
+    DeclareVariable( Jet3_pt,             "Jet3_pt",  m_outputTreeName.c_str());
+    DeclareVariable( Jet4_pt,             "Jet4_pt",  m_outputTreeName.c_str());
     DeclareVariable( Jet1_csv,            "Jet1_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet2_csv,            "Jet2_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet3_csv,            "Jet3_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet4_csv,            "Jet4_csv",  m_outputTreeName.c_str());
-    DeclareVariable( V,                   "V",  m_outputTreeName.c_str());
+    DeclareVariable( V_pt,                "V_pt",  m_outputTreeName.c_str());
     
 
     //
@@ -819,6 +819,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 // Build candidate
                 Lepton1 = MuonVect[0].tlv();
                 Lepton2 = MuonVect[1].tlv();
+                Lepton1_pt = MuonVect[0].pt();
+                Lepton2_pt = MuonVect[1].pt();
                 Lepton1_pfIso = MuonVect[0].pfDeltaCorrRelIso();
                 Lepton2_pfIso = MuonVect[1].pfDeltaCorrRelIso();
                 V = Lepton1 + Lepton2;
@@ -836,6 +838,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                     Hist("Events", "2m")->Fill(7., EventWeight);
                     isZtoMM = true;
                     mZ = V.M();
+                    V_pt = V.Pt();
                     m_logger << INFO << " + Z -> mm candidate reconstructed" << SLogger::endmsg;
                 }
             }
@@ -871,6 +874,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 // Build candidate
                 Lepton1 = CalibratedElecVect[0];
                 Lepton2 = CalibratedElecVect[1];
+                Lepton1_pt = CalibratedElecVect[0].Pt();
+                Lepton2_pt = CalibratedElecVect[1].Pt();
                 Lepton1_pfIso = ElecVect[0].pfRhoCorrRelIso03();
                 Lepton2_pfIso = ElecVect[1].pfRhoCorrRelIso03();
                 V = Lepton1 + Lepton2;
@@ -888,6 +893,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                     Hist("Events", "2e")->Fill(6., EventWeight);
                     isZtoEE = true;
                     mZ = V.M();
+                    V_pt = V.Pt();
                     m_logger << INFO << " + Z -> ee candidate reconstructed" << SLogger::endmsg;
                 }
             }
@@ -898,7 +904,10 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         isTtoEM = true;
         Lepton1 = ElecVect[0].tlv();
         Lepton2 = MuonVect[0].tlv();
+        Lepton1_pt = ElecVect[0].pt();
+        Lepton2_pt = MuonVect[0].pt();
         mZ = (Lepton1 + Lepton2).M();
+        V_pt = (Lepton1 + Lepton2).Pt();
         m_logger << INFO << " + TT -> mnen candidate reconstructed" << SLogger::endmsg;
     }
     // ---------- W TO LEPTON and NEUTRINO ----------
@@ -925,6 +934,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             EventWeight *= TriggerWeight * LeptonWeight;
         }
         isWtoMN = true;
+        Lepton1_pt = MuonVect[0].pt();
         Lepton1 = MuonVect[0].tlv();
         mT = sqrt(2.*MET.et()*MuonVect[0].pt()*(1.-cos(MuonVect[0].tlv().DeltaPhi(MET_tlv))));
         m_logger << INFO << " + W -> mn candidate reconstructed" << SLogger::endmsg;
@@ -949,6 +959,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             EventWeight *= TriggerWeight * LeptonWeight;
         }
         isWtoEN = true;
+        Lepton1_pt = ElecVect[0].pt();
         Lepton1 = ElecVect[0].tlv();
         mT = sqrt(2.*MET.et()*ElecVect[0].pt()*(1.-cos(ElecVect[0].tlv().DeltaPhi(MET_tlv))));
         m_logger << INFO << " + W -> en candidate reconstructed" << SLogger::endmsg;
@@ -1018,18 +1029,22 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     
     if(nJets >= 1) {
         Jet1.SetPtEtaPhiE(JetsVect[0].pt(), JetsVect[0].eta(), JetsVect[0].phi(), JetsVect[0].e());
+        Jet1_pt = JetsVect[0].pt();
         Jet1_csv = JetsVectSorted[0].csv();
     }
     if(nJets >= 2) {
         Jet2.SetPtEtaPhiE(JetsVect[1].pt(), JetsVect[1].eta(), JetsVect[1].phi(), JetsVect[1].e());
+        Jet2_pt = JetsVect[1].pt();
         Jet2_csv = JetsVectSorted[1].csv();
     }
     if(nJets >= 3) {
         Jet3.SetPtEtaPhiE(JetsVect[2].pt(), JetsVect[2].eta(), JetsVect[2].phi(), JetsVect[2].e());
+        Jet3_pt = JetsVect[2].pt();
         Jet3_csv = JetsVectSorted[2].csv();
     }
     if(nJets >= 4) {
         Jet3.SetPtEtaPhiE(JetsVect[3].pt(), JetsVect[3].eta(), JetsVect[3].phi(), JetsVect[3].e());
+        Jet3_pt = JetsVect[3].pt();
         Jet3_csv = JetsVectSorted[3].csv();
     }
     
@@ -1203,11 +1218,11 @@ void DMAnalysis::clearBranches() {
     LheVpt, LheHT, LheNj, LheNl = -1;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
     HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = 0.;
-    mZ = mT = mT2 = 0.;
+    mZ = mT = mT2 = V_pt = 0.;
     MinJetMetDPhi = 10.;
     
     Lepton1 = Lepton2 = Jet1 = Jet2 = Jet3 = Jet4 = V = TLorentzVector();
-    Lepton1_pfIso = Lepton2_pfIso = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = -9.;
+    Lepton1_pt = Lepton2_pt = Lepton1_pfIso = Lepton2_pfIso = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = -9.;
 }
 
 
