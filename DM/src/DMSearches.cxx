@@ -629,6 +629,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     MET_pt = MET.et();
     MET_phi = MET.phi();
     MET_sign = 0.;
+    TVector2 MET_tv2;
+    MET_tv2.SetMagPhi(MET.et(), MET.phi());
     TLorentzVector MET_tlv;
     MET_tlv.SetPtEtaPhiE(MET.et(), 0., MET.phi(), MET.et());
     METNoMu = MuonVect.size() == 0 ? MET.et() : sqrt(pow(MET_tlv.Px() + MuonVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + MuonVect[0].tlv().Py(), 2));
@@ -894,7 +896,9 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     // ---------- INTERMEZZO: dileptonic Top CR ----------
     if(!isZtoMM && !isZtoEE && MuonVect.size()==1 && ElecVect.size()==1) {
         isTtoEM = true;
-        mZ = (MuonVect[0].tlv() + ElecVect[0].tlv()).M();
+        Lepton1 = ElecVect[0].tlv();
+        Lepton2 = MuonVect[0].tlv();
+        mZ = (Lepton1 + Lepton2).M();
         m_logger << INFO << " + TT -> mnen candidate reconstructed" << SLogger::endmsg;
     }
     // ---------- W TO LEPTON and NEUTRINO ----------
@@ -921,6 +925,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             EventWeight *= TriggerWeight * LeptonWeight;
         }
         isWtoMN = true;
+        Lepton1 = MuonVect[0].tlv();
         mT = sqrt(2.*MET.et()*MuonVect[0].pt()*(1.-cos(MuonVect[0].tlv().DeltaPhi(MET_tlv))));
         m_logger << INFO << " + W -> mn candidate reconstructed" << SLogger::endmsg;
     }
@@ -944,6 +949,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             EventWeight *= TriggerWeight * LeptonWeight;
         }
         isWtoEN = true;
+        Lepton1 = ElecVect[0].tlv();
         mT = sqrt(2.*MET.et()*ElecVect[0].pt()*(1.-cos(ElecVect[0].tlv().DeltaPhi(MET_tlv))));
         m_logger << INFO << " + W -> en candidate reconstructed" << SLogger::endmsg;
     }
@@ -1027,19 +1033,32 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Jet3_csv = JetsVectSorted[3].csv();
     }
     
-    // Jet multiplicity selection
-    if(nJets < m_nJetsCut) { m_logger << INFO << " - Reconstructed jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
-
-    
     // --- BTV ---
-    m_logger << INFO << " + Calculating b-tagging scale factors" << SLogger::endmsg;
+    std::vector<TLorentzVector> bJets, lJets;
     for(unsigned int i=0; i<JetsVectSorted.size(); i++) {
-        if(m_bTaggingScaleTool.isTagged_tag( JetsVectSorted[i].csv() )) nBTagJets++; // Count Tight b-tagged jets
+        if(m_bTaggingScaleTool.isTagged_tag( JetsVectSorted[i].csv() )) {
+            nBTagJets++; // Count Tight b-tagged jets
+            bJets.push_back(JetsVectSorted[i].tlv());
+        }
+        else {
+            lJets.push_back(JetsVectSorted[i].tlv());
+        }
     }
     //for(unsigned int i=0; i<JetsVectSortedLoose.size(); i++) {
     //    if(nBTagJets > 0 && m_bTaggingScaleTool.isTagged_veto( JetsVectSorted[i].csv() )) nBVetoJets++; // Count Loose b-tagged jets
     //}
 
+    // Jet multiplicity selection
+    if(nJets < m_nJetsCut) { m_logger << INFO << " - Number of jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+
+    m_logger << INFO << " + Calculating MT2W" << SLogger::endmsg;
+    if(isWtoEN || isWtoMN) {
+        mT2 = m_VariableTool.ReturnMT2W(bJets, lJets, Lepton1, MET_tv2);
+    }
+    m_logger << INFO << " + MT2W = " << mT2 << SLogger::endmsg;
+    
+    
+    m_logger << INFO << " + Calculating b-tagging scale factors" << SLogger::endmsg;
     if(isMC) {
         float BTagAK4Weight(1.), BTagAK4WeightUp(1.), BTagAK4WeightDown(1.), BTagAK4WeightBUp(1.), BTagAK4WeightBDown(1.), BTagAK4WeightLUp(1.), BTagAK4WeightLDown(1.), BTagAK4WeightB1(1.), BTagAK4WeightB2(1.), BTagAK4WeightL1(1.), BTagAK4WeightL2(1.);
         // Tight
