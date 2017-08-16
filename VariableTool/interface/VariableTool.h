@@ -16,10 +16,13 @@
 #include <cmath>
 #include <string>
 // SFrame include(s):
-#include "../NtupleVariables/include/Jet.h"
 #include "core/include/SError.h"
 #include "plug-ins/include/SToolBase.h"
 
+#include "MT2Utility.h"
+#include "mt2w_bisect.h"
+#include "mt2bl_bisect.h"
+#include "Mt2Com_bisect.h"
 
 
 class VariableTool  : public SToolBase   {
@@ -44,6 +47,7 @@ class VariableTool  : public SToolBase   {
         float ReturnCosTheta2(TLorentzVector&, TLorentzVector&, TLorentzVector&, TLorentzVector&, TLorentzVector&);
         float ReturnPhi(TLorentzVector&, TLorentzVector&, TLorentzVector&, TLorentzVector&, TLorentzVector&);
         float ReturnPhi1(TLorentzVector&, TLorentzVector&, TLorentzVector&);
+        float ReturnMT2W(std::vector<TLorentzVector>&, std::vector<TLorentzVector>&, TLorentzVector&, TVector2&);
 };
 
 

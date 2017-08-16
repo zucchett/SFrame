@@ -3,7 +3,10 @@
 
 #include <TFile.h>
 
-
+#include "MT2Utility.cc"
+#include "mt2w_bisect.cc"
+#include "mt2bl_bisect.cc"
+#include "Mt2Com_bisect.cc"
 
 #include "../interface/VariableTool.h"
 
@@ -302,3 +305,9 @@ float VariableTool::ReturnPhi1(TLorentzVector& theX, TLorentzVector& theL1, TLor
 }
 
 
+// --- MT2W ---
+
+float VariableTool::ReturnMT2W(std::vector<TLorentzVector>& lJets, std::vector<TLorentzVector>& bJets, TLorentzVector& lep, TVector2& met) {
+  float mt2w = Mt2cal->calculateMT2w(lJets, bJets, lep, met, "MT2w");
+  return mt2w;
+}
