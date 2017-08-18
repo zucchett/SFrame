@@ -776,10 +776,10 @@ double ScaleFactorTool::GetMuonTightTrkIso(double pt, double eta, int sigma) {
 double ScaleFactorTool::GetMuonTrkId(double pt, double eta, int sigma) {
     if(!MuonTrkId) return -1.;
     eta = fabs(eta);
-    if(eta > MuonTrkId->GetXaxis()->GetXmax()) eta = MuonTrkId->GetXaxis()->GetXmax() - 1.e-2;
-    if(eta < MuonTrkId->GetXaxis()->GetXmin()) eta = MuonTrkId->GetXaxis()->GetXmin() + 1.e-2;
-    if(pt > MuonTrkId->GetYaxis()->GetXmax()) pt = MuonTrkId->GetYaxis()->GetXmax() - 1.e-2;
-    if(pt < MuonTrkId->GetYaxis()->GetXmin()) pt = MuonTrkId->GetYaxis()->GetXmin() + 1.e-2;
+    if(eta > MuonTrkId->GetXaxis()->GetXmax()) eta = MuonTrkId->GetXaxis()->GetXmax() - 1.e-1;
+    if(eta < MuonTrkId->GetXaxis()->GetXmin()) eta = MuonTrkId->GetXaxis()->GetXmin() + 1.e-1;
+    if(pt > MuonTrkId->GetYaxis()->GetXmax()) pt = MuonTrkId->GetYaxis()->GetXmax() - 1.e-1;
+    if(pt < MuonTrkId->GetYaxis()->GetXmin()) pt = MuonTrkId->GetYaxis()->GetXmin() + 1.e-1;
     int bin(0);
     if(sigma != 0) bin = MuonTrkId->FindBin(eta, pt);
     if(sigma == +1) return MuonTrkId->Interpolate(eta, pt) + MuonTrkId->GetBinError(bin);
@@ -793,14 +793,16 @@ double ScaleFactorTool::GetMuonTrk(int nPV, int sigma) {
     if(!MuonTrk) return -1.;
     if(nPV < MuonTrk->GetX()[0]) nPV = MuonTrk->GetX()[0];
     if(nPV > MuonTrk->GetX()[MuonTrk->GetN()-1]) nPV = MuonTrk->GetX()[MuonTrk->GetN()];
+    float sf = MuonTrk->Eval(nPV);
     if(sigma!=0) {
         int bin(0);
         double max(1.e6);
         for(int i=0; i<MuonTrk->GetN(); i++) if(fabs(nPV - MuonTrk->GetX()[i]) < max) {max = fabs(nPV - MuonTrk->GetX()[i]); bin = i;}
-        if(sigma > 0) return MuonTrk->Eval(nPV) + sigma*MuonTrk->GetErrorYhigh(bin);
-        else if(sigma < 0) return MuonTrk->Eval(nPV) + sigma*MuonTrk->GetErrorYlow(bin);
+        if(sigma > 0) sf = MuonTrk->Eval(nPV) + sigma*MuonTrk->GetErrorYhigh(bin);
+        else if(sigma < 0) sf = MuonTrk->Eval(nPV) + sigma*MuonTrk->GetErrorYlow(bin);
     }
-    return MuonTrk->Eval(nPV);
+    if(sf < 0.5 || sf > 1.5) sf = 1.;
+    return sf;
 }
 
 
