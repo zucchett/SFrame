@@ -76,6 +76,10 @@ namespace Ntuple {
      knMoth=4, 
      knDau=5, 
      kdau=6, 
+     kisPrompt=7, 
+     kisDirectPromptTauDecayProduct=8, 
+     kfromHardProcessFinalState=9, 
+     kisDirectHardProcessTauDecayProductFinalState=10, 
  
       kEnd 
     }; 
@@ -97,6 +101,10 @@ namespace Ntuple {
     std::vector< int >  *nMoth;
     std::vector< int >  *nDau;
     std::vector< std::vector<int> >  *dau;
+    std::vector< int >  *isPrompt;
+    std::vector< int >  *isDirectPromptTauDecayProduct;
+    std::vector< int >  *fromHardProcessFinalState;
+    std::vector< int >  *isDirectHardProcessTauDecayProductFinalState;
 
 
     std::vector<int> m_connectsucceeded;

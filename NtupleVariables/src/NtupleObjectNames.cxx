@@ -61,11 +61,15 @@ namespace Ntuple {
     m_names["genRenWeightDown"] = "genRenWeightDown";
     m_names["genFacRenWeightUp"] = "genFacRenWeightUp";
     m_names["genFacRenWeightDown"] = "genFacRenWeightDown";
-    m_names["lheHT"] = "lheHT";
+    m_names["isPrompt"] = "isPrompt";
+    m_names["isDirectPromptTauDecayProduct"] = "isDirectPromptTauDecayProduct";
+    m_names["fromHardProcessFinalState"] = "fromHardProcessFinalState";
+    m_names["isDirectHardProcessTauDecayProductFinalState"] = "isDirectHardProcessTauDecayProductFinalState";
     m_names["lheNj"] = "lheNj";
     m_names["lheNl"] = "lheNl";
-    m_names["lheV_mass"] = "lheV_mass";
+    m_names["lheHT"] = "lheHT";
     m_names["lheV_pt"] = "lheV_pt";
+    m_names["lheV_mass"] = "lheV_mass";
     m_names["pdf_rms"] = "PDF_rms";
     m_names["pdf_id"] = "PDF_id";
     m_names["pdf_x"] = "PDF_x";

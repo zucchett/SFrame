@@ -41,6 +41,10 @@ if(  ((ana->detailLevel & Ntuple::GenParticleBasic) == Ntuple::GenParticleBasic)
     if (ana->m_connectsucceeded[4]) m_nMoth = &((*ana->nMoth)[idx]); else m_nMoth = 0; 
     if (ana->m_connectsucceeded[5]) m_nDau = &((*ana->nDau)[idx]); else m_nDau = 0; 
     if (ana->m_connectsucceeded[6]) m_dau = &((*ana->dau)[idx]); else m_dau = 0; 
+    if (ana->m_connectsucceeded[7]) m_isPrompt = &((*ana->isPrompt)[idx]); else m_isPrompt = 0; 
+    if (ana->m_connectsucceeded[8]) m_isDirectPromptTauDecayProduct = &((*ana->isDirectPromptTauDecayProduct)[idx]); else m_isDirectPromptTauDecayProduct = 0; 
+    if (ana->m_connectsucceeded[9]) m_fromHardProcessFinalState = &((*ana->fromHardProcessFinalState)[idx]); else m_fromHardProcessFinalState = 0; 
+    if (ana->m_connectsucceeded[10]) m_isDirectHardProcessTauDecayProductFinalState = &((*ana->isDirectHardProcessTauDecayProductFinalState)[idx]); else m_isDirectHardProcessTauDecayProductFinalState = 0; 
 }
 
 
@@ -71,6 +75,10 @@ if(  ((rhs.getLvl() & Ntuple::GenParticleBasic) == Ntuple::GenParticleBasic)  ) 
   out << " nMoth " << rhs.nMoth();
   out << " nDau " << rhs.nDau();
   try{  out << " dau " << rhs.dau().at(0);} catch(...){std::cout<<"except: no element"<<std::endl;};
+  out << " isPrompt " << rhs.isPrompt();
+  out << " isDirectPromptTauDecayProduct " << rhs.isDirectPromptTauDecayProduct();
+  out << " fromHardProcessFinalState " << rhs.fromHardProcessFinalState();
+  out << " isDirectHardProcessTauDecayProductFinalState " << rhs.isDirectHardProcessTauDecayProductFinalState();
 ;
 }
 

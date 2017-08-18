@@ -59,6 +59,10 @@ namespace UZH {
     int* m_nMoth;
     int* m_nDau;
     std::vector<int>* m_dau;
+    int* m_isPrompt;
+    int* m_isDirectPromptTauDecayProduct;
+    int* m_fromHardProcessFinalState;
+    int* m_isDirectHardProcessTauDecayProductFinalState;
 
 
 
@@ -73,6 +77,10 @@ namespace UZH {
     int nMoth() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::knMoth)) std::cout<<"nMoth not connected!"<<std::endl;*/ return *(m_nMoth); } 
     int nDau() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::knDau)) std::cout<<"nDau not connected!"<<std::endl;*/ return *(m_nDau); } 
     std::vector<int> dau() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::kdau)) std::cout<<"dau not connected!"<<std::endl;*/ return *(m_dau); } 
+    int isPrompt() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::kisPrompt)) std::cout<<"isPrompt not connected!"<<std::endl;*/ return *(m_isPrompt); } 
+    int isDirectPromptTauDecayProduct() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::kisDirectPromptTauDecayProduct)) std::cout<<"isDirectPromptTauDecayProduct not connected!"<<std::endl;*/ return *(m_isDirectPromptTauDecayProduct); } 
+    int fromHardProcessFinalState() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::kfromHardProcessFinalState)) std::cout<<"fromHardProcessFinalState not connected!"<<std::endl;*/ return *(m_fromHardProcessFinalState); } 
+    int isDirectHardProcessTauDecayProductFinalState() const { /*if(!m_ana->getConnectSucceeded(Ntuple::GenParticleNtupleObject::kisDirectHardProcessTauDecayProductFinalState)) std::cout<<"isDirectHardProcessTauDecayProductFinalState not connected!"<<std::endl;*/ return *(m_isDirectHardProcessTauDecayProductFinalState); } 
     
     void pdgId( const int& val){ *(m_pdgId)=val; } 
     void status( const int& val){ *(m_status)=val; } 
@@ -80,6 +88,10 @@ namespace UZH {
     void nMoth( const int& val){ *(m_nMoth)=val; } 
     void nDau( const int& val){ *(m_nDau)=val; } 
     void dau( const std::vector<int>& val){ *(m_dau)=val; } 
+    void isPrompt( const int& val){ *(m_isPrompt)=val; } 
+    void isDirectPromptTauDecayProduct( const int& val){ *(m_isDirectPromptTauDecayProduct)=val; } 
+    void fromHardProcessFinalState( const int& val){ *(m_fromHardProcessFinalState)=val; } 
+    void isDirectHardProcessTauDecayProductFinalState( const int& val){ *(m_isDirectHardProcessTauDecayProductFinalState)=val; } 
     
 
   private:

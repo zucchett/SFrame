@@ -13,6 +13,10 @@ Basic	int*	nMoth
 Basic	int*	nDau
 Basic	std::vector<int>*	dau
 
+Basic	int*	isPrompt
+Basic	int*	isDirectPromptTauDecayProduct
+Basic	int*	fromHardProcessFinalState
+Basic	int*	isDirectHardProcessTauDecayProductFinalState
 
 # Basic	floatingnumber*	px
 # Basic	floatingnumber*	py

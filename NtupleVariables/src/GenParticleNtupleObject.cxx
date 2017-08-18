@@ -54,6 +54,10 @@ if(  ((detail_level & Ntuple::GenParticleBasic) == Ntuple::GenParticleBasic)  ) 
     setConnectSucceeded(4, ConnectVariable( treeName, prefix + m_objectNames.getName("nMoth"), nMoth)); 
     setConnectSucceeded(5, ConnectVariable( treeName, prefix + m_objectNames.getName("nDau"), nDau)); 
     setConnectSucceeded(6, ConnectVariable( treeName, prefix + m_objectNames.getName("dau"), dau)); 
+    setConnectSucceeded(7, ConnectVariable( treeName, prefix + m_objectNames.getName("isPrompt"), isPrompt)); 
+    setConnectSucceeded(8, ConnectVariable( treeName, prefix + m_objectNames.getName("isDirectPromptTauDecayProduct"), isDirectPromptTauDecayProduct)); 
+    setConnectSucceeded(9, ConnectVariable( treeName, prefix + m_objectNames.getName("fromHardProcessFinalState"), fromHardProcessFinalState)); 
+    setConnectSucceeded(10, ConnectVariable( treeName, prefix + m_objectNames.getName("isDirectHardProcessTauDecayProductFinalState"), isDirectHardProcessTauDecayProductFinalState)); 
 }
 
 
