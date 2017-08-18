@@ -243,7 +243,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( LheNl,               "LheNl",  m_outputTreeName.c_str());
     DeclareVariable( LheNj,               "LheNj",  m_outputTreeName.c_str());
     DeclareVariable( LheHT,               "LheHT",  m_outputTreeName.c_str());
-    DeclareVariable( LheVpt,              "LheVpt",  m_outputTreeName.c_str());
+    DeclareVariable( LheV_pt,              "LheV_pt",  m_outputTreeName.c_str());
     
     DeclareVariable( MET_pt,              "MET_pt",  m_outputTreeName.c_str());
     DeclareVariable( MET_phi,             "MET_phi",  m_outputTreeName.c_str());
@@ -276,7 +276,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     // Histograms in main directory
     Book( TH1F( "Events", ";;Events", 1, 0, 1));
     // Cutflow
-    std::vector<std::string> labelsZtoNN = {"All", "Trigger", "0l", "Lepton veto", "Tau veto", "Cleaning", "X_{T} mass", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
+    std::vector<std::string> labelsZtoNN = {"All", "Trigger", "MET", "Lepton veto", "Tau veto", "Cleaning", "Jet Noise", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
     std::vector<std::string> labelsZtoEE = {"All", "Trigger", "Ele reco", "Ele p_{T}", "Ele Id+Iso", "Z(ee) candidate", "Z p_{T}", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
     std::vector<std::string> labelsZtoMM = {"All", "Trigger", "Muon reco", "Muon p_{T}", "Muon Id", "Muon Iso", "Z(#mu#mu) candidate", "Z p_{T}", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
     
@@ -327,9 +327,8 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "1e" );
     Book( TH1F( "Electron1_Id", ";electron 1 Id;Events;log", 5, -0.5, 4.5), "1e" );
     Book( TH1F( "Electron1_pfIso", ";electron 1 PFIso;Events;log", 25, 0, 5.), "1e" );
-    Book( TH1F( "W_pt", ";p_{T}^{W} (GeV);Events;log", 100, 0, 2000), "1e" );
-    Book( TH1F( "W_mass", ";W mass (GeV);Events", 40, 70, 110), "1e" );
-    Book( TH1F( "W_tmass", ";m_{T}^{W} (GeV);Events", 40, 70, 110), "1e" );
+    Book( TH1F( "W_pt", ";p_{T}^{W} (GeV);Events;log", 80, 0, 2000), "1e" );
+    Book( TH1F( "W_tmass", ";m_{T}^{W} (GeV);Events", 50, 0, 250), "1e" );
 
     // ---------- SEMILEPTONIC Z->mm CHANNEL ----------
     Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "1m" );
@@ -343,9 +342,8 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "1m" );
     Book( TH1F( "Muon1_Id", ";muon 1 Id;Events;log", 5, -0.5, 4.5), "1m" );
     Book( TH1F( "Muon1_pfIso", ";muon 1 PFIso;Events;log", 50, 0, 5.), "1m" );
-    Book( TH1F( "W_pt", ";p_{T}^{W} (GeV);Events;log", 100, 0, 2000), "1m" );
-    Book( TH1F( "W_mass", ";W mass (GeV);Events", 40, 70, 110), "1m" );
-    Book( TH1F( "W_tmass", ";m_{T}^{W} (GeV);Events", 40, 70, 110), "1m" );
+    Book( TH1F( "W_pt", ";p_{T}^{W} (GeV);Events;log", 80, 0, 2000), "1m" );
+    Book( TH1F( "W_tmass", ";m_{T}^{W} (GeV);Events", 50, 0, 250), "1m" );
 
     
     // ---------- SEMILEPTONIC Z->ee CHANNEL ----------
@@ -701,7 +699,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     Hist("LheNj", "Gen")->Fill(m_eventInfo.lheNj, GenWeight);
     Hist("GenX_mass", "Gen")->Fill(GenX.M(), GenWeight);
     
-    LheVpt = m_eventInfo.lheV_pt;
+    LheV_pt = m_eventInfo.lheV_pt;
     LheHT = m_eventInfo.lheHT;
     LheNj = m_eventInfo.lheNj;
     LheNl = m_eventInfo.lheNl;
@@ -720,10 +718,10 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 Hist("HLT_PFMETNoMu120_PFMHTNoMu120_vs_SingleElectron_DEN", "Trigger")->Fill(MinMETNoMuMHTNoMu, 1.);
                 Hist("HLT_PFMET_OR_vs_SingleElectron_DEN", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
                 Hist("HLT_PFMET_OR_DEN", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
-                if(triggerMap["0l"]) Hist("HLT_PFMET170_vs_SingleElectron_NUM", "Trigger")->Fill(MET.et(), 1.);
+                if(triggerMap["MET"]) Hist("HLT_PFMET170_vs_SingleElectron_NUM", "Trigger")->Fill(MET.et(), 1.);
                 if(triggerMap["METMHT"]) Hist("HLT_PFMET120_PFMHT120_vs_SingleElectron_NUM", "Trigger")->Fill(MinMETMHT, 1.);
                 if(triggerMap["METMHTNoMu"]) Hist("HLT_PFMETNoMu120_PFMHTNoMu120_vs_SingleElectron_NUM", "Trigger")->Fill(MinMETNoMuMHTNoMu, 1.);
-                if(triggerMap["0l"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
+                if(triggerMap["MET"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
                     Hist("HLT_PFMET_OR_vs_SingleElectron_NUM", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
                     Hist("HLT_PFMET_OR_NUM", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
                 }
@@ -735,10 +733,10 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 Hist("HLT_PFMETNoMu120_PFMHTNoMu120_vs_SingleMuon_DEN", "Trigger")->Fill(MinMETNoMuMHTNoMu, 1.);
                 Hist("HLT_PFMET_OR_vs_SingleMuon_DEN", "Trigger")->Fill(MinMETMHT, 1.);
                 Hist("HLT_PFMET_OR_DEN", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
-                if(triggerMap["0l"]) Hist("HLT_PFMET170_vs_SingleMuon_NUM", "Trigger")->Fill(MET.et(), 1.);
+                if(triggerMap["MET"]) Hist("HLT_PFMET170_vs_SingleMuon_NUM", "Trigger")->Fill(MET.et(), 1.);
                 if(triggerMap["METMHT"]) Hist("HLT_PFMET120_PFMHT120_vs_SingleMuon_NUM", "Trigger")->Fill(MinMETMHT, 1.);
                 if(triggerMap["METMHTNoMu"]) Hist("HLT_PFMETNoMu120_PFMHTNoMu120_vs_SingleMuon_NUM", "Trigger")->Fill(MinMETNoMuMHTNoMu, 1.);
-                if(triggerMap["0l"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
+                if(triggerMap["MET"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
                     Hist("HLT_PFMET_OR_vs_SingleMuon_NUM", "Trigger")->Fill(MinMETMHT, 1.);
                     Hist("HLT_PFMET_OR_NUM", "Trigger")->Fill(std::min(MinMETMHT, MinMETNoMuMHTNoMu), 1.);
                 }
@@ -746,7 +744,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
 //            // MET Trigger with JetHT
 //            if(triggerMap["JET"] && JetsVect.size() >= 1 && HT > 1200.) {
 //                Hist("HLT_PFMET_OR_vs_JetHT_DEN", "Trigger")->Fill(MinMETMHT, 1.);
-//                if(triggerMap["0l"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
+//                if(triggerMap["MET"] || triggerMap["METMHT"] || triggerMap["METMHTNoMu"]) {
 //                    Hist("HLT_PFMET_OR_vs_JetHT_NUM", "Trigger")->Fill(MinMETMHT, 1.);
 //                }
 //            }
@@ -761,7 +759,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     
     // Filter by Trigger
     // if(!isMC) {
-    if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["0l"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"] && !triggerMap["HT"] && !triggerMap["HTWJ"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"] && !triggerMap["HT"] && !triggerMap["HTWJ"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     // }
     
     
@@ -937,6 +935,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Lepton1_pt = MuonVect[0].pt();
         Lepton1 = MuonVect[0].tlv();
         mT = sqrt(2.*MET.et()*MuonVect[0].pt()*(1.-cos(MuonVect[0].tlv().DeltaPhi(MET_tlv))));
+        Hist("W_tmass", "1m")->Fill(mT, EventWeight);
         m_logger << INFO << " + W -> mn candidate reconstructed" << SLogger::endmsg;
     }
     // --- W -> enu ---
@@ -962,6 +961,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Lepton1_pt = ElecVect[0].pt();
         Lepton1 = ElecVect[0].tlv();
         mT = sqrt(2.*MET.et()*ElecVect[0].pt()*(1.-cos(ElecVect[0].tlv().DeltaPhi(MET_tlv))));
+        Hist("W_tmass", "1e")->Fill(mT, EventWeight);
         m_logger << INFO << " + W -> en candidate reconstructed" << SLogger::endmsg;
     }
     // ----------- Z TO NEUTRINOS ---------------
@@ -970,7 +970,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         if(MET.et() < m_MEtPtCut) {m_logger << INFO << " - Low MET" << SLogger::endmsg;}
         else {
             // Check trigger consistency
-            if(!isMC && !triggerMap["0l"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+            if(!isMC && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
             // Lepton veto
             Hist("Events", "0l")->Fill(2., EventWeight);
             if(!(nElectrons==0 && nMuons==0)) m_logger << INFO << " - Iso Leptons" << SLogger::endmsg;
@@ -985,14 +985,36 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                     if(!(MinJetMetDPhi >= 0.5)) m_logger << INFO << " - ZtoNN event failed noise cleaning" << SLogger::endmsg;
                     else {
                         Hist("Events", "0l")->Fill(5., EventWeight);
-                        // Dummy V candidate
-                        if(MET.et()!=MET.et()) { m_logger << WARNING << " - MET is nan" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
-                        V.SetPtEtaPhiE(MET.et(), 0., MET.phi(), MET.et());
-                        if(isMC) {
-                            TriggerWeight *= m_ScaleFactorTool.GetTrigMET(MET.et());
+                        if(!(nJets > 0 && JetsVect[0].IDTight() && JetsVect[0].chf() > 0.1)) m_logger << INFO << " - ZtoNN event jet noise cleaning" << SLogger::endmsg;
+                        else {
+                            Hist("Events", "0l")->Fill(6., EventWeight);
+                            // Dummy V candidate
+                            if(MET.et()!=MET.et()) { m_logger << WARNING << " - MET is nan" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+                            V.SetPtEtaPhiE(MET.et(), 0., MET.phi(), MET.et());
+                            if(isMC) {
+                                TriggerWeight *= m_ScaleFactorTool.GetTrigMET(MET.et());
+                            }
+                            isZtoNN=true;
+                            if(nJets >= 1) {
+                                Hist("Jet1_chf", "0l")->Fill(JetsVect[0].chf(), EventWeight);
+                                Hist("Jet1_nhf", "0l")->Fill(JetsVect[0].nhf(), EventWeight);
+                                Hist("Jet1_phf", "0l")->Fill(JetsVect[0].phf(), EventWeight);
+                                Hist("Jet1_muf", "0l")->Fill(JetsVect[0].muf(), EventWeight);
+                                Hist("Jet1_emf", "0l")->Fill(JetsVect[0].emf(), EventWeight);
+                                Hist("Jet1_chm", "0l")->Fill(JetsVect[0].chm(), EventWeight);
+                                Hist("Jet1MetDPhi", "0l")->Fill(fabs(MET_tlv.DeltaPhi(JetsVect[0].tlv())), EventWeight);
+                            }
+                            if(nJets >= 2) {
+                                Hist("Jet2_chf", "0l")->Fill(JetsVect[1].chf(), EventWeight);
+                                Hist("Jet2_nhf", "0l")->Fill(JetsVect[1].nhf(), EventWeight);
+                                Hist("Jet2_phf", "0l")->Fill(JetsVect[1].phf(), EventWeight);
+                                Hist("Jet2_muf", "0l")->Fill(JetsVect[1].muf(), EventWeight);
+                                Hist("Jet2_emf", "0l")->Fill(JetsVect[1].emf(), EventWeight);
+                                Hist("Jet2_chm", "0l")->Fill(JetsVect[1].chm(), EventWeight);
+                                Hist("Jet2MetDPhi", "0l")->Fill(fabs(MET_tlv.DeltaPhi(JetsVect[1].tlv())), EventWeight);
+                            }
+                            m_logger << INFO << " + Z -> nn candidate reconstructed" << SLogger::endmsg;
                         }
-                        isZtoNN=true;
-                        m_logger << INFO << " + Z -> nn candidate reconstructed" << SLogger::endmsg;
                     }
                 }
             }
@@ -1215,7 +1237,7 @@ bool DMAnalysis::passMETFilters(bool data) {
 void DMAnalysis::clearBranches() {
     EventWeight = GenWeight = ZewkWeight = WewkWeight = TopWeight = QCDWeightUp = QCDWeightDown = PUWeight = PUWeightUp = PUWeightDown = TriggerWeight = TriggerWeightUp = TriggerWeightDown = LeptonWeight = LeptonWeightUp = LeptonWeightDown = BTagWeight = BTagWeightUp = BTagWeightDown = 1.;
     isZtoNN = isWtoEN = isWtoMN = isTtoEM = isZtoEE = isZtoMM = isTveto = false;
-    LheVpt, LheHT, LheNj, LheNl = -1;
+    LheV_pt = LheHT = LheNl = LheNj = LheNb = 0;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
     HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = 0.;
     mZ = mT = mT2 = V_pt = 0.;
