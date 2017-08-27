@@ -62,6 +62,7 @@ AZhAnalysis::AZhAnalysis() : SCycleBase(),
     DeclareProperty( "AK4EtaCut",                 m_AK4EtaCut                =  2.4 );
     DeclareProperty( "MEtPtCut",                  m_MEtPtCut                 =  250. );
     DeclareProperty( "VPtCut",                    m_VPtCut                   = -1. );
+    DeclareProperty( "MinJetMETDPhi",             m_MinJetMETDPhi            = -1. );
     DeclareProperty( "VMassLowerCut",             m_VMassLowerCut            =  70. );
     DeclareProperty( "VMassUpperCut",             m_VMassUpperCut            = 105. );
     DeclareProperty( "HMassLowerCut",             m_HMassLowerCut            = 95. );
@@ -613,6 +614,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     TLorentzVector MET_tlv;
     MET_tlv.SetPtEtaPhiE(MET.et(), 0., MET.phi(), MET.et());
     METNoMu = MuonVect.size() == 0 ? MET.et() : sqrt(pow(MET_tlv.Px() + MuonVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + MuonVect[0].tlv().Py(), 2));
+    METNoEle = ElecVect.size() == 0 ? MET.et() : sqrt(pow(MET_tlv.Px() + ElecVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + ElecVect[0].tlv().Py(), 2));
     MinMETMHT = std::min(float(MET.et()), MHT);
     MinMETNoMuMHTNoMu = std::min(METNoMu, MHTNoMu);
     for(int i = 0; i < nJets; i++) if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) < MinJetMetDPhi) MinJetMetDPhi = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
@@ -888,57 +890,69 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         m_logger << INFO << " + Try to reconstruct W -> mn" << SLogger::endmsg;
         // Check trigger consistency
         if(!triggerMap["SingleIsoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
-        // SF
-        if(isMC) {
-            TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta());
-            LeptonWeight *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta());
-            LeptonWeight *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta());
-            LeptonWeight *= pow(m_ScaleFactorTool.GetMuonTrk(nPV), 2);
-            TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), +1);
-            LeptonWeightUp *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), +1);
-            LeptonWeightUp *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta(), +1);
-            LeptonWeightUp *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, +1), 2);
-            TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), -1);
-            LeptonWeightDown *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), -1);
-            LeptonWeightDown *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta(), -1);
-            LeptonWeightDown *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, -1), 2);
-            EventWeight *= TriggerWeight * LeptonWeight;
+        // Calculate fakeMET
+        if(METNoMu < m_MEtPtCut) {m_logger << INFO << " - Low fakeMET" << SLogger::endmsg;}
+        else {
+            // SF
+            if(isMC) {
+                TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta());
+                LeptonWeight *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta());
+                LeptonWeight *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta());
+                LeptonWeight *= pow(m_ScaleFactorTool.GetMuonTrk(nPV), 2);
+                TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), +1);
+                LeptonWeightUp *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), +1);
+                LeptonWeightUp *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta(), +1);
+                LeptonWeightUp *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, +1), 2);
+                TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), -1);
+                LeptonWeightDown *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), -1);
+                LeptonWeightDown *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta(), -1);
+                LeptonWeightDown *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, -1), 2);
+                EventWeight *= TriggerWeight * LeptonWeight;
+            }
+            isWtoMN = true;
+            Lepton1_pt = MuonVect[0].pt();
+            Lepton1 = MuonVect[0].tlv();
+            W_pt = (MuonVect[0].tlv() + MET_tlv).Pt();
+            W_tmass = sqrt(2.*MET.et()*MuonVect[0].pt()*(1.-cos(MuonVect[0].tlv().DeltaPhi(MET_tlv))));
+            fakeMET_pt = METNoMu;
+            //Hist("W_tmass", "1m")->Fill(mT, EventWeight);
+            m_logger << INFO << " + W -> mn candidate reconstructed" << SLogger::endmsg;
         }
-        isWtoMN = true;
-        Lepton1_pt = MuonVect[0].pt();
-        Lepton1 = MuonVect[0].tlv();
-        mT = sqrt(2.*MET.et()*MuonVect[0].pt()*(1.-cos(MuonVect[0].tlv().DeltaPhi(MET_tlv))));
-        Hist("W_tmass", "1m")->Fill(mT, EventWeight);
-        m_logger << INFO << " + W -> mn candidate reconstructed" << SLogger::endmsg;
     }
     // --- W -> enu ---
     if(!isZtoMM && !isZtoEE && !isWtoMN && ElecVect.size()>=1) {
         m_logger << INFO << " + Try to reconstruct W -> en" << SLogger::endmsg;
         //Hist("Events", "enqq")->Fill(2., EventWeight);
         // Check trigger consistency
-        if(!isMC && !triggerMap["SingleIsoEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
-        // SF
-        if(isMC) {
-            TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
-            LeptonWeight *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta());
-            LeptonWeight *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta());
-            TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta(), +1);
-            LeptonWeightUp *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta(), +1);
-            LeptonWeightUp *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta(), +1);
-            TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta(), -1);
-            LeptonWeightDown *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta(), -1);
-            LeptonWeightDown *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta(), -1);
-            EventWeight *= TriggerWeight * LeptonWeight;
+        if(!triggerMap["SingleIsoEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+        // Calculate fakeMET
+        if(METNoEle < m_MEtPtCut) {m_logger << INFO << " - Low fakeMET" << SLogger::endmsg;}
+        else {
+            // SF
+            if(isMC) {
+                TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
+                LeptonWeight *= m_ScaleFactorTool.GetEleIdTightWP(ElecVect[0].pt(), ElecVect[0].eta());
+                LeptonWeight *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta());
+                TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta(), +1);
+                LeptonWeightUp *= m_ScaleFactorTool.GetEleIdTightWP(ElecVect[0].pt(), ElecVect[0].eta(), +1);
+                LeptonWeightUp *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta(), +1);
+                TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta(), -1);
+                LeptonWeightDown *= m_ScaleFactorTool.GetEleIdTightWP(ElecVect[0].pt(), ElecVect[0].eta(), -1);
+                LeptonWeightDown *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta(), -1);
+                EventWeight *= TriggerWeight * LeptonWeight;
+            }
+            isWtoEN = true;
+            Lepton1_pt = ElecVect[0].pt();
+            Lepton1 = ElecVect[0].tlv();
+            W_pt = (ElecVect[0].tlv() + MET_tlv).Pt();
+            W_tmass = sqrt(2.*MET.et()*ElecVect[0].pt()*(1.-cos(ElecVect[0].tlv().DeltaPhi(MET_tlv))));
+            fakeMET_pt = METNoEle;
+            //Hist("W_tmass", "1e")->Fill(mT, EventWeight);
+            m_logger << INFO << " + W -> en candidate reconstructed" << SLogger::endmsg;
         }
-        isWtoEN = true;
-        Lepton1_pt = ElecVect[0].pt();
-        Lepton1 = ElecVect[0].tlv();
-        mT = sqrt(2.*MET.et()*ElecVect[0].pt()*(1.-cos(ElecVect[0].tlv().DeltaPhi(MET_tlv))));
-        Hist("W_tmass", "1e")->Fill(mT, EventWeight);
-        m_logger << INFO << " + W -> en candidate reconstructed" << SLogger::endmsg;
     }
     // ----------- Z TO NEUTRINOS ---------------
-    if(!isZtoMM && !isZtoEE) {
+    if(!isZtoMM && !isZtoEE && !isWtoMN && !isWtoEN) {
         m_logger << INFO << " + Try to reconstruct Z -> nn" << SLogger::endmsg;
         if(MET.et() < m_MEtPtCut) {m_logger << INFO << " - Low MET" << SLogger::endmsg;}
         else {
@@ -955,7 +969,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                     // Cleaning
                     Hist("Events", "0l")->Fill(4., EventWeight);
                     if(nJets > 0 && JetsVect[0].IDTight() && JetsVect[0].chf() > 0.1) Hist("MinJetMetDPhi", "0l")->Fill(MinJetMetDPhi, EventWeight);
-                    if(!(MinJetMetDPhi >= 0.5)) m_logger << INFO << " - ZtoNN event failed noise cleaning" << SLogger::endmsg;
+                    if(!(MinJetMetDPhi >= m_MinJetMETDPhi)) m_logger << INFO << " - ZtoNN event failed noise cleaning" << SLogger::endmsg;
                     else {
                         Hist("Events", "0l")->Fill(5., EventWeight);
                         if(A_tmass < m_XTMassLowerCut) m_logger << INFO << " - X candidate low mass" << SLogger::endmsg;
@@ -986,6 +1000,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                                 Hist("Jet2MetDPhi", "0l")->Fill(fabs(MET_tlv.DeltaPhi(JetsVect[1].tlv())), EventWeight);
                             }
                             isZtoNN=true;
+                            fakeMET_pt = MET_pt;
                             m_logger << INFO << " + Z -> nn candidate reconstructed" << SLogger::endmsg;
                         }
                     }
@@ -995,7 +1010,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     }
     
     // ----------- Nothing else matters ---------------
-    if(!isZtoMM && !isZtoEE && !isZtoNN) { m_logger << INFO << " - No V candidate" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    if(!isZtoMM && !isZtoEE && !isWtoMN && !isWtoEN && !isZtoNN) { m_logger << INFO << " - No V candidate" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     
     std::string category("");
     if(isZtoNN) category = "0l";
@@ -1304,17 +1319,17 @@ bool AZhAnalysis::passMETFilters(bool data) {
 
 void AZhAnalysis::clearBranches() {
     EventWeight = GenWeight = ZewkWeight = WewkWeight = TopWeight = QCDWeightUp = QCDWeightDown = PUWeight = PUWeightUp = PUWeightDown = TriggerWeight = TriggerWeightUp = TriggerWeightDown = LeptonWeight = LeptonWeightUp = LeptonWeightDown = BTagWeight = BTagWeightUp = BTagWeightDown = 1.;
-    isZtoEE = isZtoMM = isZtoNN = isTveto = false;
+    isZtoNN = isWtoEN = isWtoMN = isZtoEE = isZtoMM = isTveto = false;
     LheV_pt, LheHT, LheNj, LheNl, LheNb = 0;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
-    HT = HTx = HTy = MHT = MET_pt = MET_phi = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = 0.;
+    HT = HTx = HTy = MHT = MET_pt = MET_phi = fakeMET_pt = fakeMET_phi = MHTNoMu = METNoMu = METNoEle = MinMETMHT = MinMETNoMuMHTNoMu = ST = 0.;
     Centrality = CosThetaStar = CosTheta1 = CosTheta2 = Phi = Phi1 = -9.;
     JetMetDPhi = -1.;
     MinJetMetDPhi = 10.;
     
     Lepton1 = Lepton2 = kLepton1 = kLepton2 = Jet1 = Jet2 = Jet3 = kJet1 = kJet2 = kJet3 = MEt = kMEt = Z = H = A = kZ = kH = kA = TLorentzVector();
     Lepton1_pt = Lepton2_pt = Lepton1_pfIso = Lepton2_pfIso = Jet1_pt = Jet2_pt = Jet3_pt = kJet1_pt = kJet2_pt = kJet3_pt = Jet1_csv = Jet2_csv = Jet3_csv = -9.;
-    Z_pt = Z_mass = H_pt = H_mass = A_pt = A_mass = A_tmass = kH_pt = kH_mass = kA_pt = kA_mass = kA_tmass = -1.;
+    W_pt = W_tmass = Z_pt = Z_mass = H_pt = H_mass = A_pt = A_mass = A_tmass = kH_pt = kH_mass = kA_pt = kA_mass = kA_tmass = -1.;
 }
 
 

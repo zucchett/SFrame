@@ -153,6 +153,7 @@ class AZhAnalysis : public SCycleBase {
         double m_AK8EtaCut;
         double m_MEtPtCut;
         double m_VPtCut;
+        double m_MinJetMETDPhi;
         double m_VMassLowerCut;
         double m_VMassUpperCut;
         double m_HMassLowerCut;
@@ -193,6 +194,8 @@ class AZhAnalysis : public SCycleBase {
         float BTagWeightUp;
         float BTagWeightDown;
         bool isZtoNN;
+        bool isWtoEN;
+        bool isWtoMN;
         bool isZtoEE;
         bool isZtoMM;
         bool isTveto;
@@ -218,8 +221,11 @@ class AZhAnalysis : public SCycleBase {
         float MHT;
         float MET_pt;
         float MET_phi;
+        float fakeMET_pt;
+        float fakeMET_phi;
         float MHTNoMu;
         float METNoMu;
+        float METNoEle;
         float MinMETMHT;
         float MinMETNoMuMHTNoMu;
         float MinJetMetDPhi;
@@ -263,6 +269,8 @@ class AZhAnalysis : public SCycleBase {
         float Jet1_csv;
         float Jet2_csv;
         float Jet3_csv;
+        float W_pt;
+        float W_tmass;
         float Z_pt;
         float Z_mass;
         float H_pt;
