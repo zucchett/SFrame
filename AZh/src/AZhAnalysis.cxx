@@ -235,6 +235,8 @@ void AZhAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( BTagWeightDown,      "bTagWeightDown",  m_outputTreeName.c_str());
     
     DeclareVariable( isZtoNN,             "isZtoNN",  m_outputTreeName.c_str());
+    DeclareVariable( isWtoEN,             "isWtoEN",  m_outputTreeName.c_str());
+    DeclareVariable( isWtoMN,             "isWtoMN",  m_outputTreeName.c_str());
     DeclareVariable( isZtoEE,             "isZtoEE",  m_outputTreeName.c_str());
     DeclareVariable( isZtoMM,             "isZtoMM",  m_outputTreeName.c_str());
     
@@ -257,6 +259,7 @@ void AZhAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( HT,                  "HT",  m_outputTreeName.c_str());
     DeclareVariable( MET_pt,              "MET_pt",  m_outputTreeName.c_str());
     DeclareVariable( MET_phi,             "MET_phi",  m_outputTreeName.c_str());
+    DeclareVariable( fakeMET_pt,          "FakeMET_pt",  m_outputTreeName.c_str());
     DeclareVariable( MinJetMetDPhi,       "MinDPhi",  m_outputTreeName.c_str());
     DeclareVariable( CosThetaStar,        "CosThetaStar",  m_outputTreeName.c_str());
     DeclareVariable( CosTheta1,           "CosTheta1",  m_outputTreeName.c_str());
@@ -277,7 +280,9 @@ void AZhAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( Jet1_csv,            "Jet1_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet2_csv,            "Jet2_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet3_csv,            "Jet3_csv",  m_outputTreeName.c_str());
-
+    
+    DeclareVariable( W_pt,                "W_pt",  m_outputTreeName.c_str());
+    DeclareVariable( W_tmass,             "W_tmass",  m_outputTreeName.c_str());
     DeclareVariable( Z_pt,                "Z_pt",  m_outputTreeName.c_str());
     DeclareVariable( Z_mass,              "Z_mass",  m_outputTreeName.c_str());
     DeclareVariable( H_pt,                "H_pt",  m_outputTreeName.c_str());
@@ -338,6 +343,27 @@ void AZhAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "A_tmassKinH", ";m_{X} (GeV);Events", 100, 100, 1100), "0l" );
     Book( TH1F( "METFilters", "Events;", 15, -0.5, 14.5), "0l" );
     
+    // ---------- SEMILEPTONIC Z->ee CHANNEL ----------
+    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "1e" );
+    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "1e" );
+    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "1e" );
+    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "1e" );
+    
+    // ---------- SEMILEPTONIC Z->mm CHANNEL ----------
+    Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "PUWeight", ";Pileup Weight;Events", 100, 0., 10.), "1m" );
+    Book( TH1F( "TriggerWeight", ";Trigger Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "LeptonWeight", ";Lepton Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "BTagWeight", ";BTag Weight;Events", 100, 0., 2.), "1m" );
+    Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "1m" );
+    Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "1m" );
     
     // ---------- SEMILEPTONIC Z->ee CHANNEL ----------
     Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "2e" );
@@ -1014,6 +1040,8 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     
     std::string category("");
     if(isZtoNN) category = "0l";
+    else if(isWtoEN) category = "1e";
+    else if(isWtoMN) category = "1m";
     else if(isZtoEE) category = "2e";
     else if(isZtoMM) category = "2m";
     
