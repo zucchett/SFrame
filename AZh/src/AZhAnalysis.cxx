@@ -878,6 +878,62 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             }
         }
     }
+    // ---------- W TO LEPTON and NEUTRINO ----------
+    // --- W -> munu ---
+    if(!isZtoMM && !isZtoEE && (MuonVect.size()==1 || (MuonVect.size()==1 && ElecVect.size()==1 && MuonVect.at(0).pt() > ElecVect.at(0).pt()) )) {
+        m_logger << INFO << " + Try to reconstruct W -> mn" << SLogger::endmsg;
+        //Hist("Events", "Muon")->Fill(2., EventWeight);
+        // Check trigger consistency
+        if(!triggerMap["SingleMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+        // SF
+        if(isMC) {
+            TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta());
+            LeptonWeight *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta());
+            LeptonWeight *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta());
+            LeptonWeight *= pow(m_ScaleFactorTool.GetMuonTrk(nPV), 2);
+            TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), +1);
+            LeptonWeightUp *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), +1);
+            LeptonWeightUp *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta(), +1);
+            LeptonWeightUp *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, +1), 2);
+            TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), -1);
+            LeptonWeightDown *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), -1);
+            LeptonWeightDown *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta(), -1);
+            LeptonWeightDown *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, -1), 2);
+            EventWeight *= TriggerWeight * LeptonWeight;
+        }
+        isWtoMN = true;
+        Lepton1_pt = MuonVect[0].pt();
+        Lepton1 = MuonVect[0].tlv();
+        mT = sqrt(2.*MET.et()*MuonVect[0].pt()*(1.-cos(MuonVect[0].tlv().DeltaPhi(MET_tlv))));
+        Hist("W_tmass", "1m")->Fill(mT, EventWeight);
+        m_logger << INFO << " + W -> mn candidate reconstructed" << SLogger::endmsg;
+    }
+    // --- W -> enu ---
+    if(!isZtoMM && !isZtoEE && !isWtoMN && ElecVect.size()>=1) {
+        m_logger << INFO << " + Try to reconstruct W -> en" << SLogger::endmsg;
+        //Hist("Events", "enqq")->Fill(2., EventWeight);
+        // Check trigger consistency
+        if(!isMC && !triggerMap["SingleIsoEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+        // SF
+        if(isMC) {
+            TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
+            LeptonWeight *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta());
+            LeptonWeight *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta());
+            TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta(), +1);
+            LeptonWeightUp *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta(), +1);
+            LeptonWeightUp *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta(), +1);
+            TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta(), -1);
+            LeptonWeightDown *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta(), -1);
+            LeptonWeightDown *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta(), -1);
+            EventWeight *= TriggerWeight * LeptonWeight;
+        }
+        isWtoEN = true;
+        Lepton1_pt = ElecVect[0].pt();
+        Lepton1 = ElecVect[0].tlv();
+        mT = sqrt(2.*MET.et()*ElecVect[0].pt()*(1.-cos(ElecVect[0].tlv().DeltaPhi(MET_tlv))));
+        Hist("W_tmass", "1e")->Fill(mT, EventWeight);
+        m_logger << INFO << " + W -> en candidate reconstructed" << SLogger::endmsg;
+    }
     // ----------- Z TO NEUTRINOS ---------------
     if(!isZtoMM && !isZtoEE) {
         m_logger << INFO << " + Try to reconstruct Z -> nn" << SLogger::endmsg;
