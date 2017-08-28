@@ -21,8 +21,8 @@ for d in ["SingleMuon_Run2016B", "SingleMuon_Run2016C", "SingleMuon_Run2016D", "
 for d in ["SingleElectron_Run2016B", "SingleElectron_Run2016C", "SingleElectron_Run2016D", "SingleElectron_Run2016E", "SingleElectron_Run2016F", "SingleElectron_Run2016G", "SingleElectron_Run2016H"]:
     dataSets.append([d, open(listDir+"/"+d+".txt").read().splitlines()])
 
-#for d in ["MET_Run2016B", "MET_Run2016C", "MET_Run2016D", "MET_Run2016E", "MET_Run2016F", "MET_Run2016G", "MET_Run2016H"]:
-#    dataSets.append([d, open(listDir+"/"+d+".txt").read().splitlines()])
+for d in ["MET_Run2016B", "MET_Run2016C", "MET_Run2016D", "MET_Run2016E", "MET_Run2016F", "MET_Run2016G", "MET_Run2016H"]:
+   dataSets.append([d, open(listDir+"/"+d+".txt").read().splitlines()])
 
 #for d in ["JetHT_Run2016B", "JetHT_Run2016C", "JetHT_Run2016D", "JetHT_Run2016E", "JetHT_Run2016F", "JetHT_Run2016G", "JetHT_Run2016H"]:
 #    dataSets.append([d, open(listDir+"/"+d+".txt").read().splitlines()])

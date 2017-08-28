@@ -24,8 +24,9 @@
 
 
   <Cycle Name="DMAnalysis" OutputDirectory="./output/" PostFix="" ProofServer="lite" ProofWorkDir="" RunMode="LOCAL" TargetLumi="1.0">
-    <InputData Lumi="0.0" NEventsMax="-1" Type="AZh" Version="1" SkipValid="True">
-      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/t3groups/uniz-higgs/Summer16/Ntuple_80_20170206/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/170319_230437/0000/flatTuple_100.root" Lumi="1.0" />
+    <InputData Lumi="0.0" NEventsMax="-1" Type="DM" Version="1" SkipValid="True">
+      <!-- <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/t3groups/uniz-higgs/Summer16/Ntuple_80_20170206/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/170319_230437/0000/flatTuple_100.root" Lumi="1.0" /> -->
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/t3groups/uniz-higgs/Summer16/Ntuple_80_20170206/ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph/ZJetsToNuNu_HT-2500ToInf_13TeV-madgraph/170206_184137/0000/flatTuple_12.root" Lumi="1.0" />
 
       <InputTree Name="ntuplizer/tree" />
       <OutputTree Name="tree" />
