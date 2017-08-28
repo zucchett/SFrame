@@ -850,6 +850,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 else {
                     Hist("Events", "2m")->Fill(7., EventWeight);
                     isZtoMM = true;
+                    fakeMET_pt = sqrt(pow(MET_tlv.Px() + MuonVect[0].tlv().Px() + MuonVect[1].tlv().Px(), 2) + pow(MET_tlv.Py() + MuonVect[0].tlv().Py() + MuonVect[1].tlv().Py(), 2));
                     m_logger << INFO << " + Z -> mm candidate reconstructed" << SLogger::endmsg;
                 }
             }
@@ -905,6 +906,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 else {
                     Hist("Events", "2e")->Fill(6., EventWeight);
                     isZtoEE = true;
+                    fakeMET_pt = sqrt(pow(MET_tlv.Px() + ElecVect[0].tlv().Px() + ElecVect[1].tlv().Px(), 2) + pow(MET_tlv.Py() + ElecVect[0].tlv().Py() + ElecVect[1].tlv().Py(), 2));
                     m_logger << INFO << " + Z -> ee candidate reconstructed" << SLogger::endmsg;
                 }
             }
