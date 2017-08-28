@@ -794,7 +794,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             if((MuonVect[0].tlv() + MuonVect[1].tlv()).M() < 50.) {m_logger << INFO << " - No Z candidate"  << SLogger::endmsg;}
             else {
                 // Check trigger consistency
-                if(!isMC && !triggerMap["SingleIsoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+                if(!triggerMap["SingleIsoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
                 // SF
                 TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta());
                 LeptonWeight *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta());
@@ -853,7 +853,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             if((ElecVect[0].tlv() + ElecVect[1].tlv()).M() < 50.) {m_logger << INFO << " - No Z candidate"  << SLogger::endmsg;}
             else {
                 // Check trigger consistency
-                if(!isMC && !triggerMap["SingleIsoEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+                if(!triggerMap["SingleIsoEle"] && !triggerMap["SingleEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
                 // SF
                 TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
                 LeptonWeight *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta());
@@ -948,7 +948,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         m_logger << INFO << " + Try to reconstruct W -> en" << SLogger::endmsg;
         //Hist("Events", "enqq")->Fill(2., EventWeight);
         // Check trigger consistency
-        if(!isMC && !triggerMap["SingleIsoEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+        if(!triggerMap["SingleIsoEle"] && !triggerMap["SingleEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
         // SF
         if(isMC) {
             TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());

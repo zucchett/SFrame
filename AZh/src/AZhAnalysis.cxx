@@ -952,7 +952,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         m_logger << INFO << " + Try to reconstruct W -> en" << SLogger::endmsg;
         //Hist("Events", "enqq")->Fill(2., EventWeight);
         // Check trigger consistency
-        if(!triggerMap["SingleIsoEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+        if(!triggerMap["SingleIsoEle"] && !triggerMap["SingleEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
         // Calculate fakeMET
         if(METNoEle < m_MEtPtCut) {m_logger << INFO << " - Low fakeMET" << SLogger::endmsg;}
         else {
@@ -985,7 +985,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         if(MET.et() < m_MEtPtCut) {m_logger << INFO << " - Low MET" << SLogger::endmsg;}
         else {
             // Check trigger consistency
-            if(!triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+            if(!isMC && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
             // Lepton veto
             Hist("Events", "0l")->Fill(2., EventWeight);
             if(!(nElectrons==0 && nMuons==0)) m_logger << INFO << " - Iso Leptons" << SLogger::endmsg;
