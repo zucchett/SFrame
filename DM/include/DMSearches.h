@@ -206,11 +206,13 @@ class DMAnalysis : public SCycleBase {
         int nBVetoJets;
         int LheNl;
         int LheNj;
+        int LheNb;
         float LheHT;
-        float LheVpt;
+        float LheV_pt;
         float MET_pt;
         float MET_phi;
         float MET_sign;
+        float fakeMET_pt;
         float ST;
         float HT;
         float HTx;

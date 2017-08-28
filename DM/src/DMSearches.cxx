@@ -243,11 +243,12 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( LheNl,               "LheNl",  m_outputTreeName.c_str());
     DeclareVariable( LheNj,               "LheNj",  m_outputTreeName.c_str());
     DeclareVariable( LheHT,               "LheHT",  m_outputTreeName.c_str());
-    DeclareVariable( LheV_pt,              "LheV_pt",  m_outputTreeName.c_str());
+    DeclareVariable( LheV_pt,             "LheV_pt",  m_outputTreeName.c_str());
     
     DeclareVariable( MET_pt,              "MET_pt",  m_outputTreeName.c_str());
     DeclareVariable( MET_phi,             "MET_phi",  m_outputTreeName.c_str());
     DeclareVariable( MET_sign,            "MET_sign",  m_outputTreeName.c_str());
+    DeclareVariable( fakeMET_pt,              "FakeMET_pt",  m_outputTreeName.c_str());
     DeclareVariable( ST,                  "ST",  m_outputTreeName.c_str());
     DeclareVariable( HT,                  "HT",  m_outputTreeName.c_str());
     DeclareVariable( MinJetMetDPhi,       "MinDPhi",  m_outputTreeName.c_str());
@@ -837,6 +838,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                     isZtoMM = true;
                     mZ = V.M();
                     V_pt = V.Pt();
+                    fakeMET_pt = sqrt(pow(MET_tlv.Px() + MuonVect[0].tlv().Px() + MuonVect[1].tlv().Px(), 2) + pow(MET_tlv.Py() + MuonVect[0].tlv().Py() + MuonVect[1].tlv().Py(), 2));
                     m_logger << INFO << " + Z -> mm candidate reconstructed" << SLogger::endmsg;
                 }
             }
@@ -892,6 +894,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                     isZtoEE = true;
                     mZ = V.M();
                     V_pt = V.Pt();
+                    fakeMET_pt = sqrt(pow(MET_tlv.Px() + ElecVect[0].tlv().Px() + ElecVect[1].tlv().Px(), 2) + pow(MET_tlv.Py() + ElecVect[0].tlv().Py() + ElecVect[1].tlv().Py(), 2));
                     m_logger << INFO << " + Z -> ee candidate reconstructed" << SLogger::endmsg;
                 }
             }
@@ -906,6 +909,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Lepton2_pt = MuonVect[0].pt();
         mZ = (Lepton1 + Lepton2).M();
         V_pt = (Lepton1 + Lepton2).Pt();
+        fakeMET_pt = sqrt(pow(MET_tlv.Px() + ElecVect[0].tlv().Px() + MuonVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + ElecVect[0].tlv().Py() + MuonVect[0].tlv().Py(), 2));
         m_logger << INFO << " + TT -> mnen candidate reconstructed" << SLogger::endmsg;
     }
     // ---------- W TO LEPTON and NEUTRINO ----------
@@ -935,6 +939,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Lepton1_pt = MuonVect[0].pt();
         Lepton1 = MuonVect[0].tlv();
         mT = sqrt(2.*MET.et()*MuonVect[0].pt()*(1.-cos(MuonVect[0].tlv().DeltaPhi(MET_tlv))));
+        fakeMET_pt = sqrt(pow(MET_tlv.Px() + MuonVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + MuonVect[0].tlv().Py(), 2));
         Hist("W_tmass", "1m")->Fill(mT, EventWeight);
         m_logger << INFO << " + W -> mn candidate reconstructed" << SLogger::endmsg;
     }
@@ -961,6 +966,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Lepton1_pt = ElecVect[0].pt();
         Lepton1 = ElecVect[0].tlv();
         mT = sqrt(2.*MET.et()*ElecVect[0].pt()*(1.-cos(ElecVect[0].tlv().DeltaPhi(MET_tlv))));
+        fakeMET_pt = sqrt(pow(MET_tlv.Px() + ElecVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + ElecVect[0].tlv().Py(), 2));
         Hist("W_tmass", "1e")->Fill(mT, EventWeight);
         m_logger << INFO << " + W -> en candidate reconstructed" << SLogger::endmsg;
     }
@@ -1239,7 +1245,7 @@ void DMAnalysis::clearBranches() {
     isZtoNN = isWtoEN = isWtoMN = isTtoEM = isZtoEE = isZtoMM = isTveto = false;
     LheV_pt = LheHT = LheNl = LheNj = LheNb = 0;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
-    HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = 0.;
+    HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = fakeMET_pt = 0.;
     mZ = mT = mT2 = V_pt = 0.;
     MinJetMetDPhi = 10.;
     
