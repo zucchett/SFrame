@@ -997,6 +997,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                             // Dummy V candidate
                             if(MET.et()!=MET.et()) { m_logger << WARNING << " - MET is nan" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
                             V.SetPtEtaPhiE(MET.et(), 0., MET.phi(), MET.et());
+                            fakeMET_pt = MET.et();
                             if(isMC) {
                                 TriggerWeight *= m_ScaleFactorTool.GetTrigMET(MET.et());
                             }
@@ -1051,7 +1052,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     
     std::vector<UZH::Jet> JetsVectSorted(JetsVect.begin(), JetsVect.end());
     std::sort(JetsVectSorted.begin(), JetsVectSorted.end(), SortByCSV);
-    //std::vector<UZH::Jet> JetsVectSortedLoose(JetsVectSorted.begin()+1, JetsVectSorted.end());
+    std::vector<UZH::Jet> JetsVectSortedLoose(JetsVectSorted.begin()+1, JetsVectSorted.end()); // Only for Loose SF
 
     m_logger << INFO << " + Filling jets" << SLogger::endmsg;
     
@@ -1077,19 +1078,20 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     }
     
     // --- BTV ---
-    std::vector<TLorentzVector> bJets, lJets;
     for(unsigned int i=0; i<JetsVectSorted.size(); i++) {
-        if(m_bTaggingScaleTool.isTagged_tag( JetsVectSorted[i].csv() )) {
-            nBTagJets++; // Count Tight b-tagged jets
-            bJets.push_back(JetsVectSorted[i].tlv());
+        if(i==0) {
+            if(m_bTaggingScaleTool.isTagged_tag( JetsVectSorted[i].csv() )) nBTagJets++; // Count Tight b-tagged jets
         }
-        else {
-            lJets.push_back(JetsVectSorted[i].tlv());
+        else if(nBTagJets>0) {
+            if( m_bTaggingScaleTool.isTagged_veto( JetsVectSorted[i].csv() )) nBTagJets++; // Count Loose b-tagged jets
         }
     }
-    //for(unsigned int i=0; i<JetsVectSortedLoose.size(); i++) {
-    //    if(nBTagJets > 0 && m_bTaggingScaleTool.isTagged_veto( JetsVectSorted[i].csv() )) nBVetoJets++; // Count Loose b-tagged jets
-    //}
+    // For MT2W
+    std::vector<TLorentzVector> bJets, lJets;
+    for(unsigned int i=0; i<JetsVectSorted.size(); i++) {
+        if(m_bTaggingScaleTool.isTagged_tag( JetsVectSorted[i].csv() )) bJets.push_back(JetsVectSorted[i].tlv());
+        else lJets.push_back(JetsVectSorted[i].tlv());
+    }
 
     // Jet multiplicity selection
     if(nJets < m_nJetsCut) { m_logger << INFO << " - Number of jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
@@ -1105,17 +1107,17 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     if(isMC) {
         float BTagAK4Weight(1.), BTagAK4WeightUp(1.), BTagAK4WeightDown(1.), BTagAK4WeightBUp(1.), BTagAK4WeightBDown(1.), BTagAK4WeightLUp(1.), BTagAK4WeightLDown(1.), BTagAK4WeightB1(1.), BTagAK4WeightB2(1.), BTagAK4WeightL1(1.), BTagAK4WeightL2(1.);
         // Tight
-        BTagAK4Weight *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted);
-        BTagAK4WeightBUp *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted, +1, 0);
-        BTagAK4WeightBDown *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted, -1, 0);
-        BTagAK4WeightLUp *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted, 0, +1);
-        BTagAK4WeightLDown *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted, 0, -1);
+        BTagAK4Weight *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0]);
+        BTagAK4WeightBUp *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], +1, 0);
+        BTagAK4WeightBDown *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], -1, 0);
+        BTagAK4WeightLUp *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], 0, +1);
+        BTagAK4WeightLDown *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], 0, -1);
         // Loose
-        //BTagAK4Weight *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose);
-        //BTagAK4WeightBUp *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, +1, 0);
-        //BTagAK4WeightBDown *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, -1, 0);
-        //BTagAK4WeightLUp *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, 0, +1);
-        //BTagAK4WeightLDown *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, 0, -1);
+        BTagAK4Weight *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose);
+        BTagAK4WeightBUp *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, +1, 0);
+        BTagAK4WeightBDown *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, -1, 0);
+        BTagAK4WeightLUp *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, 0, +1);
+        BTagAK4WeightLDown *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, 0, -1);
         // Merge B and L
         BTagAK4WeightUp = BTagAK4Weight + sqrt( pow(BTagAK4WeightBUp-BTagAK4Weight, 2) + pow(BTagAK4WeightLUp-BTagAK4Weight, 2) );
         BTagAK4WeightDown = BTagAK4Weight - sqrt( pow(BTagAK4Weight-BTagAK4WeightBDown, 2) + pow(BTagAK4Weight-BTagAK4WeightLDown, 2) );
