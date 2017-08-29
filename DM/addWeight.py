@@ -103,9 +103,8 @@ def processFile(sample_name, verbose=False):
                 # Weights
                 if isMC:
                     # MC stitching
-#                    if sample=='DYJetsToLL' or sample=='WJetsToLNu':
-#                        if obj.LheHT > 100.: stitchWeight[0] = 0.
-#                        else: stitchWeight[0] = 0.843
+                    if sample=='DYJetsToLL' or sample=='WJetsToLNu':
+                        if obj.LheHT > 100.: stitchWeight[0] = 0.
                     eventWeightLumi[0] = obj.eventWeight * obj.bTagWeight
                     eventWeightLumi[0] *= LUMI*XS/totalEntries
                 # Fill the branches
