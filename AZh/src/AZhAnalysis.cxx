@@ -65,8 +65,8 @@ AZhAnalysis::AZhAnalysis() : SCycleBase(),
     DeclareProperty( "MinJetMETDPhi",             m_MinJetMETDPhi            = -1. );
     DeclareProperty( "VMassLowerCut",             m_VMassLowerCut            =  70. );
     DeclareProperty( "VMassUpperCut",             m_VMassUpperCut            = 105. );
-    DeclareProperty( "HMassLowerCut",             m_HMassLowerCut            = 95. );
-    DeclareProperty( "HMassUpperCut",             m_HMassUpperCut            = 145. );
+    DeclareProperty( "HMassLowerCut",             m_HMassLowerCut            = 90. );
+    DeclareProperty( "HMassUpperCut",             m_HMassUpperCut            = 140. );
     DeclareProperty( "XMassLowerCut",             m_XMassLowerCut            = -1. );
     DeclareProperty( "XTMassLowerCut",            m_XTMassLowerCut           = -1. );
     
@@ -451,6 +451,11 @@ void AZhAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "HLT_PFMET_OR_NUM", ";min(METNoMu, MHTNoMu) (GeV);Efficiency", 100, 100, 600), "Trigger" );
     Book( TH1F( "HLT_PFMET_OR_DEN", ";min(MET, MHT) (GeV);Efficiency", 100, 100, 600), "Trigger" );
     
+    Book( TH1F( "J_energy_scale", "Events;deviation (s. d.)", 3, -1.5, 1.5), "Sys" );
+    Book( TH1F( "J_energy_res", "Events;deviation (s. d.)", 3, -1.5, 1.5), "Sys" );
+    Book( TH1F( "H_mass_scale", "Events;deviation (s. d.)", 3, -1.5, 1.5), "Sys" );
+    Book( TH1F( "H_mass_res", "Events;deviation (s. d.)", 3, -1.5, 1.5), "Sys" );
+    
     return;
 }
 
@@ -611,19 +616,19 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         if(!cleanJet) continue;
         JetsVect.push_back(jet);
         // Systematics
-//        TLorentzVector jetScaleUp(jet.tlv()), jetScaleDown(jet.tlv()), jetResUp(jet.tlv()), jetResDown(jet.tlv()), jetRes(jet.tlv());
-//        if(m_isSignal) {
-//            jetScaleUp *= jet.jecUp() / jet.jec();
-//            jetScaleDown *= jet.jecDown() / jet.jec();
+        TLorentzVector jetScaleUp(jet.tlv()), jetScaleDown(jet.tlv()), jetResUp(jet.tlv()), jetResDown(jet.tlv()), jetRes(jet.tlv());
+        if(true) {
+            jetScaleUp *= jet.jecUp() / jet.jec();
+            jetScaleDown *= jet.jecDown() / jet.jec();
 //            jetResUp = m_CorrectionTool.GetCorrectedJet(jet.tlv(), float(jet.jer_sigma_pt()), float(jet.jer_sf()), float(jet.jer_sf_up()), float(jet.jer_sf_down()), +1);
 //            jetResDown = m_CorrectionTool.GetCorrectedJet(jet.tlv(), float(jet.jer_sigma_pt()), float(jet.jer_sf()), float(jet.jer_sf_up()), float(jet.jer_sf_down()), -1);
 //            jetRes = m_CorrectionTool.GetCorrectedJet(jet.tlv(), float(jet.jer_sigma_pt()), float(jet.jer_sf()), float(jet.jer_sf_up()), float(jet.jer_sf_down()), 0);
-//        }
-//        JetsVectRes.push_back( jetRes );
-//        JetsVectScaleUp.push_back( jetScaleUp );
-//        JetsVectScaleDown.push_back( jetScaleDown );
-//        JetsVectResUp.push_back( jetResUp );
-//        JetsVectResDown.push_back( jetResDown );
+        }
+        JetsVectRes.push_back( jetRes );
+        JetsVectScaleUp.push_back( jetScaleUp );
+        JetsVectScaleDown.push_back( jetScaleDown );
+        JetsVectResUp.push_back( jetResUp );
+        JetsVectResDown.push_back( jetResDown );
         // Variables
         ST += jet.pt();
         HT += jet.pt();
@@ -1071,7 +1076,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     
     std::vector<UZH::Jet> JetsVectSorted(JetsVect.begin(), JetsVect.end());
     std::sort(JetsVectSorted.begin(), JetsVectSorted.end(), SortByCSV);
-    std::vector<UZH::Jet> JetsVectSortedLoose(JetsVectSorted.begin()+1, JetsVectSorted.end());
+    std::vector<UZH::Jet> JetsVectSortedLoose(JetsVectSorted.begin()+1, JetsVectSorted.end()); // Only for Loose SF
     
     Jet1.SetPtEtaPhiE(JetsVect[0].pt(), JetsVect[0].eta(), JetsVect[0].phi(), JetsVect[0].e());
     Jet1_pt = JetsVect[0].pt();
@@ -1113,13 +1118,14 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         kZ = MEt;
     }
     
-    
     // --- BTV ---
-    for(unsigned int i=0; i<1; i++) {
-        if(m_bTaggingScaleTool.isTagged_tag( JetsVectSorted[i].csv() )) nBTagJets++; // Count Tight b-tagged jets
-    }
-    for(unsigned int i=1; i<JetsVectSortedLoose.size(); i++) {
-        if( m_bTaggingScaleTool.isTagged_veto( JetsVectSorted[i].csv() )) nBTagJets++; // Count Loose b-tagged jets
+    for(unsigned int i=0; i<JetsVectSorted.size(); i++) {
+        if(i==0) {
+            if(m_bTaggingScaleTool.isTagged_tag( JetsVectSorted[i].csv() )) nBTagJets++; // Count Tight b-tagged jets
+        }
+        else if(nBTagJets>0) {
+            if( m_bTaggingScaleTool.isTagged_veto( JetsVectSorted[i].csv() )) nBTagJets++; // Count Loose b-tagged jets
+        }
     }
 
     if(isMC) {
@@ -1174,6 +1180,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     kA_pt = kA.Pt();
     kA_mass = kA.M();
     
+    // Angular Variables
     if(isZtoEE || isZtoMM) {
         TLorentzVector L1, L2, B1, B2;
         if(isZtoEE) {L1 = (ElecVect[0].charge() > ElecVect[1].charge()) ? Lepton1 : Lepton2; L2 = (ElecVect[0].charge() > ElecVect[1].charge()) ? Lepton2 : Lepton1;}
@@ -1182,7 +1189,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Centrality = m_VariableTool.ReturnCentrality(L1, L2, B1, B2);
         CosThetaStar = m_VariableTool.ReturnCosThetaStar(A, Z);
         CosTheta1 = m_VariableTool.ReturnCosTheta1(Z, L1, L2, B1, B2);
-        CosTheta2 = m_VariableTool.ReturnCosTheta2(H, L1, L2, B1, B2);
+        CosTheta2 = fabs(m_VariableTool.ReturnCosTheta2(H, L1, L2, B1, B2));
         Phi = m_VariableTool.ReturnPhi(A, L1, L2, B1, B2);
         Phi1 = m_VariableTool.ReturnPhi1(A, L1, L2);
 //        Centrality = m_VariableTool.ReturnCentrality(LepP, LepM, BqaP, BqaM);
@@ -1241,6 +1248,29 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         }
     }
     
+    // Jet systematics
+    float kFactorScaleUp( 125./(JetsVectScaleUp[0]+JetsVectScaleUp[1]).M() );
+    float kA_massScaleUp = ((JetsVectScaleUp[0]*kFactorScaleUp + JetsVectScaleUp[1]*kFactorScaleUp) + Z).M();
+    float kFactorScaleDown( 125./(JetsVectScaleDown[0]+JetsVectScaleDown[1]).M() );
+    float kA_massScaleDown = ((JetsVectScaleDown[0]*kFactorScaleDown + JetsVectScaleDown[1]*kFactorScaleDown) + Z).M();
+    float kFactorResUp( 125./(JetsVectResUp[0]+JetsVectResUp[1]).M() );
+    float kA_massResUp = ((JetsVectResUp[0]*kFactorResUp + JetsVectResUp[1]*kFactorResUp) + Z).M();
+    float kFactorResDown( 125./(JetsVectResDown[0]+JetsVectResDown[1]).M() );
+    float kA_massResDown = ((JetsVectResDown[0]*kFactorResDown + JetsVectResDown[1]*kFactorResDown) + Z).M();
+    
+    kA_deltaScaleUp = kA_massScaleUp - kA_mass;
+    kA_deltaScaleDown = kA_massScaleDown - kA_mass;
+    kA_deltaResUp = kA_massResUp - kA_mass;
+    kA_deltaResDown = kA_massResDown - kA_mass;
+    
+    // H mass scale
+    if(H_mass > m_HMassLowerCut && H_mass < m_HMassUpperCut) Hist("H_mass_scale", "Sys")->Fill(0., EventWeight);
+    if((JetsVectScaleUp[0]+JetsVectScaleUp[1]).M() > m_HMassLowerCut && (JetsVectScaleUp[0]+JetsVectScaleUp[1]).M() < m_HMassUpperCut) Hist("H_mass_scale", "Sys")->Fill(+1., EventWeight);
+    if((JetsVectScaleDown[0]+JetsVectScaleDown[1]).M() > m_HMassLowerCut && (JetsVectScaleDown[0]+JetsVectScaleDown[1]).M() < m_HMassUpperCut) Hist("H_mass_scale", "Sys")->Fill(-1., EventWeight);
+    // H mass res
+    if(H_mass > m_HMassLowerCut && H_mass < m_HMassUpperCut) Hist("H_mass_res", "Sys")->Fill(0., EventWeight);
+    if((JetsVectResUp[0]+JetsVectResUp[1]).M() > m_HMassLowerCut && (JetsVectResUp[0]+JetsVectResUp[1]).M() < m_HMassUpperCut) Hist("H_mass_res", "Sys")->Fill(+1., EventWeight);
+    if((JetsVectResDown[0]+JetsVectResDown[1]).M() > m_HMassLowerCut && (JetsVectResDown[0]+JetsVectResDown[1]).M() < m_HMassUpperCut) Hist("H_mass_res", "Sys")->Fill(-1., EventWeight);
     
     m_logger << INFO << " + Tree filled" << SLogger::endmsg;
     
@@ -1360,6 +1390,7 @@ void AZhAnalysis::clearBranches() {
     Lepton1 = Lepton2 = kLepton1 = kLepton2 = Jet1 = Jet2 = Jet3 = kJet1 = kJet2 = kJet3 = MEt = kMEt = Z = H = A = kZ = kH = kA = TLorentzVector();
     Lepton1_pt = Lepton2_pt = Lepton1_pfIso = Lepton2_pfIso = Jet1_pt = Jet2_pt = Jet3_pt = kJet1_pt = kJet2_pt = kJet3_pt = Jet1_csv = Jet2_csv = Jet3_csv = -9.;
     W_pt = W_tmass = Z_pt = Z_mass = H_pt = H_mass = A_pt = A_mass = A_tmass = kH_pt = kH_mass = kA_pt = kA_mass = kA_tmass = -1.;
+    kA_deltaScaleUp = kA_deltaScaleDown = kA_deltaResUp = kA_deltaResDown = 0.;
 }
 
 
