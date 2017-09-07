@@ -760,7 +760,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     
     // Filter by Trigger
     // if(!isMC) {
-    if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"] && !triggerMap["HT"] && !triggerMap["HTWJ"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     // }
     
     
@@ -796,25 +796,27 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 // Check trigger consistency
                 if(!triggerMap["SingleIsoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
                 // SF
-                TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta());
-                LeptonWeight *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta());
-                LeptonWeight *= m_ScaleFactorTool.GetMuonLooseId(MuonVect[1].pt(), MuonVect[1].eta());
-                LeptonWeight *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta());
-                LeptonWeight *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[1].pt(), MuonVect[1].eta());
-                LeptonWeight *= pow(m_ScaleFactorTool.GetMuonTrk(nPV), 2);
-                TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), +1);
-                LeptonWeightUp *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), +1);
-                LeptonWeightUp *= m_ScaleFactorTool.GetMuonLooseId(MuonVect[1].pt(), MuonVect[1].eta(), +1);
-                LeptonWeightUp *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta(), +1);
-                LeptonWeightUp *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[1].pt(), MuonVect[1].eta(), +1);
-                LeptonWeightUp *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, +1), 2);
-                TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), -1);
-                LeptonWeightDown *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), -1);
-                LeptonWeightDown *= m_ScaleFactorTool.GetMuonLooseId(MuonVect[1].pt(), MuonVect[1].eta(), -1);
-                LeptonWeightDown *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta(), -1);
-                LeptonWeightDown *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[1].pt(), MuonVect[1].eta(), -1);
-                LeptonWeightDown *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, -1), 2);
-                EventWeight *= TriggerWeight * LeptonWeight;
+                if(isMC) {
+                    TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta());
+                    LeptonWeight *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta());
+                    LeptonWeight *= m_ScaleFactorTool.GetMuonLooseId(MuonVect[1].pt(), MuonVect[1].eta());
+                    LeptonWeight *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta());
+                    LeptonWeight *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[1].pt(), MuonVect[1].eta());
+                    LeptonWeight *= pow(m_ScaleFactorTool.GetMuonTrk(nPV), 2);
+                    TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), +1);
+                    LeptonWeightUp *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), +1);
+                    LeptonWeightUp *= m_ScaleFactorTool.GetMuonLooseId(MuonVect[1].pt(), MuonVect[1].eta(), +1);
+                    LeptonWeightUp *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta(), +1);
+                    LeptonWeightUp *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[1].pt(), MuonVect[1].eta(), +1);
+                    LeptonWeightUp *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, +1), 2);
+                    TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), -1);
+                    LeptonWeightDown *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), -1);
+                    LeptonWeightDown *= m_ScaleFactorTool.GetMuonLooseId(MuonVect[1].pt(), MuonVect[1].eta(), -1);
+                    LeptonWeightDown *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[0].pt(), MuonVect[0].eta(), -1);
+                    LeptonWeightDown *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[1].pt(), MuonVect[1].eta(), -1);
+                    LeptonWeightDown *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, -1), 2);
+                    EventWeight *= TriggerWeight * LeptonWeight;
+                }
                 // Build candidate
                 Lepton1 = MuonVect[0].tlv();
                 Lepton2 = MuonVect[1].tlv();
@@ -855,22 +857,24 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 // Check trigger consistency
                 if(!triggerMap["SingleIsoEle"] && !triggerMap["SingleEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
                 // SF
-                TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
-                LeptonWeight *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta());
-                LeptonWeight *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[1].pt(), ElecVect[1].eta());
-                LeptonWeight *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta());
-                LeptonWeight *= m_ScaleFactorTool.GetEleReco(ElecVect[1].pt(), ElecVect[1].eta());
-                TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta(), +1);
-                LeptonWeightUp *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta(), +1);
-                LeptonWeightUp *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[1].pt(), ElecVect[1].eta(), +1);
-                LeptonWeightUp *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta(), +1);
-                LeptonWeightUp *= m_ScaleFactorTool.GetEleReco(ElecVect[1].pt(), ElecVect[1].eta(), +1);
-                TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta(), -1);
-                LeptonWeightDown *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta(), -1);
-                LeptonWeightDown *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[1].pt(), ElecVect[1].eta(), -1);
-                LeptonWeightDown *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta(), -1);
-                LeptonWeightDown *= m_ScaleFactorTool.GetEleReco(ElecVect[1].pt(), ElecVect[1].eta(), -1);
-                EventWeight *= TriggerWeight * LeptonWeight;
+                if(isMC) {
+                    TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
+                    LeptonWeight *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta());
+                    LeptonWeight *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[1].pt(), ElecVect[1].eta());
+                    LeptonWeight *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta());
+                    LeptonWeight *= m_ScaleFactorTool.GetEleReco(ElecVect[1].pt(), ElecVect[1].eta());
+                    TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta(), +1);
+                    LeptonWeightUp *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta(), +1);
+                    LeptonWeightUp *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[1].pt(), ElecVect[1].eta(), +1);
+                    LeptonWeightUp *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta(), +1);
+                    LeptonWeightUp *= m_ScaleFactorTool.GetEleReco(ElecVect[1].pt(), ElecVect[1].eta(), +1);
+                    TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta(), -1);
+                    LeptonWeightDown *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[0].pt(), ElecVect[0].eta(), -1);
+                    LeptonWeightDown *= m_ScaleFactorTool.GetEleIdLooseWP(ElecVect[1].pt(), ElecVect[1].eta(), -1);
+                    LeptonWeightDown *= m_ScaleFactorTool.GetEleReco(ElecVect[0].pt(), ElecVect[0].eta(), -1);
+                    LeptonWeightDown *= m_ScaleFactorTool.GetEleReco(ElecVect[1].pt(), ElecVect[1].eta(), -1);
+                    EventWeight *= TriggerWeight * LeptonWeight;
+                }
                 // Build candidate
                 Lepton1 = CalibratedElecVect[0];
                 Lepton2 = CalibratedElecVect[1];
