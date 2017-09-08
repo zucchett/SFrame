@@ -63,7 +63,7 @@ where `Block` replaces the block name. The commands to run all blocks in once is
 
 You can check the status of each block with the `tail -f logBlock.txt` command.
 
-Once the logfiles end with `Tschoe!`, the jobs have finished. The temporary outputs can be found in the `AnalysisTemp` directory, and the merged outputs in the `AnalysisOutput` directory. If the latter is empty, and the jobs have finished, checking the temporary files and logs is a good strating point to understand what has gone wrong.
+Once the logfiles end with `Tschoe!` line, the jobs have finished. The temporary outputs can be found in the `AnalysisTemp` directory, and the merged outputs in the `AnalysisOutput` directory. If the latter is empty, and the jobs have finished, checking the temporary files and logs is a good strating point to understand what has gone wrong.
 
 
 
