@@ -1,0 +1,2 @@
+WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_0000_0.xml
+WWTo4Q_4f_13TeV_amcatnloFXFX_madspin_pythia8_0000_1.xml

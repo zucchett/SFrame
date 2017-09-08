@@ -1,0 +1,8 @@
+JetHT_Run2016B-03Feb2017_ver2-v2_0000_0.xml
+JetHT_Run2016B-03Feb2017_ver2-v2_0000_1.xml
+JetHT_Run2016B-03Feb2017_ver2-v2_0000_2.xml
+JetHT_Run2016B-03Feb2017_ver2-v2_0001_0.xml
+JetHT_Run2016B-03Feb2017_ver2-v2_0001_1.xml
+JetHT_Run2016B-03Feb2017_ver2-v2_0001_2.xml
+JetHT_Run2016B-03Feb2017_ver2-v2_0002_0.xml
+JetHT_Run2016B-03Feb2017_ver2-v2_0002_1.xml
