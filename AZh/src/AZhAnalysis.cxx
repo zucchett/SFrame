@@ -778,7 +778,7 @@ void AZhAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     
     // Filter by Trigger
     // if(!isMC) {
-    if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"] && !triggerMap["HT"] && !triggerMap["HTWJ"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     // }
     
     

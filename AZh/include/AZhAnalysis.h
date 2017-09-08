@@ -283,7 +283,10 @@ class AZhAnalysis : public SCycleBase {
         float kA_pt;
         float kA_mass;
         float kA_tmass;
-
+        float kA_deltaScaleUp;
+        float kA_deltaScaleDown;
+        float kA_deltaResUp;
+        float kA_deltaResDown;
         // Macro adding the functions for dictionary generation
         ClassDef( AZhAnalysis, 0 );
 
