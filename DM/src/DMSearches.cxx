@@ -1054,6 +1054,9 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     Hist("nJets", category.c_str())->Fill(nJets, EventWeight);
     Hist("HT", category.c_str())->Fill(HT, EventWeight);
     
+    // Jet multiplicity selection
+    if(nJets < m_nJetsCut) { m_logger << INFO << " - Number of jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    
     std::vector<UZH::Jet> JetsVectSorted(JetsVect.begin(), JetsVect.end());
     std::sort(JetsVectSorted.begin(), JetsVectSorted.end(), SortByCSV);
     std::vector<UZH::Jet> JetsVectSortedLoose(JetsVectSorted.begin()+1, JetsVectSorted.end()); // Only for Loose SF
@@ -1096,9 +1099,6 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         if(m_bTaggingScaleTool.isTagged_tag( JetsVectSorted[i].csv() )) bJets.push_back(JetsVectSorted[i].tlv());
         else lJets.push_back(JetsVectSorted[i].tlv());
     }
-
-    // Jet multiplicity selection
-    if(nJets < m_nJetsCut) { m_logger << INFO << " - Number of jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
 
     m_logger << INFO << " + Calculating MT2W" << SLogger::endmsg;
     if(isWtoEN || isWtoMN) {
