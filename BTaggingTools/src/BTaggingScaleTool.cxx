@@ -968,12 +968,17 @@ void BTaggingScaleTool::readEfficiencies() {
     for (std::vector<TString>::const_iterator flav = m_flavours.begin(); flav != m_flavours.end(); ++flav) {
       auto hPass = (TH2F*) inFile->Get( m_effHistDirectory + "/" + *jetCat + "_" + *flav + "_" + m_workingPoint);
       auto hAll = (TH2F*) inFile->Get( m_effHistDirectory + "/" + *jetCat + "_" + *flav + "_all");
-      TH2F hEff = *((TH2F*) hPass->Clone( m_effHistDirectory + "_" + *jetCat + "_" + *flav + "_" + m_workingPoint ));
-      hEff.Divide(hAll);
-      // delete hPass;
-      // delete hAll;
-      m_effMaps[(*jetCat + "_" + *flav + "_" + m_workingPoint).Data()] = hEff;
-      m_logger << DEBUG << "effi TH2D binsx: " << hEff.GetNbinsX() << " binsy: " << hEff.GetNbinsY() << SLogger::endmsg;
+      if(hPass && hAll) {
+        TH2F hEff = *((TH2F*) hPass->Clone( m_effHistDirectory + "_" + *jetCat + "_" + *flav + "_" + m_workingPoint ));
+        hEff.Divide(hAll);
+        // delete hPass;
+        // delete hAll;
+        m_effMaps[(*jetCat + "_" + *flav + "_" + m_workingPoint).Data()] = hEff;
+        m_logger << DEBUG << "effi TH2D binsx: " << hEff.GetNbinsX() << " binsy: " << hEff.GetNbinsY() << SLogger::endmsg;
+      }
+      else {
+        m_logger << WARNING << "effi TH2D histo: " << m_effHistDirectory + "/" + *jetCat + "_" + *flav + "_" + m_workingPoint << " does not exist" << SLogger::endmsg;
+      }
     }
   }
   inFile->Close();
@@ -1018,12 +1023,17 @@ void BTaggingScaleTool::readEfficiencies() {
   for (std::vector<TString>::const_iterator flav = m_flavours.begin(); flav != m_flavours.end(); ++flav) {
     auto hPass_loose = (TH2F*) inFile_loose->Get( m_effHistDirectory + "/" + "doubleB_" + *flav + "_" + m_workingPoint_loose);
     auto hAll_loose = (TH2F*) inFile_loose->Get( m_effHistDirectory + "/" + "doubleB_" + *flav + "_all");
-    TH2F hEff_loose = *((TH2F*) hPass_loose->Clone( m_effHistDirectory + "_doubleB_" + *flav + "_" + m_workingPoint_loose ));
-    hEff_loose.Divide(hAll_loose);
-    // delete hPass;
-    // delete hAll;
-    m_effMaps_loose[( "doubleB_" + *flav + "_" + m_workingPoint_loose).Data()] = hEff_loose;
-    m_logger << DEBUG << "effi Loose TH2D binsx: " << hEff_loose.GetNbinsX() << " binsy: " << hEff_loose.GetNbinsY() << SLogger::endmsg;
+    if(hPass_loose && hAll_loose) {
+      TH2F hEff_loose = *((TH2F*) hPass_loose->Clone( m_effHistDirectory + "_doubleB_" + *flav + "_" + m_workingPoint_loose ));
+      hEff_loose.Divide(hAll_loose);
+      // delete hPass;
+      // delete hAll;
+      m_effMaps_loose[( "doubleB_" + *flav + "_" + m_workingPoint_loose).Data()] = hEff_loose;
+      m_logger << DEBUG << "effi Loose TH2D binsx: " << hEff_loose.GetNbinsX() << " binsy: " << hEff_loose.GetNbinsY() << SLogger::endmsg;
+    }
+    else {
+      m_logger << WARNING << "effi TH2D histo: " << m_effHistDirectory + "/" + "doubleB_" + *flav + "_" + m_workingPoint_loose << " does not exist" << SLogger::endmsg;
+    }
   }
   
   inFile_loose->Close();
@@ -1034,12 +1044,17 @@ void BTaggingScaleTool::readEfficiencies() {
   for (std::vector<TString>::const_iterator flav = m_flavours.begin(); flav != m_flavours.end(); ++flav) {
     auto hPass_tight = (TH2F*) inFile_tight->Get( m_effHistDirectory + "/" + "doubleB_" + *flav + "_" + m_workingPoint_tight);
     auto hAll_tight = (TH2F*) inFile_tight->Get( m_effHistDirectory + "/" + "doubleB_" + *flav + "_all");
-    TH2F hEff_tight = *((TH2F*) hPass_tight->Clone( m_effHistDirectory + "_doubleB_" + *flav + "_" + m_workingPoint_tight ));
-    hEff_tight.Divide(hAll_tight);
-    // delete hPass;
-    // delete hAll;
-    m_effMaps_tight[( "doubleB_" + *flav + "_" + m_workingPoint_tight).Data()] = hEff_tight;
-    m_logger << DEBUG << "effi tight TH2D binsx: " << hEff_tight.GetNbinsX() << " binsy: " << hEff_tight.GetNbinsY() << SLogger::endmsg;
+    if(hPass_tight && hAll_tight) {
+      TH2F hEff_tight = *((TH2F*) hPass_tight->Clone( m_effHistDirectory + "_doubleB_" + *flav + "_" + m_workingPoint_tight ));
+      hEff_tight.Divide(hAll_tight);
+      // delete hPass;
+      // delete hAll;
+      m_effMaps_tight[( "doubleB_" + *flav + "_" + m_workingPoint_tight).Data()] = hEff_tight;
+      m_logger << DEBUG << "effi tight TH2D binsx: " << hEff_tight.GetNbinsX() << " binsy: " << hEff_tight.GetNbinsY() << SLogger::endmsg;
+    }
+    else {
+      m_logger << WARNING << "effi TH2D histo: " << m_effHistDirectory + "/" + "doubleB_" + *flav + "_" + m_workingPoint_tight << " does not exist" << SLogger::endmsg;
+    }
   }
   
   inFile_tight->Close();
