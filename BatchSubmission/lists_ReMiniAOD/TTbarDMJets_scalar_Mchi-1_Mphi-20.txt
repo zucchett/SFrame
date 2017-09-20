@@ -1,0 +1,3 @@
+TTbarDMJets_scalar_Mchi-1_Mphi-200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0000.xml
+TTbarDMJets_scalar_Mchi-1_Mphi-20_13TeV-madgraph_0000.xml
+TTbarDMJets_scalar_Mchi-1_Mphi-20_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0000.xml
