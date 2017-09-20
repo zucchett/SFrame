@@ -44,6 +44,9 @@ AddUserItems = [
 #    ["JSONFileName", "/mnt/t3nfs01/data01/shome/zucchett/SFrameAnalysis/SFrame/../GoodRunsLists/JSON/Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt"],#12.7
 #    ["JSONFileName", "/mnt/t3nfs01/data01/shome/zucchett/SFrameAnalysis/SFrame/../GoodRunsLists/JSON/Cert_271036-280385_13TeV_PromptReco_Collisions16_JSON_NoL1T_v2.txt"],#27.2
     ["JSONFileName", "/mnt/t3nfs01/data01/shome/zucchett/SFrameAnalysis/SFrame/../GoodRunsLists/JSON/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"],#36.773
+    ["BTaggingScaleTool_WorkingPoint", "Medium"],
+    ["BTaggingScaleTool_WorkingPoint_veto", "Medium"],
+    ["BTaggingScaleTool_WorkingPoint_tag", "Medium"],
 ]
 
 
