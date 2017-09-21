@@ -51,16 +51,20 @@ DMAnalysis::DMAnalysis() : SCycleBase(),
     DeclareProperty( "Elec1PtCut",                m_Elec1PtCut               =  40. );
     DeclareProperty( "Elec2PtCut",                m_Elec2PtCut               =  25. );
     DeclareProperty( "ElecPtCut",                 m_ElecPtCut                =  10. );
+    DeclareProperty( "Elec1EtaCut",               m_Elec1EtaCut              =  2.1 );
+    DeclareProperty( "Elec2EtaCut",               m_Elec2EtaCut              =  2.5 );
     DeclareProperty( "ElecEtaCut",                m_ElecEtaCut               =  2.5 );
     DeclareProperty( "Muon1PtCut",                m_Muon1PtCut               =  30. );
     DeclareProperty( "Muon2PtCut",                m_Muon2PtCut               =  10. );
     DeclareProperty( "MuonPtCut",                 m_MuonPtCut                =  10. );
+    DeclareProperty( "Muon1EtaCut",               m_Muon1EtaCut              =  2.1 );
+    DeclareProperty( "Muon2EtaCut",               m_Muon2EtaCut              =  2.4 );
     DeclareProperty( "MuonEtaCut",                m_MuonEtaCut               =  2.4 );
     DeclareProperty( "TauPtCut",                  m_TauPtCut                 =  18. );
     DeclareProperty( "TauEtaCut",                 m_TauEtaCut                =  2.3 );
     DeclareProperty( "AK4PtCut",                  m_AK4PtCut                 =  30. );
     DeclareProperty( "AK4EtaCut",                 m_AK4EtaCut                =  2.4 );
-    DeclareProperty( "MEtPtCut",                  m_MEtPtCut                 =  250. );
+    DeclareProperty( "MEtPtCut",                  m_MEtPtCut                 =  200. );
     DeclareProperty( "VPtCut",                    m_VPtCut                   = -1. );
     DeclareProperty( "nJetsCut",                  m_nJetsCut                 = 2 );
     
@@ -248,7 +252,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( MET_pt,              "MET_pt",  m_outputTreeName.c_str());
     DeclareVariable( MET_phi,             "MET_phi",  m_outputTreeName.c_str());
     DeclareVariable( MET_sign,            "MET_sign",  m_outputTreeName.c_str());
-    DeclareVariable( fakeMET_pt,              "FakeMET_pt",  m_outputTreeName.c_str());
+    DeclareVariable( fakeMET_pt,          "FakeMET_pt",  m_outputTreeName.c_str());
     DeclareVariable( ST,                  "ST",  m_outputTreeName.c_str());
     DeclareVariable( HT,                  "HT",  m_outputTreeName.c_str());
     DeclareVariable( MinJetMetDPhi,       "MinDPhi",  m_outputTreeName.c_str());
@@ -258,12 +262,20 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     
     DeclareVariable( Lepton1_pt,          "Lepton1_pt",  m_outputTreeName.c_str());
     DeclareVariable( Lepton2_pt,          "Lepton2_pt",  m_outputTreeName.c_str());
+    DeclareVariable( Lepton1_eta,         "Lepton1_eta",  m_outputTreeName.c_str());
+    DeclareVariable( Lepton2_eta,         "Lepton2_eta",  m_outputTreeName.c_str());
+    DeclareVariable( Lepton1_id,          "Lepton1_id",  m_outputTreeName.c_str());
+    DeclareVariable( Lepton2_id,          "Lepton2_id",  m_outputTreeName.c_str());
     DeclareVariable( Lepton1_pfIso,       "Lepton1_pfIso",  m_outputTreeName.c_str());
     DeclareVariable( Lepton2_pfIso,       "Lepton2_pfIso",  m_outputTreeName.c_str());
     DeclareVariable( Jet1_pt,             "Jet1_pt",  m_outputTreeName.c_str());
     DeclareVariable( Jet2_pt,             "Jet2_pt",  m_outputTreeName.c_str());
     DeclareVariable( Jet3_pt,             "Jet3_pt",  m_outputTreeName.c_str());
     DeclareVariable( Jet4_pt,             "Jet4_pt",  m_outputTreeName.c_str());
+    DeclareVariable( Jet1_eta,            "Jet1_eta",  m_outputTreeName.c_str());
+    DeclareVariable( Jet2_eta,            "Jet2_eta",  m_outputTreeName.c_str());
+    DeclareVariable( Jet3_eta,            "Jet3_eta",  m_outputTreeName.c_str());
+    DeclareVariable( Jet4_eta,            "Jet4_eta",  m_outputTreeName.c_str());
     DeclareVariable( Jet1_csv,            "Jet1_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet2_csv,            "Jet2_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet3_csv,            "Jet3_csv",  m_outputTreeName.c_str());
@@ -529,14 +541,16 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         UZH::Electron el(&m_electron, i);
         if(el.pt() < m_ElecPtCut || fabs(el.eta()) > m_ElecEtaCut) continue;
         nElectronsReco++;
-        if(i==0 && el.pt() < m_Elec1PtCut) continue;
-        if(i==1 && el.pt() < m_Elec2PtCut) continue;
+        if(i==0 && el.pt() < m_Elec1PtCut) break;
+        if(i==1 && el.pt() < m_Elec2PtCut) break;
         nElectronsPt++;
         if(i==0) for(int e=0; e<=(el.isVetoElectron()+el.isLooseElectron()+el.isMediumElectron()+el.isTightElectron()); e++) Hist("Electron1_Id", "2e")->Fill(e, EventWeight);
         if(i==1) for(int e=0; e<=(el.isVetoElectron()+el.isLooseElectron()+el.isMediumElectron()+el.isTightElectron()); e++) Hist("Electron2_Id", "2e")->Fill(e, EventWeight);
         if(i==0) Hist("Electron1_pfIso", "2e")->Fill(el.pfRhoCorrRelIso03(), EventWeight);
         if(i==1) Hist("Electron2_pfIso", "2e")->Fill(el.pfRhoCorrRelIso03(), EventWeight);
-        if(!(el.isLooseElectron())) continue;
+        if(i==0 && !(el.isTightElectron())) break;
+        if(i==1 && !(el.isVetoElectron())) break;
+        if(!(el.isVetoElectron())) continue;
         ST += el.pt();
         ElecVect.push_back(el);
         TLorentzVector el_tlv;
@@ -554,16 +568,19 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         UZH::Muon mu(&m_muon, i);
         if(mu.pt() < m_MuonPtCut || fabs(mu.eta()) > m_MuonEtaCut) continue;
         nMuonsReco++;
-        if(i==0 && mu.pt() < m_Muon1PtCut) continue;
-        if(i==1 && mu.pt() < m_Muon2PtCut) continue;
+        if(i==0 && mu.pt() < m_Muon1PtCut) break;
+        if(i==1 && mu.pt() < m_Muon2PtCut) break;
         nMuonsPt++;
         if(i==0) for(int m=0; m<=(mu.isPFMuon()+mu.isLooseMuon()+mu.isMediumMuon()+mu.isTightMuon()); m++) Hist("Muon1_Id", "2m")->Fill(m, EventWeight);
         if(i==1) for(int m=0; m<=(mu.isPFMuon()+mu.isLooseMuon()+mu.isMediumMuon()+mu.isTightMuon()); m++) Hist("Muon2_Id", "2m")->Fill(m, EventWeight);
-        if(i==0 && !(mu.isTightMuon()==1)) continue;
-        if(i==1 && !(mu.isLooseMuon()==1)) continue;
+        if(i==0 && !(mu.isTightMuon()==1)) break;
+        if(i==1 && !(mu.isLooseMuon()==1)) break;
+        if(!(mu.isLooseMuon()==1)) continue;
         nMuonsId++;
         if(i==0) Hist("Muon1_pfIso", "2m")->Fill(mu.pfDeltaCorrRelIso(), EventWeight);
         if(i==1) Hist("Muon2_pfIso", "2m")->Fill(mu.pfDeltaCorrRelIso(), EventWeight);
+        if(i==0 && !(mu.pfDeltaCorrRelIso()<0.15)) break;
+        if(i==1 && !(mu.pfDeltaCorrRelIso()<0.25)) break;
         if(!(mu.pfDeltaCorrRelIso()<0.25)) continue;
         MuonVect.push_back(mu);
         ST += mu.pt();
@@ -627,7 +644,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     UZH::MissingEt MET( &m_missingEt, 0 );
     MET_pt = MET.et();
     MET_phi = MET.phi();
-    MET_sign = 0.;
+    MET_sign = MET_pt;
     TVector2 MET_tv2;
     MET_tv2.SetMagPhi(MET.et(), MET.phi());
     TLorentzVector MET_tlv;
@@ -822,8 +839,12 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 Lepton2 = MuonVect[1].tlv();
                 Lepton1_pt = MuonVect[0].pt();
                 Lepton2_pt = MuonVect[1].pt();
+                Lepton1_eta = MuonVect[0].eta();
+                Lepton2_eta = MuonVect[1].eta();
                 Lepton1_pfIso = MuonVect[0].pfDeltaCorrRelIso();
                 Lepton2_pfIso = MuonVect[1].pfDeltaCorrRelIso();
+                Lepton1_id = MuonVect[0].isPFMuon()+MuonVect[0].isLooseMuon()+MuonVect[0].isMediumMuon()+MuonVect[0].isTightMuon();
+                Lepton2_id = MuonVect[1].isPFMuon()+MuonVect[1].isLooseMuon()+MuonVect[1].isMediumMuon()+MuonVect[1].isTightMuon();
                 V = Lepton1 + Lepton2;
                 // nEvents
                 Hist("Events", "2m")->Fill(6., EventWeight);
@@ -880,8 +901,12 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 Lepton2 = CalibratedElecVect[1];
                 Lepton1_pt = CalibratedElecVect[0].Pt();
                 Lepton2_pt = CalibratedElecVect[1].Pt();
+                Lepton1_eta = CalibratedElecVect[0].Eta();
+                Lepton2_eta = CalibratedElecVect[1].Eta();
                 Lepton1_pfIso = ElecVect[0].pfRhoCorrRelIso03();
                 Lepton2_pfIso = ElecVect[1].pfRhoCorrRelIso03();
+                Lepton1_id = ElecVect[0].isVetoElectron()+ElecVect[0].isLooseElectron()+ElecVect[0].isMediumElectron()+ElecVect[0].isTightElectron();
+                Lepton2_id = ElecVect[1].isVetoElectron()+ElecVect[1].isLooseElectron()+ElecVect[1].isMediumElectron()+ElecVect[1].isTightElectron();
                 V = Lepton1 + Lepton2;
                 // nEvents
                 Hist("Events", "2e")->Fill(5., EventWeight);
@@ -911,6 +936,12 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Lepton2 = MuonVect[0].tlv();
         Lepton1_pt = ElecVect[0].pt();
         Lepton2_pt = MuonVect[0].pt();
+        Lepton1_eta = ElecVect[0].eta();
+        Lepton2_eta = MuonVect[0].eta();
+        Lepton1_pfIso = ElecVect[0].pfRhoCorrRelIso03();
+        Lepton2_pfIso = MuonVect[0].pfDeltaCorrRelIso();
+        Lepton1_id = ElecVect[0].isVetoElectron()+ElecVect[0].isLooseElectron()+ElecVect[0].isMediumElectron()+ElecVect[0].isTightElectron();
+        Lepton2_id = MuonVect[0].isPFMuon()+MuonVect[0].isLooseMuon()+MuonVect[0].isMediumMuon()+MuonVect[0].isTightMuon();
         mZ = (Lepton1 + Lepton2).M();
         V_pt = (Lepton1 + Lepton2).Pt();
         fakeMET_pt = sqrt(pow(MET_tlv.Px() + ElecVect[0].tlv().Px() + MuonVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + ElecVect[0].tlv().Py() + MuonVect[0].tlv().Py(), 2));
@@ -940,10 +971,14 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             EventWeight *= TriggerWeight * LeptonWeight;
         }
         isWtoMN = true;
-        Lepton1_pt = MuonVect[0].pt();
         Lepton1 = MuonVect[0].tlv();
+        Lepton1_pt = MuonVect[0].pt();
+        Lepton1_eta = MuonVect[0].eta();
+        Lepton1_pfIso = MuonVect[0].pfDeltaCorrRelIso();
+        Lepton1_id = MuonVect[0].isPFMuon()+MuonVect[0].isLooseMuon()+MuonVect[0].isMediumMuon()+MuonVect[0].isTightMuon();
         mT = sqrt(2.*MET.et()*MuonVect[0].pt()*(1.-cos(MuonVect[0].tlv().DeltaPhi(MET_tlv))));
         fakeMET_pt = sqrt(pow(MET_tlv.Px() + MuonVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + MuonVect[0].tlv().Py(), 2));
+        V_pt = fakeMET_pt;
         Hist("W_tmass", "1m")->Fill(mT, EventWeight);
         m_logger << INFO << " + W -> mn candidate reconstructed" << SLogger::endmsg;
     }
@@ -967,10 +1002,14 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             EventWeight *= TriggerWeight * LeptonWeight;
         }
         isWtoEN = true;
-        Lepton1_pt = ElecVect[0].pt();
         Lepton1 = ElecVect[0].tlv();
+        Lepton1_pt = ElecVect[0].pt();
+        Lepton1_eta = ElecVect[0].eta();
+        Lepton1_pfIso = ElecVect[0].pfRhoCorrRelIso03();
+        Lepton1_id = ElecVect[0].isVetoElectron()+ElecVect[0].isLooseElectron()+ElecVect[0].isMediumElectron()+ElecVect[0].isTightElectron();
         mT = sqrt(2.*MET.et()*ElecVect[0].pt()*(1.-cos(ElecVect[0].tlv().DeltaPhi(MET_tlv))));
         fakeMET_pt = sqrt(pow(MET_tlv.Px() + ElecVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + ElecVect[0].tlv().Py(), 2));
+        V_pt = fakeMET_pt;
         Hist("W_tmass", "1e")->Fill(mT, EventWeight);
         m_logger << INFO << " + W -> en candidate reconstructed" << SLogger::endmsg;
     }
@@ -1059,45 +1098,44 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     
     std::vector<UZH::Jet> JetsVectSorted(JetsVect.begin(), JetsVect.end());
     std::sort(JetsVectSorted.begin(), JetsVectSorted.end(), SortByCSV);
-    std::vector<UZH::Jet> JetsVectSortedLoose(JetsVectSorted.begin()+1, JetsVectSorted.end()); // Only for Loose SF
+    //std::vector<UZH::Jet> JetsVectSortedLoose(JetsVectSorted.begin()+1, JetsVectSorted.end()); // Only for Loose SF
 
     m_logger << INFO << " + Filling jets" << SLogger::endmsg;
     
     if(nJets >= 1) {
         Jet1.SetPtEtaPhiE(JetsVect[0].pt(), JetsVect[0].eta(), JetsVect[0].phi(), JetsVect[0].e());
         Jet1_pt = JetsVect[0].pt();
+        Jet1_eta = JetsVect[0].eta();
         Jet1_csv = JetsVectSorted[0].csv();
     }
     if(nJets >= 2) {
         Jet2.SetPtEtaPhiE(JetsVect[1].pt(), JetsVect[1].eta(), JetsVect[1].phi(), JetsVect[1].e());
         Jet2_pt = JetsVect[1].pt();
+        Jet2_eta = JetsVect[1].eta();
         Jet2_csv = JetsVectSorted[1].csv();
     }
     if(nJets >= 3) {
         Jet3.SetPtEtaPhiE(JetsVect[2].pt(), JetsVect[2].eta(), JetsVect[2].phi(), JetsVect[2].e());
         Jet3_pt = JetsVect[2].pt();
+        Jet3_eta = JetsVect[2].eta();
         Jet3_csv = JetsVectSorted[2].csv();
     }
     if(nJets >= 4) {
-        Jet3.SetPtEtaPhiE(JetsVect[3].pt(), JetsVect[3].eta(), JetsVect[3].phi(), JetsVect[3].e());
-        Jet3_pt = JetsVect[3].pt();
-        Jet3_csv = JetsVectSorted[3].csv();
+        Jet4.SetPtEtaPhiE(JetsVect[3].pt(), JetsVect[3].eta(), JetsVect[3].phi(), JetsVect[3].e());
+        Jet4_pt = JetsVect[3].pt();
+        Jet4_eta = JetsVect[3].eta();
+        Jet4_csv = JetsVectSorted[3].csv();
     }
     
     // --- BTV ---
-    for(unsigned int i=0; i<JetsVectSorted.size(); i++) {
-        if(i==0) {
-            if(m_bTaggingScaleTool.isTagged_tag( JetsVectSorted[i].csv() )) nBTagJets++; // Count Tight b-tagged jets
-        }
-        else if(nBTagJets>0) {
-            if( m_bTaggingScaleTool.isTagged_veto( JetsVectSorted[i].csv() )) nBTagJets++; // Count Loose b-tagged jets
-        }
+    for(unsigned int i=0; i<JetsVect.size(); i++) {
+        if(m_bTaggingScaleTool.isTagged( JetsVect[i].csv() )) nBTagJets++; // Count Tight b-tagged jets
     }
     // For MT2W
     std::vector<TLorentzVector> bJets, lJets;
-    for(unsigned int i=0; i<JetsVectSorted.size(); i++) {
-        if(m_bTaggingScaleTool.isTagged_tag( JetsVectSorted[i].csv() )) bJets.push_back(JetsVectSorted[i].tlv());
-        else lJets.push_back(JetsVectSorted[i].tlv());
+    for(unsigned int i=0; i<JetsVect.size(); i++) {
+        if(m_bTaggingScaleTool.isTagged( JetsVect[i].csv() )) bJets.push_back(JetsVect[i].tlv());
+        else lJets.push_back(JetsVect[i].tlv());
     }
 
     m_logger << INFO << " + Calculating MT2W" << SLogger::endmsg;
@@ -1110,18 +1148,23 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     m_logger << INFO << " + Calculating b-tagging scale factors" << SLogger::endmsg;
     if(isMC) {
         float BTagAK4Weight(1.), BTagAK4WeightUp(1.), BTagAK4WeightDown(1.), BTagAK4WeightBUp(1.), BTagAK4WeightBDown(1.), BTagAK4WeightLUp(1.), BTagAK4WeightLDown(1.), BTagAK4WeightB1(1.), BTagAK4WeightB2(1.), BTagAK4WeightL1(1.), BTagAK4WeightL2(1.);
+        BTagAK4Weight *= m_bTaggingScaleTool.getScaleFactor(JetsVect);
+        BTagAK4WeightBUp *= m_bTaggingScaleTool.getScaleFactor(JetsVect, +1, 0);
+        BTagAK4WeightBDown *= m_bTaggingScaleTool.getScaleFactor(JetsVect, -1, 0);
+        BTagAK4WeightLUp *= m_bTaggingScaleTool.getScaleFactor(JetsVect, 0, +1);
+        BTagAK4WeightLDown *= m_bTaggingScaleTool.getScaleFactor(JetsVect, 0, -1);
         // Tight
-        BTagAK4Weight *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0]);
-        BTagAK4WeightBUp *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], +1, 0);
-        BTagAK4WeightBDown *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], -1, 0);
-        BTagAK4WeightLUp *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], 0, +1);
-        BTagAK4WeightLDown *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], 0, -1);
+//        BTagAK4Weight *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0]);
+//        BTagAK4WeightBUp *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], +1, 0);
+//        BTagAK4WeightBDown *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], -1, 0);
+//        BTagAK4WeightLUp *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], 0, +1);
+//        BTagAK4WeightLDown *= m_bTaggingScaleTool.getScaleFactor_tag(JetsVectSorted[0], 0, -1);
         // Loose
-        BTagAK4Weight *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose);
-        BTagAK4WeightBUp *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, +1, 0);
-        BTagAK4WeightBDown *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, -1, 0);
-        BTagAK4WeightLUp *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, 0, +1);
-        BTagAK4WeightLDown *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, 0, -1);
+//        BTagAK4Weight *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose);
+//        BTagAK4WeightBUp *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, +1, 0);
+//        BTagAK4WeightBDown *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, -1, 0);
+//        BTagAK4WeightLUp *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, 0, +1);
+//        BTagAK4WeightLDown *= m_bTaggingScaleTool.getScaleFactor_veto(JetsVectSortedLoose, 0, -1);
         // Merge B and L
         BTagAK4WeightUp = BTagAK4Weight + sqrt( pow(BTagAK4WeightBUp-BTagAK4Weight, 2) + pow(BTagAK4WeightLUp-BTagAK4Weight, 2) );
         BTagAK4WeightDown = BTagAK4Weight - sqrt( pow(BTagAK4Weight-BTagAK4WeightBDown, 2) + pow(BTagAK4Weight-BTagAK4WeightLDown, 2) );
