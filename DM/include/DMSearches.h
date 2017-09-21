@@ -204,6 +204,7 @@ class DMAnalysis : public SCycleBase {
         int nTaus;
         int nPhotons;
         int nJets;
+        int nCentralJets;
         int nBJets;
         int nBQuarks;
         int nBTagJets;

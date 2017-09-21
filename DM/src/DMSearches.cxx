@@ -63,7 +63,7 @@ DMAnalysis::DMAnalysis() : SCycleBase(),
     DeclareProperty( "TauPtCut",                  m_TauPtCut                 =  18. );
     DeclareProperty( "TauEtaCut",                 m_TauEtaCut                =  2.3 );
     DeclareProperty( "AK4PtCut",                  m_AK4PtCut                 =  30. );
-    DeclareProperty( "AK4EtaCut",                 m_AK4EtaCut                =  2.4 );
+    DeclareProperty( "AK4EtaCut",                 m_AK4EtaCut                =  4.0 );
     DeclareProperty( "MEtPtCut",                  m_MEtPtCut                 =  200. );
     DeclareProperty( "VPtCut",                    m_VPtCut                   = -1. );
     DeclareProperty( "nJetsCut",                  m_nJetsCut                 = 2 );
@@ -162,11 +162,15 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     m_logger << INFO << "Elec1PtCut:\t" <<            m_Elec1PtCut           << SLogger::endmsg;
     m_logger << INFO << "Elec2PtCut:\t" <<            m_Elec2PtCut           << SLogger::endmsg;
     m_logger << INFO << "ElecPtCut:\t" <<             m_ElecPtCut            << SLogger::endmsg;
+    m_logger << INFO << "Elec1EtaCut:\t" <<            m_ElecEtaCut           << SLogger::endmsg;
+    m_logger << INFO << "Elec2EtaCut:\t" <<            m_ElecEtaCut           << SLogger::endmsg;
     m_logger << INFO << "ElecEtaCut:\t" <<            m_ElecEtaCut           << SLogger::endmsg;
     m_logger << INFO << "Muon1PtCut:\t" <<            m_Muon1PtCut           << SLogger::endmsg;
     m_logger << INFO << "Muon2PtCut:\t" <<            m_Muon2PtCut           << SLogger::endmsg;
     m_logger << INFO << "MuonPtCut:\t" <<             m_MuonPtCut            << SLogger::endmsg;
     m_logger << INFO << "MuonEtaCut:\t" <<            m_MuonEtaCut           << SLogger::endmsg;
+    m_logger << INFO << "Muon1EtaCut:\t" <<            m_MuonEtaCut           << SLogger::endmsg;
+    m_logger << INFO << "Muon2EtaCut:\t" <<            m_MuonEtaCut           << SLogger::endmsg;
     m_logger << INFO << "TauPtCut:\t" <<              m_TauPtCut             << SLogger::endmsg;
     m_logger << INFO << "TauEtaCut:\t" <<             m_TauEtaCut            << SLogger::endmsg;
     m_logger << INFO << "AK4PtCut:\t" <<              m_AK4PtCut             << SLogger::endmsg;
@@ -240,6 +244,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( nMuons,              "nMuons",  m_outputTreeName.c_str());
     DeclareVariable( nTaus,               "nTaus",  m_outputTreeName.c_str());
     DeclareVariable( nJets,               "nJets",  m_outputTreeName.c_str());
+    DeclareVariable( nCentralJets,        "nCentralJets",  m_outputTreeName.c_str());
     DeclareVariable( nBJets,              "nBJets",  m_outputTreeName.c_str());
     DeclareVariable( nBQuarks,            "nBQuarks",  m_outputTreeName.c_str());
     DeclareVariable( nBTagJets,           "nBTagJets",  m_outputTreeName.c_str());
@@ -634,6 +639,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         HT += jet.pt();
         HTx += jet.tlv().Px();
         HTy += jet.tlv().Py();
+        if(fabs(jet.eta()) < 2.4) nCentralJets++;
         if(abs(jet.hadronFlavour())==5) nBJets++;
     }
     nJets = JetsVect.size();
@@ -1129,7 +1135,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     
     // --- BTV ---
     for(unsigned int i=0; i<JetsVect.size(); i++) {
-        if(m_bTaggingScaleTool.isTagged( JetsVect[i].csv() )) nBTagJets++; // Count Tight b-tagged jets
+        if(fabs(JetsVect[i].eta()) < 2.4 && m_bTaggingScaleTool.isTagged( JetsVect[i].csv() )) nBTagJets++; // Count Tight b-tagged jets
     }
     // For MT2W
     std::vector<TLorentzVector> bJets, lJets;
@@ -1293,13 +1299,13 @@ void DMAnalysis::clearBranches() {
     EventWeight = GenWeight = ZewkWeight = WewkWeight = TopWeight = QCDWeightUp = QCDWeightDown = PUWeight = PUWeightUp = PUWeightDown = TriggerWeight = TriggerWeightUp = TriggerWeightDown = LeptonWeight = LeptonWeightUp = LeptonWeightDown = BTagWeight = BTagWeightUp = BTagWeightDown = 1.;
     isZtoNN = isWtoEN = isWtoMN = isTtoEM = isZtoEE = isZtoMM = isTveto = false;
     LheV_pt = LheHT = LheNl = LheNj = LheNb = 0;
-    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
+    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nCentralJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
     HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = fakeMET_pt = 0.;
     mZ = mT = mT2 = V_pt = 0.;
     MinJetMetDPhi = 10.;
     
     Lepton1 = Lepton2 = Jet1 = Jet2 = Jet3 = Jet4 = V = TLorentzVector();
-    Lepton1_pt = Lepton2_pt = Lepton1_pfIso = Lepton2_pfIso = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = -9.;
+    Lepton1_pt = Lepton2_pt = Lepton1_eta = Lepton2_eta = Lepton1_pfIso = Lepton2_pfIso = Lepton1_id = Lepton2_id = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = Jet1_eta = Jet2_eta = Jet3_eta = Jet4_eta = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = -9.;
 }
 
 
