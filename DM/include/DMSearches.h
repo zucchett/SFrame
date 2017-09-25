@@ -228,6 +228,7 @@ class DMAnalysis : public SCycleBase {
         float MinMETMHT;
         float MinMETNoMuMHTNoMu;
         float MinJetMetDPhi;
+        float MinJetMetDPhi12;
         float mZ;
         float mT;
         float mT2;

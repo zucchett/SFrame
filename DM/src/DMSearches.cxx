@@ -261,6 +261,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( ST,                  "ST",  m_outputTreeName.c_str());
     DeclareVariable( HT,                  "HT",  m_outputTreeName.c_str());
     DeclareVariable( MinJetMetDPhi,       "MinDPhi",  m_outputTreeName.c_str());
+    DeclareVariable( MinJetMetDPhi12,     "MinDPhi12",  m_outputTreeName.c_str());
     DeclareVariable( mZ,                  "mZ",  m_outputTreeName.c_str());
     DeclareVariable( mT,                  "mT",  m_outputTreeName.c_str());
     DeclareVariable( mT2,                 "mT2",  m_outputTreeName.c_str());
@@ -269,8 +270,8 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( Lepton2_pt,          "Lepton2_pt",  m_outputTreeName.c_str());
     DeclareVariable( Lepton1_eta,         "Lepton1_eta",  m_outputTreeName.c_str());
     DeclareVariable( Lepton2_eta,         "Lepton2_eta",  m_outputTreeName.c_str());
-    DeclareVariable( Lepton1_eta,         "Lepton1_phi",  m_outputTreeName.c_str());
-    DeclareVariable( Lepton2_eta,         "Lepton2_phi",  m_outputTreeName.c_str());
+    DeclareVariable( Lepton1_phi,         "Lepton1_phi",  m_outputTreeName.c_str());
+    DeclareVariable( Lepton2_phi,         "Lepton2_phi",  m_outputTreeName.c_str());
     DeclareVariable( Lepton1_id,          "Lepton1_id",  m_outputTreeName.c_str());
     DeclareVariable( Lepton2_id,          "Lepton2_id",  m_outputTreeName.c_str());
     DeclareVariable( Lepton1_pfIso,       "Lepton1_pfIso",  m_outputTreeName.c_str());
@@ -285,11 +286,11 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( Jet3_eta,            "Jet3_eta",  m_outputTreeName.c_str());
     DeclareVariable( Jet4_eta,            "Jet4_eta",  m_outputTreeName.c_str());
     DeclareVariable( JetF_eta,            "JetF_eta",  m_outputTreeName.c_str());
-    DeclareVariable( Jet1_eta,            "Jet1_phi",  m_outputTreeName.c_str());
-    DeclareVariable( Jet2_eta,            "Jet2_phi",  m_outputTreeName.c_str());
-    DeclareVariable( Jet3_eta,            "Jet3_phi",  m_outputTreeName.c_str());
-    DeclareVariable( Jet4_eta,            "Jet4_phi",  m_outputTreeName.c_str());
-    DeclareVariable( JetF_eta,            "JetF_phi",  m_outputTreeName.c_str());
+    DeclareVariable( Jet1_phi,            "Jet1_phi",  m_outputTreeName.c_str());
+    DeclareVariable( Jet2_phi,            "Jet2_phi",  m_outputTreeName.c_str());
+    DeclareVariable( Jet3_phi,            "Jet3_phi",  m_outputTreeName.c_str());
+    DeclareVariable( Jet4_phi,            "Jet4_phi",  m_outputTreeName.c_str());
+    DeclareVariable( JetF_phi,            "JetF_phi",  m_outputTreeName.c_str());
     DeclareVariable( Jet1_csv,            "Jet1_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet2_csv,            "Jet2_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet3_csv,            "Jet3_csv",  m_outputTreeName.c_str());
@@ -674,7 +675,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     MinMETMHT = std::min(float(MET.et()), MHT);
     MinMETNoMuMHTNoMu = std::min(METNoMu, MHTNoMu);
     for(int i = 0; i < nJets; i++) if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) < MinJetMetDPhi) MinJetMetDPhi = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
-    if(nJets == 0) MinJetMetDPhi = -1.;
+    for(int i = 0; i < std::min(2, nJets); i++) if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) < MinJetMetDPhi12) MinJetMetDPhi12 = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
+    if(nJets == 0) MinJetMetDPhi = MinJetMetDPhi12 = -1.;
     
     // --- GEN ---
     TLorentzVector GenH;
@@ -1362,7 +1364,7 @@ void DMAnalysis::clearBranches() {
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nForwardJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
     HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = fakeMET_pt = 0.;
     mZ = mT = mT2 = V_pt = 0.;
-    MinJetMetDPhi = 10.;
+    MinJetMetDPhi = MinJetMetDPhi12 = 10.;
     
     Lepton1 = Lepton2 = Jet1 = Jet2 = Jet3 = Jet4 = V = TLorentzVector();
     Lepton1_pt = Lepton2_pt = Lepton1_eta = Lepton2_eta = Lepton1_phi = Lepton2_phi = Lepton1_pfIso = Lepton2_pfIso = Lepton1_id = Lepton2_id = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = JetF_pt = Jet1_eta = Jet2_eta = Jet3_eta = Jet4_eta = JetF_eta = Jet1_phi = Jet2_phi = Jet3_phi = Jet4_phi = JetF_phi = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = -9.;
