@@ -63,8 +63,8 @@ DMAnalysis::DMAnalysis() : SCycleBase(),
     DeclareProperty( "TauPtCut",                  m_TauPtCut                 =  18. );
     DeclareProperty( "TauEtaCut",                 m_TauEtaCut                =  2.3 );
     DeclareProperty( "AK4PtCut",                  m_AK4PtCut                 =  30. );
-    DeclareProperty( "AK4EtaCut",                 m_AK4EtaCut                =  4.0 );
-    DeclareProperty( "MEtPtCut",                  m_MEtPtCut                 =  200. );
+    DeclareProperty( "AK4EtaCut",                 m_AK4EtaCut                =  2.4 );
+    DeclareProperty( "MEtPtCut",                  m_MEtPtCut                 =  250. );
     DeclareProperty( "VPtCut",                    m_VPtCut                   = -1. );
     DeclareProperty( "nJetsCut",                  m_nJetsCut                 = 2 );
     
@@ -244,7 +244,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( nMuons,              "nMuons",  m_outputTreeName.c_str());
     DeclareVariable( nTaus,               "nTaus",  m_outputTreeName.c_str());
     DeclareVariable( nJets,               "nJets",  m_outputTreeName.c_str());
-    DeclareVariable( nCentralJets,        "nCentralJets",  m_outputTreeName.c_str());
+    DeclareVariable( nForwardJets,        "nForwardJets",  m_outputTreeName.c_str());
     DeclareVariable( nBJets,              "nBJets",  m_outputTreeName.c_str());
     DeclareVariable( nBQuarks,            "nBQuarks",  m_outputTreeName.c_str());
     DeclareVariable( nBTagJets,           "nBTagJets",  m_outputTreeName.c_str());
@@ -606,6 +606,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
 
     // --- AK4 Jets ---
     std::vector<UZH::Jet> JetsVect;
+    std::vector<UZH::Jet> JetsVectFor;
     std::vector<TLorentzVector> JetsVectRes;
     std::vector<TLorentzVector> JetsVectScaleUp;
     std::vector<TLorentzVector> JetsVectScaleDown;
@@ -614,7 +615,6 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     for(int i = 0; i < m_jetAK4.N; ++i) {
         UZH::Jet jet(&m_jetAK4, i);
         if(jet.pt() < m_AK4PtCut || fabs(jet.eta()) > m_AK4EtaCut || !jet.IDLoose()) continue;
-        if(!jet.IDLoose()) continue;
         bool cleanJet(true);
         for(unsigned int e = 0; e < ElecVect.size(); e++) if(ElecVect[e].tlv().DeltaR(jet.tlv()) < 0.4) cleanJet = false;
         for(unsigned int m = 0; m < MuonVect.size(); m++) if(MuonVect[m].tlv().DeltaR(jet.tlv()) < 0.4) cleanJet = false;
@@ -639,8 +639,14 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         HT += jet.pt();
         HTx += jet.tlv().Px();
         HTy += jet.tlv().Py();
-        if(fabs(jet.eta()) < 2.4) nCentralJets++;
         if(abs(jet.hadronFlavour())==5) nBJets++;
+    }
+    // Forward jets
+    for(int i = 0; i < m_jetAK4.N; ++i) {
+        UZH::Jet jet(&m_jetAK4, i);
+        if(jet.pt() < m_AK4PtCut || fabs(jet.eta()) < m_AK4EtaCut || fabs(jet.eta()) > 4.0 || !jet.IDLoose()) continue;
+        JetsVectFor.push_back(jet);
+        nForwardJets++;
     }
     nJets = JetsVect.size();
     MHT = sqrt(HTx*HTx + HTy*HTy);
@@ -1100,7 +1106,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     Hist("HT", category.c_str())->Fill(HT, EventWeight);
     
     // Jet multiplicity selection
-    if(nJets < m_nJetsCut) { m_logger << INFO << " - Number of jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    if(nJets+nForwardJets < m_nJetsCut) { m_logger << INFO << " - Number of jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     
     std::vector<UZH::Jet> JetsVectSorted(JetsVect.begin(), JetsVect.end());
     std::sort(JetsVectSorted.begin(), JetsVectSorted.end(), SortByCSV);
@@ -1131,6 +1137,12 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Jet4_pt = JetsVect[3].pt();
         Jet4_eta = JetsVect[3].eta();
         Jet4_csv = JetsVectSorted[3].csv();
+    }
+    if(nForwardJets >= 1) {
+        //JetF.SetPtEtaPhiE(JetsVectFor[0].pt(), JetsVectFor[0].eta(), JetsVectFor[0].phi(), JetsVectFor[0].e());
+        JetF_pt = JetsVectFor[0].pt();
+        JetF_eta = JetsVectFor[0].eta();
+        //JetF_csv = JetsVectFor[0].csv();
     }
     
     // --- BTV ---
@@ -1299,13 +1311,13 @@ void DMAnalysis::clearBranches() {
     EventWeight = GenWeight = ZewkWeight = WewkWeight = TopWeight = QCDWeightUp = QCDWeightDown = PUWeight = PUWeightUp = PUWeightDown = TriggerWeight = TriggerWeightUp = TriggerWeightDown = LeptonWeight = LeptonWeightUp = LeptonWeightDown = BTagWeight = BTagWeightUp = BTagWeightDown = 1.;
     isZtoNN = isWtoEN = isWtoMN = isTtoEM = isZtoEE = isZtoMM = isTveto = false;
     LheV_pt = LheHT = LheNl = LheNj = LheNb = 0;
-    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nCentralJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
+    nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nForwardJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
     HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = fakeMET_pt = 0.;
     mZ = mT = mT2 = V_pt = 0.;
     MinJetMetDPhi = 10.;
     
     Lepton1 = Lepton2 = Jet1 = Jet2 = Jet3 = Jet4 = V = TLorentzVector();
-    Lepton1_pt = Lepton2_pt = Lepton1_eta = Lepton2_eta = Lepton1_pfIso = Lepton2_pfIso = Lepton1_id = Lepton2_id = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = Jet1_eta = Jet2_eta = Jet3_eta = Jet4_eta = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = -9.;
+    Lepton1_pt = Lepton2_pt = Lepton1_eta = Lepton2_eta = Lepton1_pfIso = Lepton2_pfIso = Lepton1_id = Lepton2_id = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = JetF_pt = Jet1_eta = Jet2_eta = Jet3_eta = Jet4_eta = JetF_eta = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = -9.;
 }
 
 
