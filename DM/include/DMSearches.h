@@ -266,7 +266,7 @@ class DMAnalysis : public SCycleBase {
         float Jet2_phi;
         float Jet3_phi;
         float Jet4_phi;
-        float JetF_eta;
+        float JetF_phi;
         float Jet1_csv;
         float Jet2_csv;
         float Jet3_csv;
