@@ -100,12 +100,18 @@ def processFile(sample_name, verbose=False):
                 obj.GetEntry(event)
                 # Initialize
                 eventWeightLumi[0] = stitchWeight[0] = 1.
+#                if obj.bTagWeight < 0.5 or obj.bTagWeight > 1.5: 
+#                    print obj.bTagWeight
+#                    print obj.Jet1_pt, obj.Jet2_pt, obj.Jet3_pt, obj.Jet4_pt
+#                    print obj.Jet1_eta, obj.Jet2_eta, obj.Jet3_eta, obj.Jet4_eta
+#                if obj.bTagWeight < 0.5: obj.bTagWeight = 0.5
+#                if obj.bTagWeight > 1.5: obj.bTagWeight = 1.5
                 # Weights
                 if isMC:
                     # MC stitching
                     if sample=='DYJetsToLL' or sample=='WJetsToLNu':
                         if obj.LheHT > 100.: stitchWeight[0] = 0.
-                    eventWeightLumi[0] = obj.eventWeight * obj.bTagWeight
+                    eventWeightLumi[0] = obj.eventWeight #* obj.bTagWeight
                     eventWeightLumi[0] *= LUMI*XS/totalEntries
                 # Fill the branches
                 stitchWeightBranch.Fill()

@@ -14,7 +14,7 @@ postFix = ""
 
 dataSets = []
 listDir = "../BatchSubmission/lists_ReMiniAOD"
-for d in ["TT", "TTToSemiLeptonic", "TTTo2L2Nu", "ST_s-channel", "ST_t-channel_antitop", "ST_t-channel_top", "ST_tW_antitop", "ST_tW_top", "TTWJetsToLNu", "TTZToLLNuNu"]:
+for d in ["TT", "ST_s-channel", "ST_t-channel_antitop", "ST_t-channel_top", "ST_tW_antitop", "ST_tW_top", "TTWJetsToLNu", "TTZToLLNuNu"]:
     dataSets.append([d, open(listDir+"/"+d+".txt").read().splitlines()])
 
 

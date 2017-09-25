@@ -10,6 +10,9 @@
 #python extractEfficiencies.py ../../AnalysisOutput/*.root -w Loose -p subjet_softdrop_
 #python extractEfficiencies.py ../../AnalysisOutput/*prime*.root -w Loose -p doubleB_
 #python extractEfficiencies.py ../../AnalysisOutput/*prime*.root -w Tight -p doubleB_
+#python extractEfficiencies.py ../../DM/AnalysisOutput/*.root -w Medium -p jet_
+#python extractEfficiencies.py ../../DM/AnalysisOutput/*.root -w Medium -p jet_ak4_ 
+#python extractEfficiencies.py ../../DM/AnalysisOutput/*.root -w Medium -p subjet_softdrop_
 
 import os
 import sys
