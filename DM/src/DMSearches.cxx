@@ -829,7 +829,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         // Identify leptons
         if(MuonVect[0].charge() == MuonVect[1].charge()) {m_logger << INFO << " - No OS muons"  << SLogger::endmsg;}
         else {
-            if((MuonVect[0].tlv() + MuonVect[1].tlv()).M() < 50.) {m_logger << INFO << " - No Z candidate"  << SLogger::endmsg;}
+            if((MuonVect[0].tlv() + MuonVect[1].tlv()).M() < 20.) {m_logger << INFO << " - No Z candidate"  << SLogger::endmsg;}
             else {
                 // Check trigger consistency
                 if(!triggerMap["SingleIsoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
@@ -896,7 +896,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         // Identify leptons
         if(ElecVect[0].charge() == ElecVect[1].charge()) {m_logger << INFO << " - No OS electrons"  << SLogger::endmsg;}
         else {
-            if((ElecVect[0].tlv() + ElecVect[1].tlv()).M() < 50.) {m_logger << INFO << " - No Z candidate"  << SLogger::endmsg;}
+            if((ElecVect[0].tlv() + ElecVect[1].tlv()).M() < 20.) {m_logger << INFO << " - No Z candidate"  << SLogger::endmsg;}
             else {
                 // Check trigger consistency
                 if(!triggerMap["SingleIsoEle"] && !triggerMap["SingleEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
@@ -955,7 +955,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         }
     }
     // ---------- INTERMEZZO: dileptonic Top CR ----------
-    if(!isZtoMM && !isZtoEE && MuonVect.size()==1 && ElecVect.size()==1) {
+    if(!isZtoMM && !isZtoEE && MuonVect.size()==1 && ElecVect.size()==1 && ElecVect[0].charge() != MuonVect[0].charge()) {
         // SF
         if(isMC) {
             TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
