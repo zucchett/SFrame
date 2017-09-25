@@ -246,6 +246,8 @@ class DMAnalysis : public SCycleBase {
         float Lepton2_pt;
         float Lepton1_eta;
         float Lepton2_eta;
+        float Lepton1_phi;
+        float Lepton2_phi;
         float Lepton1_pfIso;
         float Lepton2_pfIso;
         int Lepton1_id;
@@ -259,6 +261,11 @@ class DMAnalysis : public SCycleBase {
         float Jet2_eta;
         float Jet3_eta;
         float Jet4_eta;
+        float JetF_eta;
+        float Jet1_phi;
+        float Jet2_phi;
+        float Jet3_phi;
+        float Jet4_phi;
         float JetF_eta;
         float Jet1_csv;
         float Jet2_csv;
