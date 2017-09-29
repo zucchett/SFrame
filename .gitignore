@@ -30,5 +30,16 @@ obj/
 *.par
 
 # SFrame dictionaries
-#*.pcm
+*.pcm
 *_Dict.cxx
+
+#python stuff
+*.pyc
+
+#root, pdf, png files
+*.root
+*.pdf
+*.png 
+
+#temporary stuff
+*.*~
