@@ -89,3 +89,11 @@ By default, the post-processing is performed in parallel between different sampl
 ```bash
 python addWeight.py
 ```
+
+### Plotting
+Once all ntuples are processed, you can plot variables. The tools for this are located in the `Plotting` directory.
+```
+cd Plotting
+mkdir plot
+python plot.py -v "variable_name as in variables.py" -c "cut name as in selections.py"
+```
