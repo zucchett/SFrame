@@ -4,30 +4,41 @@
 
 ### Step 0: ROOT and CMSSW enviroments
 
-Set up the ROOT environment. The easiest way to do that is to run the `cmsenv` commend in a previously installed CMSSW release (now using CMSSW_8_0_26_patch1).
+Set up the ROOT environment at PSI. The easiest way to do that is to run the `cmsenv` commend in a previously installed CMSSW release (now using CMSSW_8_0_26_patch1).
+
+```
+source /swshare/psit3/etc/profile.d/cms_ui_env.sh
+source $VO_CMS_SW_DIR/cmsset_default.sh
+CMSSW_8_0_26_patch1
+cd CMSSW_8_0_26_patch1/src
+cmsenv
+```
 
 ### Step 1: Download and setup SFrame
 
 Clone the git repository. Navigate to your work directory, preferably not in a CMSSW release, and run
 ```bash
-git clone https://github.com/zucchett/SFrame
+git clone https://github.com/zucchett/SFrame.git
+cd SFrame
+git remote add mysframe https://github.com/YOUR-USERNAME/SFrame.git
+
 ```
 and enter the `SFrame` directory.
 Then, setup the SFrame environment. In the `SFrame` directory, run the `setup.sh` script:
 ```bash
-cd SFrame/SFrame/
+cd SFrame/
 source setup.sh
 cd ..
 ```
 
 ### Step 2: Compile packages
 
-Before running the code, it is necessary to compile the packages. Enter every directory, and run the command
+Before running the code, it is necessary to compile all packages. For this run:
 ```bash
-make
+./makeAll.sh
 ```
-Start from the `SFrame` directory first, and then move to the others.
-Remember that, in case you perform significant modifications to SFrame like adding new variables, adding new methods to classes, adding new packages, it's often useful to clear compiled objects with the `make distclean` command, and then recompile with `make`.
+you can also go into each directory starting with `SFrame` and type `make`
+Remember that, in case you perform significant modifications to SFrame like adding new variables, adding new methods to classes, adding new packages, it's often useful to clear compiled objects with the `make distclean` command, and then recompile with `make`. If you want to clean everything use `./makecleanAll.sh`
 
 
 
@@ -41,6 +52,8 @@ Enter your package, and compile it with the `make` command.
 Then, set up your configuration xml file. The configuration files are located in the `config` directory, and include the list of packages to be loaded by SFrame, the package parameters, the verbosity level, and the ntuple file to be read.
 Once the configuration file is set, and points to a readable rootfile, the code can be run with the command:
 ```bash
+cd DM
+make
 sframe_main config/Configfile.xml
 ```
 where `Configfile.xml` is the name of the desired configuration file.
