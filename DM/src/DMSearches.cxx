@@ -348,16 +348,12 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "MinJetMetDPhi", ";min #Delta #varphi (jet-#slash{E}_{T});Events;log", 28, 0, 3.15), "0l" );
     Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "0l" );
     Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "0l" );
-    Book( TH1F( "METFilters", "Events;", 15, -0.5, 14.5), "0l" );
-
-
-    Book( TH1F( "MinLepMetDPhi", ";min #Delta #varphi (lepton-#slash{E}_{T});Events;log", 28, 0, 3.15), "1e");
     Book( TH1F( "MinBJetMetDPhi", ";min #Delta #varphi (bjets-#slash{E}_{T});Events;log", 28, 0, 3.15), "0l");
-    Book( TH1F( "MinLepJetDPhi", ";min #Delta #varphi (lepton-jet);Events;log", 28, 0, 3.15), "1e");
-    Book( TH1F( "MaxLepMetDPhi", ";max #Delta #varphi (lepton-#slash{E}_{T});Events;log", 28, 0, 3.15), "1e");
     Book( TH1F( "MaxJetMetDPhi", ";max #Delta #varphi (jet-#slash{E}_{T});Events;log", 28, 0, 3.15), "0l" );
     Book( TH1F( "MaxBJetMetDPhi", ";max #Delta #varphi (bjets-#slash{E}_{T});Events;log", 28, 0, 3.15), "0l");
-    Book( TH1F( "MaxLepJetDPhi", ";max #Delta #varphi (lepton-jet);Events;log", 28, 0, 3.15), "1e");
+    Book( TH1F( "METFilters", "Events;", 15, -0.5, 14.5), "0l" );
+    
+    
     // ---------- SEMILEPTONIC W->en CHANNEL ----------
     Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "1e" );
     Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "1e" );
@@ -372,8 +368,12 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "Electron1_pfIso", ";electron 1 PFIso;Events;log", 25, 0, 5.), "1e" );
     Book( TH1F( "W_pt", ";p_{T}^{W} (GeV);Events;log", 80, 0, 2000), "1e" );
     Book( TH1F( "W_tmass", ";m_{T}^{W} (GeV);Events", 50, 0, 250), "1e" );
+    Book( TH1F( "MinLepMetDPhi", ";min #Delta #varphi (lepton-#slash{E}_{T});Events;log", 28, 0, 3.15), "1e");
+    Book( TH1F( "MinLepJetDPhi", ";min #Delta #varphi (lepton-jet);Events;log", 28, 0, 3.15), "1e");
+    Book( TH1F( "MaxLepMetDPhi", ";max #Delta #varphi (lepton-#slash{E}_{T});Events;log", 28, 0, 3.15), "1e");
+    Book( TH1F( "MaxLepJetDPhi", ";max #Delta #varphi (lepton-jet);Events;log", 28, 0, 3.15), "1e");
 
-    // ---------- SEMILEPTONIC Z->mm CHANNEL ----------
+    // ---------- SEMILEPTONIC W->mn CHANNEL ----------
     Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "1m" );
     Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "1m" );
     Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "1m" );
@@ -434,7 +434,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "Z_massEB", ";Z mass [endcaps-barrel] (GeV);Events", 40, 70, 110), "2m" );
     Book( TH1F( "Z_massEE", ";Z mass [endcaps-endcaps] (GeV);Events", 40, 70, 110), "2m" );
 
-    // ---------- SEMILEPTONIC T->em CHANNEL ----------
+    // ---------- DILEPTONIC T->em CHANNEL ----------
     Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "1e1m" );
     Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "1e1m" );
     Book( TH1F( "TopWeight", ";Top Weight;Events", 100, 0., 2.), "1e1m" );
@@ -820,7 +820,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
 
     // Filter by Trigger
     // if(!isMC) {
-    if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    //if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     // }
 
 
