@@ -1408,7 +1408,7 @@ sample = {
         'linestyle' : 1,
         'label' : "m_{A} = 250 GeV",
         'weight': 1.,
-        'plot': True,
+        'plot': False,
     },
     'AZh_M275' : {
         'order' : 1001,
@@ -1456,7 +1456,7 @@ sample = {
         'linestyle' : 1,
         'label' : "m_{A} = 350 GeV",
         'weight': 1.,
-        'plot': True,
+        'plot': False,
     },
     'AZh_M400' : {
         'order' : 1001,
@@ -1480,7 +1480,7 @@ sample = {
         'linestyle' : 1,
         'label' : "m_{A} = 500 GeV",
         'weight': 1.,
-        'plot': False,
+        'plot': True,
     },
     'AZh_M600' : {
         'order' : 1001,
@@ -1528,7 +1528,7 @@ sample = {
         'linestyle' : 1,
         'label' : "m_{A} = 800 GeV",
         'weight': 1.,
-        'plot': False,
+        'plot': True,
     },
     'AZh_M900' : {
         'order' : 1001,
