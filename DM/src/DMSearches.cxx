@@ -978,6 +978,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     }
     // ---------- INTERMEZZO: dileptonic Top CR ----------
     if(!isZtoMM && !isZtoEE && MuonVect.size()==1 && ElecVect.size()==1 && ElecVect[0].charge() != MuonVect[0].charge()) {
+        // Check trigger consistency
+        if(!triggerMap["SingleIsoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
         // SF
         if(isMC) {
             //TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
@@ -1028,7 +1030,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         m_logger << INFO << " + Try to reconstruct W -> mn" << SLogger::endmsg;
         //Hist("Events", "Muon")->Fill(2., EventWeight);
         // Check trigger consistency
-        if(!triggerMap["SingleMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+        if(!triggerMap["SingleIsoMu"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
         // SF
         if(isMC) {
             TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta());
