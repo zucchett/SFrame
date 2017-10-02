@@ -58,7 +58,7 @@ namespace UZH {
  * @version $Revision: 344 $
  */
 class DMAnalysis : public SCycleBase {
-    
+
     public:
 
         /// Default constructor
@@ -81,7 +81,7 @@ class DMAnalysis : public SCycleBase {
 
         /// Function called for every event
         virtual void ExecuteEvent( const SInputData&, Double_t ) throw( SError );
-        
+
         /// Function to clear/reset all output branches
         virtual void clearBranches();
 
@@ -90,7 +90,7 @@ class DMAnalysis : public SCycleBase {
 
         /// Function to check for trigger pass
         virtual bool passTrigger(std::string);
-        
+
         /// Function to return a map of trigger pass
         virtual std::map<std::string, bool> getTriggerMap();
 
@@ -164,8 +164,8 @@ class DMAnalysis : public SCycleBase {
 
         // other variables needed
         std::map<std::string, std::vector<std::string> > m_triggerNames;
-        
-        
+
+
         // --- Analysis Variables ---
         bool isMC;
         unsigned long long nEvents;
@@ -228,6 +228,13 @@ class DMAnalysis : public SCycleBase {
         float MinMETMHT;
         float MinMETNoMuMHTNoMu;
         float MinJetMetDPhi;
+        float MinLepMetDPhi;
+        float MinBJetMetDPhi;
+        float MinLepJetDPhi;
+        float MaxLepMetDPhi;
+        float MaxJetMetDPhi;
+        float MaxBJetMetDPhi;
+        float MaxLepJetDPhi;
         float MinJetMetDPhi12;
         float mZ;
         float mT;
@@ -279,4 +286,3 @@ class DMAnalysis : public SCycleBase {
 }; // class DMAnalysis
 
 #endif // DMAnalysis_H
-

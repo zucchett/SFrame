@@ -46,8 +46,8 @@ DMAnalysis::DMAnalysis() : SCycleBase(),
     DeclareProperty( "JetAK4Name",                m_jetAK4Name               = "jetAK4" );
     DeclareProperty( "MissingEtName",             m_missingEtName            = "MET" );
     DeclareProperty( "GenParticleName",           m_genParticleName          = "genParticle" );
-    
-    
+
+
     DeclareProperty( "Elec1PtCut",                m_Elec1PtCut               =  40. );
     DeclareProperty( "Elec2PtCut",                m_Elec2PtCut               =  25. );
     DeclareProperty( "ElecPtCut",                 m_ElecPtCut                =  10. );
@@ -67,13 +67,13 @@ DMAnalysis::DMAnalysis() : SCycleBase(),
     DeclareProperty( "MEtPtCut",                  m_MEtPtCut                 =  250. );
     DeclareProperty( "VPtCut",                    m_VPtCut                   = -1. );
     DeclareProperty( "nJetsCut",                  m_nJetsCut                 = 2 );
-    
+
     // External objects name
     DeclareProperty( "JSONFileName",              m_JSONFileName             = "../GoodRunsLists/JSON/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt" ); //Cert_271036-276811_13TeV_PromptReco_Collisions16_JSON.txt
 
     // Prepend SFrame dir
     m_JSONFileName = std::string (std::getenv("SFRAME_DIR")) + m_JSONFileName;
-    
+
 }
 
 // Destructor
@@ -136,7 +136,7 @@ void DMAnalysis::BeginCycle() throw( SError ) {
     m_triggerNames["MET"].push_back("HLT_PFMET170_NoiseCleaned_v");
     m_triggerNames["MET"].push_back("HLT_PFMET170_HBHECleaned_v");
     m_triggerNames["MET"].push_back("HLT_PFMET170_HBHE_BeamHaloCleaned_v");
-    
+
     return;
 }
 
@@ -158,7 +158,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     m_logger << INFO << "JetAK4Name:\t" <<            m_jetAK4Name           << SLogger::endmsg;
     m_logger << INFO << "MissingEtName:\t" <<         m_missingEtName        << SLogger::endmsg;
     m_logger << INFO << "GenParticleName:\t" <<       m_genParticleName      << SLogger::endmsg;
-    
+
     m_logger << INFO << "Elec1PtCut:\t" <<            m_Elec1PtCut           << SLogger::endmsg;
     m_logger << INFO << "Elec2PtCut:\t" <<            m_Elec2PtCut           << SLogger::endmsg;
     m_logger << INFO << "ElecPtCut:\t" <<             m_ElecPtCut            << SLogger::endmsg;
@@ -178,7 +178,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     m_logger << INFO << "MEtPtCut:\t" <<              m_MEtPtCut             << SLogger::endmsg;
     m_logger << INFO << "VPtCut:\t" <<                m_VPtCut               << SLogger::endmsg;
     m_logger << INFO << "nJetsCut:\t" <<              m_nJetsCut             << SLogger::endmsg;
-    
+
 
     // External objects name
     m_logger << INFO << "JSONFileName:\t" <<          m_JSONFileName         << SLogger::endmsg;
@@ -194,16 +194,16 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     else {
         m_pileupReweightingTool.BeginInputData( id );
     }
-    
+
     m_bTaggingScaleTool.BeginInputData( id );
     m_ScaleFactorTool.BeginInputData( id );
     m_CorrectionTool.BeginInputData( id );
     m_VariableTool.BeginInputData( id );
-    
+
     if(isMC) {
         m_bTaggingScaleTool.bookHistograms();
     }
-    
+
 
     //
     // output branches
@@ -231,14 +231,14 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( BTagWeight,          "bTagWeight",  m_outputTreeName.c_str());
     DeclareVariable( BTagWeightUp,        "bTagWeightUp",  m_outputTreeName.c_str());
     DeclareVariable( BTagWeightDown,      "bTagWeightDown",  m_outputTreeName.c_str());
-    
+
     DeclareVariable( isZtoNN,             "isZtoNN",  m_outputTreeName.c_str());
     DeclareVariable( isWtoEN,             "isWtoEN",  m_outputTreeName.c_str());
     DeclareVariable( isWtoMN,             "isWtoMN",  m_outputTreeName.c_str());
     DeclareVariable( isTtoEM,             "isTtoEM",  m_outputTreeName.c_str());
     DeclareVariable( isZtoEE,             "isZtoEE",  m_outputTreeName.c_str());
     DeclareVariable( isZtoMM,             "isZtoMM",  m_outputTreeName.c_str());
-    
+
     DeclareVariable( nPV,                 "nPV",  m_outputTreeName.c_str());
     DeclareVariable( nElectrons,          "nElectrons",  m_outputTreeName.c_str());
     DeclareVariable( nMuons,              "nMuons",  m_outputTreeName.c_str());
@@ -248,12 +248,12 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( nBJets,              "nBJets",  m_outputTreeName.c_str());
     DeclareVariable( nBQuarks,            "nBQuarks",  m_outputTreeName.c_str());
     DeclareVariable( nBTagJets,           "nBTagJets",  m_outputTreeName.c_str());
-    
+
     DeclareVariable( LheNl,               "LheNl",  m_outputTreeName.c_str());
     DeclareVariable( LheNj,               "LheNj",  m_outputTreeName.c_str());
     DeclareVariable( LheHT,               "LheHT",  m_outputTreeName.c_str());
     DeclareVariable( LheV_pt,             "LheV_pt",  m_outputTreeName.c_str());
-    
+
     DeclareVariable( MET_pt,              "MET_pt",  m_outputTreeName.c_str());
     DeclareVariable( MET_phi,             "MET_phi",  m_outputTreeName.c_str());
     DeclareVariable( MET_sign,            "MET_sign",  m_outputTreeName.c_str());
@@ -261,11 +261,18 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( ST,                  "ST",  m_outputTreeName.c_str());
     DeclareVariable( HT,                  "HT",  m_outputTreeName.c_str());
     DeclareVariable( MinJetMetDPhi,       "MinDPhi",  m_outputTreeName.c_str());
+    DeclareVariable( MinLepMetDPhi,       "MinLepMetDPhi",m_outputTreeName.c_str());
+    DeclareVariable( MinBJetMetDPhi,      "MinBJetMetDPhi",m_outputTreeName.c_str());
+    DeclareVariable( MinLepJetDPhi,       "MinLepJetDPhi",m_outputTreeName.c_str());
+    DeclareVariable( MaxLepMetDPhi,       "MaxLepMetDPhi",m_outputTreeName.c_str());
+    DeclareVariable( MaxJetMetDPhi,       "MaxJetMetDPhi",  m_outputTreeName.c_str());
+    DeclareVariable( MaxBJetMetDPhi,      "MaxBJetMetDPhi",m_outputTreeName.c_str());
+    DeclareVariable( MaxLepJetDPhi,       "MaxLepJetDPhi",m_outputTreeName.c_str());
     DeclareVariable( MinJetMetDPhi12,     "MinDPhi12",  m_outputTreeName.c_str());
     DeclareVariable( mZ,                  "mZ",  m_outputTreeName.c_str());
     DeclareVariable( mT,                  "mT",  m_outputTreeName.c_str());
     DeclareVariable( mT2,                 "mT2",  m_outputTreeName.c_str());
-    
+
     DeclareVariable( Lepton1_pt,          "Lepton1_pt",  m_outputTreeName.c_str());
     DeclareVariable( Lepton2_pt,          "Lepton2_pt",  m_outputTreeName.c_str());
     DeclareVariable( Lepton1_eta,         "Lepton1_eta",  m_outputTreeName.c_str());
@@ -296,7 +303,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( Jet3_csv,            "Jet3_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet4_csv,            "Jet4_csv",  m_outputTreeName.c_str());
     DeclareVariable( V_pt,                "V_pt",  m_outputTreeName.c_str());
-    
+
 
     //
     // Declare the output histograms:
@@ -307,15 +314,15 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     std::vector<std::string> labelsZtoNN = {"All", "Trigger", "MET", "Lepton veto", "Tau veto", "Cleaning", "Jet Noise", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
     std::vector<std::string> labelsZtoEE = {"All", "Trigger", "Ele reco", "Ele p_{T}", "Ele Id+Iso", "Z(ee) candidate", "Z p_{T}", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
     std::vector<std::string> labelsZtoMM = {"All", "Trigger", "Muon reco", "Muon p_{T}", "Muon Id", "Muon Iso", "Z(#mu#mu) candidate", "Z p_{T}", "Jets #geq 2", "H mass", "1 b-tag", "2 b-tag"};
-    
+
     Book( TH1F( "Events", ";;Events;log", labelsZtoNN.size(), 0, labelsZtoNN.size()), "0l" );
     Book( TH1F( "Events", ";;Events;log", labelsZtoEE.size(), 0, labelsZtoEE.size()), "2e" );
     Book( TH1F( "Events", ";;Events;log", labelsZtoMM.size(), 0, labelsZtoMM.size()), "2m" );
-    
+
     for(unsigned int i = 0; i < labelsZtoNN.size(); i++) Hist("Events", "0l")->GetXaxis()->SetBinLabel(i+1, labelsZtoNN[i].c_str());
     for(unsigned int i = 0; i < labelsZtoEE.size(); i++) Hist("Events", "2e")->GetXaxis()->SetBinLabel(i+1, labelsZtoEE[i].c_str());
     for(unsigned int i = 0; i < labelsZtoMM.size(); i++) Hist("Events", "2m")->GetXaxis()->SetBinLabel(i+1, labelsZtoMM[i].c_str());
-    
+
     // ---------- SEMILEPTONIC Z->nn CHANNEL ----------
     Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "0l" );
     Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "0l" );
@@ -342,7 +349,15 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "nJets", ";number of jets;Events;log", 10, -0.5, 9.5), "0l" );
     Book( TH1F( "HT", ";HT (GeV);Events;log", 80, 0, 2000), "0l" );
     Book( TH1F( "METFilters", "Events;", 15, -0.5, 14.5), "0l" );
-    
+
+
+    Book( TH1F( "MinLepMetDPhi", ";min #Delta #varphi (lepton-#slash{E}_{T});Events;log", 28, 0, 3.15), "1e");
+    Book( TH1F( "MinBJetMetDPhi", ";min #Delta #varphi (bjets-#slash{E}_{T});Events;log", 28, 0, 3.15), "0l");
+    Book( TH1F( "MinLepJetDPhi", ";min #Delta #varphi (lepton-jet);Events;log", 28, 0, 3.15), "1e");
+    Book( TH1F( "MaxLepMetDPhi", ";max #Delta #varphi (lepton-#slash{E}_{T});Events;log", 28, 0, 3.15), "1e");
+    Book( TH1F( "MaxJetMetDPhi", ";max #Delta #varphi (jet-#slash{E}_{T});Events;log", 28, 0, 3.15), "0l" );
+    Book( TH1F( "MaxBJetMetDPhi", ";max #Delta #varphi (bjets-#slash{E}_{T});Events;log", 28, 0, 3.15), "0l");
+    Book( TH1F( "MaxLepJetDPhi", ";max #Delta #varphi (lepton-jet);Events;log", 28, 0, 3.15), "1e");
     // ---------- SEMILEPTONIC W->en CHANNEL ----------
     Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "1e" );
     Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "1e" );
@@ -373,7 +388,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "W_pt", ";p_{T}^{W} (GeV);Events;log", 80, 0, 2000), "1m" );
     Book( TH1F( "W_tmass", ";m_{T}^{W} (GeV);Events", 50, 0, 250), "1m" );
 
-    
+
     // ---------- SEMILEPTONIC Z->ee CHANNEL ----------
     Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "2e" );
     Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "2e" );
@@ -395,8 +410,8 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "Z_massBE", ";Z mass [barrel-endcaps] (GeV);Events", 40, 70, 110), "2e" );
     Book( TH1F( "Z_massEB", ";Z mass [endcaps-barrel] (GeV);Events", 40, 70, 110), "2e" );
     Book( TH1F( "Z_massEE", ";Z mass [endcaps-endcaps] (GeV);Events", 40, 70, 110), "2e" );
-    
-    
+
+
     // ---------- SEMILEPTONIC Z->mm CHANNEL ----------
     Book( TH1F( "EventWeight", ";Event Weight;Events", 100, 0., 2.), "2m" );
     Book( TH1F( "GenWeight", ";Gen Weight;Events", 100, 0., 2.), "2m" );
@@ -433,7 +448,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "Muon1_Id", ";muon 1 Id;Events;log", 5, -0.5, 4.5), "1e1m" );
     Book( TH1F( "Electron1_pfIso", ";electron 1 PFIso;Events;log", 50, 0, 5.), "1e1m" );
     Book( TH1F( "Muon1_pfIso", ";muon 1 PFIso;Events;log", 50, 0, 5.), "1e1m" );
-    
+
     // Gen
     Book( TH1F( "LheV_pt", ";V p_{T} (GeV);Events;log", 400, 0, 4000), "Gen" );
     Book( TH1F( "GenV_pt", ";V p_{T} (GeV);Events;log", 400, 0, 4000), "Gen" );
@@ -444,7 +459,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "LheNl", ";number of gen leptons;Events;log", 5, -0.5, 4.5), "Gen" );
     Book( TH1F( "LheNj", ";number of gen partons;Events;log", 5, -0.5, 4.5), "Gen" );
     Book( TH1F( "GenX_mass", ";X mass (GeV);Events;log", 1000, 100, 1100), "Gen" );
-    
+
     // Trigger
     Book( TH1F( "HLT_PFMET170_vs_SingleElectron_NUM", ";MET (GeV);Efficiency", 100, 100, 600), "Trigger" );
     Book( TH1F( "HLT_PFMET170_vs_SingleElectron_DEN", ";MET (GeV);Efficiency", 100, 100, 600), "Trigger" );
@@ -466,12 +481,12 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "HLT_PFMET_OR_vs_JetHT_DEN", ";min(METNoMu, MHTNoMu) (GeV);Efficiency", 100, 100, 600), "Trigger" );
     Book( TH1F( "HLT_PFMET_OR_NUM", ";min(METNoMu, MHTNoMu) (GeV);Efficiency", 100, 100, 600), "Trigger" );
     Book( TH1F( "HLT_PFMET_OR_DEN", ";min(MET, MHT) (GeV);Efficiency", 100, 100, 600), "Trigger" );
-    
+
     return;
 }
 
 void DMAnalysis::EndInputData( const SInputData& ) throw( SError ) {
-   
+
    return;
 
 }
@@ -495,9 +510,9 @@ void DMAnalysis::BeginInputFile( const SInputData& ) throw( SError ) {
 //        m_jetAK8.ConnectVariables( m_recoTreeName.c_str(), Ntuple::JetBasic|Ntuple::JetAnalysis|Ntuple::JetSubstructure|Ntuple::JetTruth|Ntuple::JetSoftdropSubjets|Ntuple::JetSoftdropSubjetsTruth|Ntuple::JetJER, (m_jetAK8Name + "_").c_str() );
 //        m_genjetAK8.ConnectVariables( m_recoTreeName.c_str(), Ntuple::GenJetTruth, "" );
 //    }
-//    
+//
 //    m_jetAK8Puppi.ConnectVariables( m_recoTreeName.c_str(), Ntuple::PuppiJetBasic|Ntuple::PuppiJetAnalysis|Ntuple::PuppiJetSoftdropSubjets, "" );
-    
+
     m_missingEt.ConnectVariables( m_recoTreeName.c_str(), Ntuple::MissingEtBasic|Ntuple::MissingEtAnalysis , (m_missingEtName + "_").c_str() );
     if(!m_isData) m_genParticle.ConnectVariables( m_recoTreeName.c_str(), Ntuple::GenParticleBasic, (m_genParticleName + "_").c_str() );
 
@@ -508,19 +523,19 @@ void DMAnalysis::BeginInputFile( const SInputData& ) throw( SError ) {
 
 
 void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
-    
+
     clearBranches();
     std::string sample(this->GetHistInputFile()->GetName());
-    
+
     m_logger << INFO << "ExecuteEvent\tevent: " << m_eventInfo.eventNumber << "\tlumi: " << m_eventInfo.lumiBlock << "\trun: " << m_eventInfo.runNumber << "\tin sample: " << sample << SLogger::endmsg;
-    
+
     // --- Preliminary operations ---
     isMC = !m_isData;
     EventNumber = m_eventInfo.eventNumber;
     LumiNumber = m_eventInfo.lumiBlock;
     RunNumber = m_eventInfo.runNumber;
     nPV = m_eventInfo.PV_N;
-    
+
     // Gen Weight
     if(isMC) {
         GenWeight = (m_eventInfo.genWeight < 0) ? -1 : 1;
@@ -543,12 +558,12 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         if(!isGoodEvent(m_eventInfo.runNumber, m_eventInfo.lumiBlock)) {m_logger << INFO << " - Event not in JSON"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     }
     if(!passMETFilters(!isMC)) {m_logger << INFO << " - Event fails MET filters"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
-    
+
     std::map<std::string, bool> triggerMap;
     triggerMap = getTriggerMap();
-    
+
     int nElectronsReco(0), nElectronsPt(0), nMuonsReco(0), nMuonsPt(0), nMuonsId(0);
-    
+
     // --- Electrons ---
     std::vector<UZH::Electron> ElecVect;
     std::vector<TLorentzVector> CalibratedElecVect;
@@ -576,7 +591,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         CalibratedElecVect.push_back(el_tlv);
     }
     nElectrons = ElecVect.size();
-    
+
     // --- Muons ---
     std::vector<UZH::Muon> MuonVect;
     for(int i = 0; i < m_muon.N; ++i) {
@@ -601,7 +616,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         ST += mu.pt();
     }
     nMuons = MuonVect.size();
-    
+
     // --- Taus ---
     std::vector<UZH::Tau> TauVect;
     for(int i = 0; i < m_tau.N; ++i) {
@@ -661,7 +676,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     nJets = JetsVect.size();
     MHT = sqrt(HTx*HTx + HTy*HTy);
     MHTNoMu = MHT;
-    
+
     // --- MET ---
     UZH::MissingEt MET( &m_missingEt, 0 );
     MET_pt = MET.et();
@@ -674,10 +689,15 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     METNoMu = MuonVect.size() == 0 ? MET.et() : sqrt(pow(MET_tlv.Px() + MuonVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + MuonVect[0].tlv().Py(), 2));
     MinMETMHT = std::min(float(MET.et()), MHT);
     MinMETNoMuMHTNoMu = std::min(METNoMu, MHTNoMu);
-    for(int i = 0; i < nJets; i++) if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) < MinJetMetDPhi) MinJetMetDPhi = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
+
+    // min/max deltaphi (MET, jet)
+    for(int i = 0; i < nJets; i++) {
+      if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) < MinJetMetDPhi) MinJetMetDPhi = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
+      if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) > MaxJetMetDPhi) MaxJetMetDPhi = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
+    }
     for(int i = 0; i < std::min(2, nJets); i++) if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) < MinJetMetDPhi12) MinJetMetDPhi12 = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
-    if(nJets == 0) MinJetMetDPhi = MinJetMetDPhi12 = -1.;
-    
+    if(nJets == 0) MinJetMetDPhi = MinJetMetDPhi12 = MaxJetMetDPhi = -1.;
+
     // --- GEN ---
     TLorentzVector GenH;
     TLorentzVector GenV;
@@ -704,12 +724,12 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         }
         if(GenV.Pt()>0.) GenVPt = GenV.Pt();
         else if(LepP.Pt()>0. && LepM.Pt()>0.) {GenVPt = (LepP+LepM).Pt(); GenVpdgId = (GenLepPpdgId == -GenLepMpdgId) ? 23 : 24;}
-        
+
         if(GenVPt > 0. && (sample.find("DYJetsToLL") != std::string::npos || sample.find("ZJetsToNuNu") != std::string::npos)) ZewkWeight *= m_ScaleFactorTool.GetEwkZ(GenVPt);
         if(GenVPt > 0. && (sample.find("WJetsToLNu") != std::string::npos))  WewkWeight *= m_ScaleFactorTool.GetEwkW(GenVPt);
         EventWeight *= WewkWeight * ZewkWeight;
     }
-    
+
     // TTbar pT reweighting
     if(isMC && (sample.find("TT") != std::string::npos)) {
         //if(m_eventInfo.lheNj < 6) TopWeight *= 0.5;
@@ -728,7 +748,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     // QCD scales
     QCDWeightUp = std::min(std::min(m_eventInfo.genFacWeightUp, m_eventInfo.genRenWeightUp), m_eventInfo.genFacRenWeightUp);
     QCDWeightDown = std::max(std::max(m_eventInfo.genFacWeightDown, m_eventInfo.genRenWeightDown), m_eventInfo.genFacRenWeightDown);
-    
+
     // Gen histograms
     Hist("LheV_pt", "Gen")->Fill(m_eventInfo.lheV_pt, GenWeight);
     Hist("GenV_pt", "Gen")->Fill(GenVPt, GenWeight);
@@ -739,16 +759,16 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     Hist("LheNl", "Gen")->Fill(m_eventInfo.lheNl, GenWeight);
     Hist("LheNj", "Gen")->Fill(m_eventInfo.lheNj, GenWeight);
     Hist("GenX_mass", "Gen")->Fill(GenX.M(), GenWeight);
-    
+
     LheV_pt = m_eventInfo.lheV_pt;
     LheHT = m_eventInfo.lheHT;
     LheNj = m_eventInfo.lheNj;
     LheNl = m_eventInfo.lheNl;
-    
+
 //    Hist("PDF_accept", "Sys")->Fill(0., EventWeight);
 //    Hist("PDF_accept", "Sys")->Fill(+1., EventWeight*m_eventInfo.pdf_rms);
 //    Hist("PDF_accept", "Sys")->Fill(-1., EventWeight*(2.-m_eventInfo.pdf_rms));
-    
+
     // --- TRIGGER ---
     if(!isMC) {
         if(ElecVect.size() + MuonVect.size() > 0) {
@@ -790,28 +810,28 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
 //                }
 //            }
         }
-        
+
     }
-    
+
     Hist("Events")->Fill(0., GenWeight);
     Hist("Events", "0l")->Fill(0., EventWeight);
     Hist("Events", "2e")->Fill(0., EventWeight);
     Hist("Events", "2m")->Fill(0., EventWeight);
-    
+
     // Filter by Trigger
     // if(!isMC) {
     if(!triggerMap["SingleMu"] && !triggerMap["SingleIsoMu"] && !triggerMap["SingleEle"] && !triggerMap["SingleIsoEle"] && !triggerMap["MET"] && !triggerMap["METMHT"] && !triggerMap["METMHTNoMu"]) {m_logger << INFO << " - No trigger"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     // }
-    
-    
+
+
     Hist("Events", "0l")->Fill(1., EventWeight);
     Hist("Events", "2e")->Fill(1., EventWeight);
     Hist("Events", "2m")->Fill(1., EventWeight);
-    
+
     if(m_electron.N >= 2) Hist("Events", "2e")->Fill(2., EventWeight);
     if(nElectronsPt >= 2) Hist("Events", "2e")->Fill(3., EventWeight);
     if(ElecVect.size()>=2) Hist("Events", "2e")->Fill(4., EventWeight);
-    
+
     if(m_muon.N >= 2) Hist("Events", "2m")->Fill(2., EventWeight);
     if(nMuonsPt >= 2) Hist("Events", "2m")->Fill(3., EventWeight);
     if(nMuonsId >= 2) Hist("Events", "2m")->Fill(4., EventWeight);
@@ -820,9 +840,9 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     // -----------------------------------
     //           VECTOR BOSON
     // -----------------------------------
-    
+
     // Categorization depending on the number of leptons
-    
+
     // ---------- Z TO LEPTONS ----------
     // Cascade: Zmm -> Zee -> Wmn -> Wen -> Znn -> Zqq
     // --- Z -> mumu ---
@@ -1088,6 +1108,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                     // Cleaning
                     Hist("Events", "0l")->Fill(4., EventWeight);
                     Hist("MinJetMetDPhi", "0l")->Fill(MinJetMetDPhi, EventWeight);
+                    Hist("MaxJetMetDPhi", "0l")->Fill(MaxJetMetDPhi, EventWeight);
                     if(!(MinJetMetDPhi >= 0.4)) m_logger << INFO << " - ZtoNN event failed noise cleaning" << SLogger::endmsg;
                     else {
                         Hist("Events", "0l")->Fill(5., EventWeight);
@@ -1127,7 +1148,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             }
         }
     }
-    
+
     // ----------- Nothing else matters ---------------
     if(!isZtoNN && !isWtoEN && !isWtoMN && !isTtoEM && !isZtoEE && !isZtoMM) { m_logger << INFO << " - No V candidate" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     m_logger << INFO << " + Trigger consistency verified" << SLogger::endmsg;
@@ -1140,7 +1161,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     else if(isZtoEE) category = "2e";
     else if(isZtoMM) category = "2m";
     else if(isTtoEM) category = "1e1m";
-    
+
     Hist("EventWeight", category.c_str())->Fill(EventWeight);
     Hist("GenWeight", category.c_str())->Fill(GenWeight);
     Hist("TopWeight", category.c_str())->Fill(TopWeight);
@@ -1149,16 +1170,16 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     Hist("LeptonWeight", category.c_str())->Fill(LeptonWeight);
     Hist("nJets", category.c_str())->Fill(nJets, EventWeight);
     Hist("HT", category.c_str())->Fill(HT, EventWeight);
-    
+
     // Jet multiplicity selection
     if(nJets+nForwardJets < m_nJetsCut) { m_logger << INFO << " - Number of jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
-    
+
     std::vector<UZH::Jet> JetsVectSorted(JetsVect.begin(), JetsVect.end());
     std::sort(JetsVectSorted.begin(), JetsVectSorted.end(), SortByCSV);
     //std::vector<UZH::Jet> JetsVectSortedLoose(JetsVectSorted.begin()+1, JetsVectSorted.end()); // Only for Loose SF
 
     m_logger << INFO << " + Filling jets" << SLogger::endmsg;
-    
+
     if(nJets >= 1) {
         Jet1.SetPtEtaPhiE(JetsVect[0].pt(), JetsVect[0].eta(), JetsVect[0].phi(), JetsVect[0].e());
         Jet1_pt = JetsVect[0].pt();
@@ -1194,10 +1215,14 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         JetF_phi = JetsVectFor[0].phi();
         //JetF_csv = JetsVectFor[0].csv();
     }
-    
+
     // --- BTV ---
+    std::vector<TLorentzVector> bJets_tight;
     for(unsigned int i=0; i<JetsVect.size(); i++) {
-        if(fabs(JetsVect[i].eta()) < 2.4 && m_bTaggingScaleTool.isTagged( JetsVect[i].csv() )) nBTagJets++; // Count Tight b-tagged jets
+        if(fabs(JetsVect[i].eta()) < 2.4 && m_bTaggingScaleTool.isTagged( JetsVect[i].csv() )) {
+            bJets_tight.push_back(JetsVect[i].tlv());
+            nBTagJets++;
+        }  // Count Tight b-tagged jets
     }
     // For MT2W
     std::vector<TLorentzVector> bJets, lJets;
@@ -1211,8 +1236,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         mT2 = m_VariableTool.ReturnMT2W(bJets, lJets, Lepton1, MET_tv2);
     }
     m_logger << INFO << " + MT2W = " << mT2 << SLogger::endmsg;
-    
-    
+
+
     m_logger << INFO << " + Calculating b-tagging scale factors" << SLogger::endmsg;
     if(isMC) {
         float BTagAK4Weight(1.), BTagAK4WeightUp(1.), BTagAK4WeightDown(1.), BTagAK4WeightBUp(1.), BTagAK4WeightBDown(1.), BTagAK4WeightLUp(1.), BTagAK4WeightLDown(1.), BTagAK4WeightB1(1.), BTagAK4WeightB2(1.), BTagAK4WeightL1(1.), BTagAK4WeightL2(1.);
@@ -1242,7 +1267,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         BTagWeightUp = BTagAK4WeightBUp;
         BTagWeightDown = BTagAK4WeightBDown;
         //EventWeight *= BTagWeight; // not yet
-        
+
         // Fill histograms
         if(isMC) {
             m_bTaggingScaleTool.fillEfficiencies(JetsVect);
@@ -1251,11 +1276,64 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         }
     }
     //Hist("BTagWeight", category.c_str())->Fill(BTagWeight);
-    
-    
-    
+
+
+    // Min/Max DeltaPhi for lepton
+    // min/max deltaphi(lepton, MET)
+
+    if(isWtoEN){
+        for(int i = 0; i < nElectrons; ++i){
+            if(fabs(MET_tlv.DeltaPhi(ElecVect[i].tlv())) < MinLepMetDPhi) MinLepMetDPhi = fabs(MET_tlv.DeltaPhi(ElecVect[i].tlv()));
+            if(fabs(MET_tlv.DeltaPhi(ElecVect[i].tlv())) > MaxLepMetDPhi) MaxLepMetDPhi = fabs(MET_tlv.DeltaPhi(ElecVect[i].tlv()));
+        }
+    }
+    if(isWtoMN){
+        for(int i = 0; i < nMuons; ++i){
+            if(fabs(MET_tlv.DeltaPhi(MuonVect[i].tlv())) < MinLepMetDPhi) MinLepMetDPhi = fabs(MET_tlv.DeltaPhi(MuonVect[i].tlv()));
+            if(fabs(MET_tlv.DeltaPhi(MuonVect[i].tlv())) > MaxLepMetDPhi) MaxLepMetDPhi = fabs(MET_tlv.DeltaPhi(MuonVect[i].tlv()));
+        }
+    }
+
+    //Hist("MinLepMetDPhi", "1e")->Fill(MinLepMetDPhi, EventWeight);
+    //Hist("MaxLepMetDPhi", "1e")->Fill(MaxLepMetDPhi, EventWeight);
+
+
+    // min/max deltaphi (lepton, jet)
+
+    for(int i = 0; i < nJets; i++){
+        if(isWtoEN){
+            for(int j = 0; j < nElectrons; j++){
+                if(fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) < MinLepMetDPhi) MinLepJetDPhi = fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
+                if(fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) > MaxLepMetDPhi) MaxLepJetDPhi = fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
+            }
+        }
+        if(isWtoMN){
+            for(int j = 0; j < nMuons; j++){
+                if(fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) < MinLepMetDPhi) MinLepJetDPhi = fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
+                if(fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) > MaxLepMetDPhi) MaxLepJetDPhi = fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
+            }
+        }
+    }
+
+    //Hist("MinLepJetDPhi", "1e")->Fill(MinLepJetDPhi, EventWeight);
+    //Hist("MaxLepJetDPhi", "1e")->Fill(MaxLepJetDPhi, EventWeight);
+
+
+    // min/max deltaphi (b-jets, MET)
+
+    if (nBTagJets > 0){
+        for(int i = 0; i < nBTagJets ;++i){
+            if(fabs(MET_tlv.DeltaPhi(bJets_tight[i])) < MinBJetMetDPhi) MinBJetMetDPhi = fabs(MET_tlv.DeltaPhi(bJets_tight[i]));
+            if(fabs(MET_tlv.DeltaPhi(bJets_tight[i])) > MaxBJetMetDPhi) MaxBJetMetDPhi = fabs(MET_tlv.DeltaPhi(bJets_tight[i]));
+        }
+    }
+
+    //Hist("MinBJetMetDPhi", "0l")->Fill(MinBJetMetDPhi, EventWeight);
+    //Hist("MaxBJetMetDPhi", "0l")->Fill(MaxBJetMetDPhi, EventWeight);
+
+
     m_logger << INFO << " + Tree filled" << SLogger::endmsg;
-    
+
     return;
 }
 
@@ -1266,7 +1344,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
 
 
 bool DMAnalysis::isGoodEvent(int runNumber, int lumiSection) {
-  
+
   bool isGood = true;
   if (m_isData) {
     isGood = m_grl.HasRunLumiBlock( runNumber, lumiSection );
@@ -1320,7 +1398,7 @@ bool DMAnalysis::passTrigger(std::string cat) {
 
 
 bool DMAnalysis::passMETFilters(bool data) {
-  
+
     // using only what's recommended in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2
     if( !(m_eventInfo.PV_filter) ) return false;
     Hist( "METFilters", "0l" )->Fill(1);
@@ -1338,7 +1416,7 @@ bool DMAnalysis::passMETFilters(bool data) {
     Hist( "METFilters", "0l" )->Fill(7);
     if( !(m_eventInfo.passFilter_muonBadTrack) ) return false;
     Hist( "METFilters", "0l" )->Fill(8);
-    if( !(m_eventInfo.passFilter_chargedHadronTrackResolution) ) return false;       
+    if( !(m_eventInfo.passFilter_chargedHadronTrackResolution) ) return false;
     Hist( "METFilters", "0l" )->Fill(9);
     //  if( !(m_eventInfo.passFilter_METFilters) ) return false;
     //   Hist( "METFilters" )->Fill(10);
@@ -1352,7 +1430,7 @@ bool DMAnalysis::passMETFilters(bool data) {
     }
 
     return true;
-  
+
 }
 
 
@@ -1364,10 +1442,9 @@ void DMAnalysis::clearBranches() {
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nForwardJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
     HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = fakeMET_pt = 0.;
     mZ = mT = mT2 = V_pt = 0.;
-    MinJetMetDPhi = MinJetMetDPhi12 = 10.;
-    
+    MinLepJetDPhi = MinLepMetDPhi = MinJetMetDPhi = MinJetMetDPhi12 = MinBJetMetDPhi = 10.;
+    MaxLepMetDPhi = MaxLepJetDPhi = MaxJetMetDPhi = MaxBJetMetDPhi = -1.;
+
     Lepton1 = Lepton2 = Jet1 = Jet2 = Jet3 = Jet4 = V = TLorentzVector();
     Lepton1_pt = Lepton2_pt = Lepton1_eta = Lepton2_eta = Lepton1_phi = Lepton2_phi = Lepton1_pfIso = Lepton2_pfIso = Lepton1_id = Lepton2_id = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = JetF_pt = Jet1_eta = Jet2_eta = Jet3_eta = Jet4_eta = JetF_eta = Jet1_phi = Jet2_phi = Jet3_phi = Jet4_phi = JetF_phi = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = -9.;
 }
-
-
