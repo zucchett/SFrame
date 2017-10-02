@@ -1187,28 +1187,28 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Jet1_pt = JetsVect[0].pt();
         Jet1_eta = JetsVect[0].eta();
         Jet1_phi = JetsVect[0].phi();
-        Jet1_csv = JetsVectSorted[0].csv();
+        Jet1_csv = JetsVect[0].csv();
     }
     if(nJets >= 2) {
         Jet2.SetPtEtaPhiE(JetsVect[1].pt(), JetsVect[1].eta(), JetsVect[1].phi(), JetsVect[1].e());
         Jet2_pt = JetsVect[1].pt();
         Jet2_eta = JetsVect[1].eta();
         Jet2_phi = JetsVect[1].phi();
-        Jet2_csv = JetsVectSorted[1].csv();
+        Jet2_csv = JetsVect[1].csv();
     }
     if(nJets >= 3) {
         Jet3.SetPtEtaPhiE(JetsVect[2].pt(), JetsVect[2].eta(), JetsVect[2].phi(), JetsVect[2].e());
         Jet3_pt = JetsVect[2].pt();
         Jet3_eta = JetsVect[2].eta();
         Jet3_phi = JetsVect[2].phi();
-        Jet3_csv = JetsVectSorted[2].csv();
+        Jet3_csv = JetsVect[2].csv();
     }
     if(nJets >= 4) {
         Jet4.SetPtEtaPhiE(JetsVect[3].pt(), JetsVect[3].eta(), JetsVect[3].phi(), JetsVect[3].e());
         Jet4_pt = JetsVect[3].pt();
         Jet4_eta = JetsVect[3].eta();
         Jet4_phi = JetsVect[3].phi();
-        Jet4_csv = JetsVectSorted[3].csv();
+        Jet4_csv = JetsVect[3].csv();
     }
     if(nForwardJets >= 1) {
         //JetF.SetPtEtaPhiE(JetsVectFor[0].pt(), JetsVectFor[0].eta(), JetsVectFor[0].phi(), JetsVectFor[0].e());
