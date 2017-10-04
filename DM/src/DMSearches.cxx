@@ -750,10 +750,10 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     // QCD scales
     //QCDWeightUp = std::min(std::min(m_eventInfo.genFacWeightUp, m_eventInfo.genRenWeightUp), m_eventInfo.genFacRenWeightUp);
     //QCDWeightDown = std::max(std::max(m_eventInfo.genFacWeightDown, m_eventInfo.genRenWeightDown), m_eventInfo.genFacRenWeightDown);
-    QCDRenWeightUp = m_eventInfo.genRenWeightUp;
-    QCDRenWeightDown = m_eventInfo.genRenWeightDown;
-    QCDFacWeightUp = m_eventInfo.genFacWeightUp;
-    QCDFacWeightDown = m_eventInfo.genFacWeightDown;
+    QCDRenWeightUp = std::max(0., std::min(2., double(m_eventInfo.genRenWeightUp)));
+    QCDRenWeightDown = std::max(0., std::min(2., double(m_eventInfo.genRenWeightDown)));
+    QCDFacWeightUp = std::max(0., std::min(2., double(m_eventInfo.genFacWeightUp)));
+    QCDFacWeightDown = std::max(0., std::min(2., double(m_eventInfo.genFacWeightDown)));
 
     // Gen histograms
     Hist("LheV_pt", "Gen")->Fill(m_eventInfo.lheV_pt, GenWeight);
