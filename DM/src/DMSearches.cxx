@@ -217,8 +217,10 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( WewkWeight,          "WewkWeight",  m_outputTreeName.c_str());
     DeclareVariable( ZewkWeight,          "ZewkWeight",  m_outputTreeName.c_str());
     DeclareVariable( TopWeight,           "TopWeight",  m_outputTreeName.c_str());
-    DeclareVariable( QCDWeightUp,         "QCDWeightUp",  m_outputTreeName.c_str());
-    DeclareVariable( QCDWeightDown,       "QCDWeightDown",  m_outputTreeName.c_str());
+    DeclareVariable( QCDRenWeightUp,      "QCDRenWeightUp",  m_outputTreeName.c_str());
+    DeclareVariable( QCDRenWeightDown,    "QCDRenWeightDown",  m_outputTreeName.c_str());
+    DeclareVariable( QCDFacWeightUp,      "QCDFacWeightUp",  m_outputTreeName.c_str());
+    DeclareVariable( QCDFacWeightDown,    "QCDFacWeightDown",  m_outputTreeName.c_str());
     DeclareVariable( PUWeight,            "puWeight",  m_outputTreeName.c_str());
     DeclareVariable( PUWeightUp,          "puWeightUp",  m_outputTreeName.c_str());
     DeclareVariable( PUWeightDown,        "puWeightDown",  m_outputTreeName.c_str());
@@ -746,8 +748,12 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         //EventWeight *= TopWeight;
     }
     // QCD scales
-    QCDWeightUp = std::min(std::min(m_eventInfo.genFacWeightUp, m_eventInfo.genRenWeightUp), m_eventInfo.genFacRenWeightUp);
-    QCDWeightDown = std::max(std::max(m_eventInfo.genFacWeightDown, m_eventInfo.genRenWeightDown), m_eventInfo.genFacRenWeightDown);
+    //QCDWeightUp = std::min(std::min(m_eventInfo.genFacWeightUp, m_eventInfo.genRenWeightUp), m_eventInfo.genFacRenWeightUp);
+    //QCDWeightDown = std::max(std::max(m_eventInfo.genFacWeightDown, m_eventInfo.genRenWeightDown), m_eventInfo.genFacRenWeightDown);
+    QCDRenWeightUp = m_eventInfo.genRenWeightUp;
+    QCDRenWeightDown = m_eventInfo.genRenWeightDown;
+    QCDFacWeightUp = m_eventInfo.genFacWeightUp;
+    QCDFacWeightDown = m_eventInfo.genFacWeightDown;
 
     // Gen histograms
     Hist("LheV_pt", "Gen")->Fill(m_eventInfo.lheV_pt, GenWeight);
@@ -1438,7 +1444,7 @@ bool DMAnalysis::passMETFilters(bool data) {
 
 
 void DMAnalysis::clearBranches() {
-    EventWeight = GenWeight = ZewkWeight = WewkWeight = TopWeight = QCDWeightUp = QCDWeightDown = PUWeight = PUWeightUp = PUWeightDown = TriggerWeight = TriggerWeightUp = TriggerWeightDown = LeptonWeight = LeptonWeightUp = LeptonWeightDown = BTagWeight = BTagWeightUp = BTagWeightDown = 1.;
+    EventWeight = GenWeight = ZewkWeight = WewkWeight = TopWeight = QCDRenWeightUp = QCDRenWeightDown = QCDFacWeightUp = QCDFacWeightDown = PUWeight = PUWeightUp = PUWeightDown = TriggerWeight = TriggerWeightUp = TriggerWeightDown = LeptonWeight = LeptonWeightUp = LeptonWeightDown = BTagWeight = BTagWeightUp = BTagWeightDown = 1.;
     isZtoNN = isWtoEN = isWtoMN = isTtoEM = isZtoEE = isZtoMM = isTveto = false;
     LheV_pt = LheHT = LheNl = LheNj = LheNb = 0;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nForwardJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
