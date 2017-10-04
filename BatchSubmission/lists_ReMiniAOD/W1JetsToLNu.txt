@@ -1,0 +1,2 @@
+W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0000_0.xml
+W1JetsToLNu_TuneCUETP8M1_13TeV-madgraphMLM-pythia8_0000_1.xml
