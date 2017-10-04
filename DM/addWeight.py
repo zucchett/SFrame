@@ -11,7 +11,7 @@ import optparse
 usage = 'usage: %prog [options]'
 parser = optparse.OptionParser(usage)
 parser.add_option('-i', '--input', action='store', type='string', dest='origin', default='./AnalysisOutput/')
-parser.add_option('-o', '--output', action='store', type='string', dest='target', default='../../Ntuple/DM/')
+parser.add_option('-o', '--output', action='store', type='string', dest='target', default='/scratch/zucchett/Ntuple/DM/')
 parser.add_option('-f', '--filter', action='store', type='string', dest='filter', default='')
 parser.add_option('-s', '--single', action='store_true', dest='single', default=False)
 parser.add_option('-v', '--verbose', action='store_true', dest='verbose', default=False)
@@ -109,8 +109,8 @@ def processFile(sample_name, verbose=False):
                 # Weights
                 if isMC:
                     # MC stitching
-                    if sample=='DYJetsToLL' or sample=='WJetsToLNu':
-                        if obj.LheHT > 100.: stitchWeight[0] = 0.
+                    if sample=='DYJetsToLL' or sample=='WJetsToLNu' or sample=='W1JetsToLNu' or sample=='W2JetsToLNu' or sample=='W3JetsToLNu' or sample=='W4JetsToLNu':
+                        if obj.LheHT > 70.: stitchWeight[0] = 0.
                     eventWeightLumi[0] = obj.eventWeight #* obj.bTagWeight
                     eventWeightLumi[0] *= LUMI*XS/totalEntries
                 # Fill the branches

@@ -177,8 +177,10 @@ class DMAnalysis : public SCycleBase {
         float WewkWeight;
         float ZewkWeight;
         float TopWeight;
-        float QCDWeightUp;
-        float QCDWeightDown;
+        float QCDRenWeightUp;
+        float QCDRenWeightDown;
+        float QCDFacWeightUp;
+        float QCDFacWeightDown;
         float PUWeight;
         float PUWeightUp;
         float PUWeightDown;

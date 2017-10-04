@@ -85,6 +85,7 @@ xsection = {
     'ZJetsToQQ_HT-600ToInf' : { 'nevents' : 1, 'xsec'    : 15.23, 'matcheff': 1., 'kfactor' : 1.139, 'br' : 1., },
     
     'WJetsToLNu' : { 'nevents' : 1, 'xsec'    : 61526.7, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'WJetsToLNu_HT-70To100' : { 'nevents' : 1, 'xsec'    : 1372, 'matcheff': 1., 'kfactor' : 1.26, 'br' : 1., },
     'WJetsToLNu_HT-100To200' : { 'nevents' : 1, 'xsec'    : 1345, 'matcheff': 1., 'kfactor' : 1.26, 'br' : 1., },
     'WJetsToLNu_HT-200To400' : { 'nevents' : 1, 'xsec'    : 359.7, 'matcheff': 1., 'kfactor' : 1.48, 'br' : 1., },
     'WJetsToLNu_HT-400To600' : { 'nevents' : 1, 'xsec'    : 48.91, 'matcheff': 1., 'kfactor' : 1.26, 'br' : 1., },
@@ -97,6 +98,11 @@ xsection = {
     'WJetsToLNu_Pt-250To400' : { 'nevents' : 1, 'xsec'    : 23.94, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     'WJetsToLNu_Pt-400To600' : { 'nevents' : 1, 'xsec'    : 3.031, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     'WJetsToLNu_Pt-600ToInf' : { 'nevents' : 1, 'xsec'    : 0.4524, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    
+    'W1JetsToLNu' : { 'nevents' : 1, 'xsec'    : 9493., 'matcheff': 0.273, 'kfactor' : 1., 'br' : 1., },
+    'W2JetsToLNu' : { 'nevents' : 1, 'xsec'    : 3120., 'matcheff': 0.137, 'kfactor' : 1., 'br' : 1., },
+    'W3JetsToLNu' : { 'nevents' : 1, 'xsec'    : 942.3, 'matcheff': 0.064, 'kfactor' : 1., 'br' : 1., },
+    'W4JetsToLNu' : { 'nevents' : 1, 'xsec'    : 524.2, 'matcheff': 0.047, 'kfactor' : 1., 'br' : 1., },
     
     'WJetsToQQ_HT-600ToInf' : { 'nevents' : 1, 'xsec'    : 19.9, 'matcheff': 1., 'kfactor' : 1.004, 'br' : 1., },
     
