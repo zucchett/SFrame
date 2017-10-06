@@ -7,20 +7,20 @@ selection = {
     # Hadronic category
     "AH0lSR" : "isZtoNN && MET_pt>250. && MinDPhi>0.4 && nJets>=3 && nBTagJets>=1",
     "AH0lCR" : "isZtoNN && MET_pt>250. && MinDPhi>0.4 && nJets>=3 && nBTagJets==0",
-    "AH1eWR" : "isWtoEN && MET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && mT<160. && nJets>=3 && nBTagJets==0",
-    "AH1mWR" : "isWtoMN && MET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && mT<160. && nJets>=3 && nBTagJets==0",
-    "AH2eZR" : "isZtoEE && FakeMET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && (mZ>60. && mZ<120.) && nJets>=3",
-    "AH2mZR" : "isZtoMM && FakeMET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && (mZ>60. && mZ<120.) && nJets>=3",
+    "AH1eWR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && mT<160. && nJets>=3 && nBTagJets==0",
+    "AH1mWR" : "isWtoMN && nElectrons==0 && nMuons==1 && nTaus==0 && MET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && mT<160. && nJets>=3 && nBTagJets==0",
+    "AH2eZR" : "isZtoEE && FakeMET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && (mZ>60. && mZ<120.) && nJets>=3 && nBTagJets<99",
+    "AH2mZR" : "isZtoMM && FakeMET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && (mZ>60. && mZ<120.) && nJets>=3 && nBTagJets<99",
     "AH1eTR" : "isWtoEN && MET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && mT<160. && nJets>=3 && nBTagJets>=1",
     "AH1mTR" : "isWtoMN && MET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && mT<160. && nJets>=3 && nBTagJets>=1",
     
     # Semileptonic category
-    "SL1eSR" : "isWtoEN && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && nJets>=2 && nBTagJets>=1 && MinDPhi12>1.2 && mT>160. && mT2>200.",
-    "SL1mSR" : "isWtoMN && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets>=1 && MinDPhi12>1.2 && mT>160. && mT2>200.",
+    "SL1eSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && nJets>=2 && nBTagJets>=1 && MinDPhi12>1.2 && mT>160. && mT2>200.",
+    "SL1mSR" : "isWtoMN && nElectrons==0 && nMuons==1 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets>=1 && MinDPhi12>1.2 && mT>160. && mT2>200.",
     #"SL1lSR" : "(isWtoEN || isWtoMN) && nJets>=2 && nBTagJets>=1 && mT>160. && mT2>200.", # don't use this
-    "SL1eWR" : "isWtoEN && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && nJets>=2 && nBTagJets==0 && mT>160. && Jet1_pt>100 && Jet2_pt>100",
-    "SL1mWR" : "isWtoMN && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets==0 && mT>160. && Jet1_pt>100 && Jet2_pt>100",
-    "SL1e1mTR" : "isTtoEM && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && Lepton2_pt>30. && abs(Lepton2_eta)<2.1 && Lepton2_pfIso<0.15 && Lepton2_id==4 && nJets>=2 && nBTagJets>=1",
+    "SL1eWR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && nJets>=2 && nBTagJets==0 && mT>160. && MinDPhi12>0.4",
+    "SL1mWR" : "isWtoMN && nElectrons==0 && nMuons==1 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets==0 && mT>160. && MinDPhi12>0.4",
+    "SL1e1mTR" : "isTtoEM && nElectrons==1 && nMuons==1 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && Lepton2_pt>30. && abs(Lepton2_eta)<2.1 && Lepton2_pfIso<0.15 && Lepton2_id==4 && nJets>=2 && nBTagJets>=1",
     # Z control region, not sure it really matters
 
     # ttDM
