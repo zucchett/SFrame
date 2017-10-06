@@ -111,7 +111,7 @@ def processFile(sample_name, verbose=False):
                     # MC stitching
                     if sample=='DYJetsToLL' or sample=='WJetsToLNu' or sample=='W1JetsToLNu' or sample=='W2JetsToLNu' or sample=='W3JetsToLNu' or sample=='W4JetsToLNu':
                         if obj.LheHT > 70.: stitchWeight[0] = 0.
-                    eventWeightLumi[0] = obj.eventWeight #* obj.bTagWeight
+                    eventWeightLumi[0] = obj.eventWeight * obj.bTagWeight * obj.TopWeight
                     eventWeightLumi[0] *= LUMI*XS/totalEntries
                 # Fill the branches
                 stitchWeightBranch.Fill()
