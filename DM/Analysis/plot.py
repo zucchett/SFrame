@@ -36,7 +36,7 @@ if options.bash: gROOT.SetBatch(True)
 
 gStyle.SetOptStat(0)
 
-NTUPLEDIR   = "/mnt/t3nfs01/data01/shome/zucchett//Ntuple/DM/"
+NTUPLEDIR   = "/scratch/zucchett/Ntuple/DM/"
 SIGNAL      = 1 # Signal magnification factor
 RATIO       = 4 # 0: No ratio plot; !=0: ratio between the top and bottom pads
 NORM        = options.norm
@@ -62,7 +62,7 @@ def plot(var, cut, norm=False, nm1=False):
     channel = cut
     plotdir = cut
     plotname = var
-    weight = "eventWeightLumi*stitchWeight*bTagWeight" #*(2.2/35.9)
+    weight = "eventWeightLumi" #*(2.2/35.9)
     isBlind = BLIND and 'SR' in channel
     showSignal = True#('SR' in channel)
     cutSplit = cut.split()
@@ -330,7 +330,7 @@ def plotAll():
 #            plot(h, c)
     
     for r in selection.keys():
-        for v in ['Lepton1_pt', 'Lepton1_pfIso', 'Lepton2_pt', 'Lepton2_pfIso', 'Jet1_pt', 'Jet1_csv', 'Jet2_pt', 'Jet2_csv', 'Jet3_pt', 'Jet3_csv', 'Jet4_pt', 'Jet4_csv', 'JetF_pt', 'mZ', 'V_pt', 'mT', 'mT2', 'MinDPhi', 'MinDPhi12', 'MET_pt', 'MET_sign', 'FakeMET_pt', 'MinDPhi', 'nJets', 'nForwardJets', 'nBTagJets', 'nElectrons', 'nMuons', 'nTaus', 'HT', 'ST']:
+        for v in ['Lepton1_pt', 'Lepton1_pfIso', 'Lepton2_pt', 'Lepton2_pfIso', 'Jet1_pt', 'Jet1_csv', 'Jet2_pt', 'Jet2_csv', 'Jet3_pt', 'Jet3_csv', 'Jet4_pt', 'Jet4_csv', 'JetF_pt', 'mZ', 'V_pt', 'mT', 'mT2', 'MinDPhi', 'MinDPhi12', 'MET_pt', 'MET_sign', 'FakeMET_pt', 'nPV', 'nJets', 'nForwardJets', 'nBTagJets', 'nElectrons', 'nMuons', 'nTaus', 'HT', 'ST']:
 #            plot(v, r)
             p = multiprocessing.Process(target=plot, args=(v,r,))
             jobs.append(p)
