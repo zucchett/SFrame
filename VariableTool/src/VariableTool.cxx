@@ -304,6 +304,19 @@ float VariableTool::ReturnPhi1(TLorentzVector& theX, TLorentzVector& theL1, TLor
   return value;
 }
 
+// CMS-JME-13-006
+float VariableTool::ReturnCosThetaJ(TLorentzVector& theV, TLorentzVector& theQ1) {
+  TLorentzVector pV(theV);
+  TLorentzVector pQ1(theQ1);
+
+  pQ1.Boost( -pV.BoostVector() ); // Boost q1 along V had direction
+
+  // cos theta = pQ1 dot pV / (|pQ1|*|pV|)
+  float value=pQ1.Vect().Dot( pV.Vect() ) / ( pQ1.Vect().Mag()*pV.Vect().Mag() );
+  if(value!=value || isinf(value)) return -2.;
+  return value;
+}
+
 
 // --- MT2W ---
 

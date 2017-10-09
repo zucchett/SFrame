@@ -47,6 +47,7 @@ class VariableTool  : public SToolBase   {
         float ReturnCosTheta2(TLorentzVector&, TLorentzVector&, TLorentzVector&, TLorentzVector&, TLorentzVector&);
         float ReturnPhi(TLorentzVector&, TLorentzVector&, TLorentzVector&, TLorentzVector&, TLorentzVector&);
         float ReturnPhi1(TLorentzVector&, TLorentzVector&, TLorentzVector&);
+        float ReturnCosThetaJ(TLorentzVector&, TLorentzVector&);
         float ReturnMT2W(std::vector<TLorentzVector>&, std::vector<TLorentzVector>&, TLorentzVector&, TVector2&);
 };
 
