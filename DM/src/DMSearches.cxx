@@ -867,19 +867,19 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                     LeptonWeight *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta());
                     LeptonWeight *= m_ScaleFactorTool.GetMuonTightId(MuonVect[1].pt(), MuonVect[1].eta());
                     LeptonWeight *= m_ScaleFactorTool.GetMuonTightPFIso(MuonVect[0].pt(), MuonVect[0].eta());
-                    LeptonWeight *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[1].pt(), MuonVect[1].eta());
+                    LeptonWeight *= m_ScaleFactorTool.GetMuonTightPFIso(MuonVect[1].pt(), MuonVect[1].eta());
                     LeptonWeight *= pow(m_ScaleFactorTool.GetMuonTrk(nPV), 2);
                     TriggerWeightUp *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), +1);
                     LeptonWeightUp *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), +1);
                     LeptonWeightUp *= m_ScaleFactorTool.GetMuonTightId(MuonVect[1].pt(), MuonVect[1].eta(), +1);
                     LeptonWeightUp *= m_ScaleFactorTool.GetMuonTightPFIso(MuonVect[0].pt(), MuonVect[0].eta(), +1);
-                    LeptonWeightUp *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[1].pt(), MuonVect[1].eta(), +1);
+                    LeptonWeightUp *= m_ScaleFactorTool.GetMuonTightPFIso(MuonVect[1].pt(), MuonVect[1].eta(), +1);
                     LeptonWeightUp *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, +1), 2);
                     TriggerWeightDown *= m_ScaleFactorTool.GetTrigSingleIsoMuon(MuonVect[0].pt(), MuonVect[0].eta(), -1);
                     LeptonWeightDown *= m_ScaleFactorTool.GetMuonTightId(MuonVect[0].pt(), MuonVect[0].eta(), -1);
                     LeptonWeightDown *= m_ScaleFactorTool.GetMuonTightId(MuonVect[1].pt(), MuonVect[1].eta(), -1);
                     LeptonWeightDown *= m_ScaleFactorTool.GetMuonTightPFIso(MuonVect[0].pt(), MuonVect[0].eta(), -1);
-                    LeptonWeightDown *= m_ScaleFactorTool.GetMuonLoosePFIso(MuonVect[1].pt(), MuonVect[1].eta(), -1);
+                    LeptonWeightDown *= m_ScaleFactorTool.GetMuonTightPFIso(MuonVect[1].pt(), MuonVect[1].eta(), -1);
                     LeptonWeightDown *= pow(m_ScaleFactorTool.GetMuonTrk(nPV, -1), 2);
                     EventWeight *= TriggerWeight * LeptonWeight;
                 }
