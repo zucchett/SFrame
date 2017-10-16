@@ -238,8 +238,6 @@ class DMAnalysis : public SCycleBase {
         float MaxBJetMetDPhi;
         float MaxLepJetDPhi;
         float MinJetMetDPhi12;
-        float mTbjet1;  
-        float mTbjet2;  
         float mZ;
         float mT;
         float mT2;

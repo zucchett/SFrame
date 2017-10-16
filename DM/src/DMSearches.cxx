@@ -272,9 +272,6 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( MaxLepJetDPhi,       "MaxLepJetDPhi",m_outputTreeName.c_str());
     DeclareVariable( MinJetMetDPhi12,     "MinDPhi12",  m_outputTreeName.c_str());
 
-    DeclareVariable( mTbjet1,      "mT_bjet1MET",m_outputTreeName.c_str());
-    DeclareVariable( mTbjet2,      "mT_bjet2MET",m_outputTreeName.c_str());
-
     DeclareVariable( mZ,                  "mZ",  m_outputTreeName.c_str());
     DeclareVariable( mT,                  "mT",  m_outputTreeName.c_str());
     DeclareVariable( mT2,                 "mT2",  m_outputTreeName.c_str());
@@ -1233,10 +1230,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     // For MT2W
     std::vector<TLorentzVector> bJets, lJets;
     for(unsigned int i=0; i<JetsVect.size(); i++) {
-      if(m_bTaggingScaleTool.isTagged(JetsVect[i].csv()) && fabs(JetsVect[i].eta())< 2.4){
+      if(m_bTaggingScaleTool.isTagged(JetsVect[i].csv())){
 	bJets.push_back(JetsVect[i].tlv());
-	if(nBTagJets==0) mTbjet1 = sqrt(2.*MET.et()*JetsVect[i].pt()*(1.-cos(JetsVect[i].tlv().DeltaPhi(MET_tlv))));
-	if(nBTagJets==1) mTbjet2 = sqrt(2.*MET.et()*JetsVect[i].pt()*(1.-cos(JetsVect[i].tlv().DeltaPhi(MET_tlv))));
 	nBTagJets++;
       }
       else lJets.push_back(JetsVect[i].tlv());
@@ -1447,8 +1442,6 @@ void DMAnalysis::clearBranches() {
     mZ = mT = mT2 = V_pt = 0.;
     MinLepJetDPhi = MinLepMetDPhi = MinJetMetDPhi = MinJetMetDPhi12 = MinBJetMetDPhi = 10.;
     MaxLepMetDPhi = MaxLepJetDPhi = MaxJetMetDPhi = MaxBJetMetDPhi = -1.;
-
-    mTbjet1 = mTbjet2 = -99.;
 
     Lepton1 = Lepton2 = Jet1 = Jet2 = Jet3 = Jet4 = V = TLorentzVector();
     Lepton1_pt = Lepton2_pt = Lepton1_eta = Lepton2_eta = Lepton1_phi = Lepton2_phi = Lepton1_pfIso = Lepton2_pfIso = Lepton1_id = Lepton2_id = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = JetF_pt = Jet1_eta = Jet2_eta = Jet3_eta = Jet4_eta = JetF_eta = Jet1_phi = Jet2_phi = Jet3_phi = Jet4_phi = JetF_phi = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = -9.;
