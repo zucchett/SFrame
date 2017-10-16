@@ -1408,20 +1408,42 @@ bool DMAnalysis::passTrigger(std::string cat) {
 bool DMAnalysis::passMETFilters(bool data) {
 
     // using only what's recommended in https://twiki.cern.ch/twiki/bin/viewauth/CMS/MissingETOptionalFiltersRun2
+  //Updating to Morion17 recommendations
+
+  //print statements for debugging, will remove later again
+  /*cout<< "m_eventInfo.PV_filter "<<m_eventInfo.PV_filter<<endl;
+  cout<<     "m_eventInfo.passFilter_CSCHalo "<<m_eventInfo.passFilter_CSCHalo<<endl;
+  cout<<     "m_eventInfo.passFilter_HBHE "<<m_eventInfo.passFilter_HBHE<<endl;
+  cout<<     "m_eventInfo.passFilter_HBHEIso "<<m_eventInfo.passFilter_HBHEIso<<endl;
+  cout<<     "m_eventInfo.passFilter_ECALDeadCell "<<m_eventInfo.passFilter_ECALDeadCell<<endl;
+  cout<<     "m_eventInfo.passFilter_EEBadSc "<<m_eventInfo.passFilter_EEBadSc<<endl;
+  cout<<     "m_eventInfo.passFilter_globalTightHalo2016 "<<m_eventInfo.passFilter_globalTightHalo2016<<endl;
+  cout<<     "m_eventInfo.passFilter_muonBadTrack "<<m_eventInfo.passFilter_muonBadTrack<<endl;
+  cout<<     "m_eventInfo.passFilter_chargedHadronTrackResolution "<< m_eventInfo.passFilter_chargedHadronTrackResolution<<endl;
+  cout<<     "m_eventInfo.flag_badMuons "<<m_eventInfo.flag_badMuons<<endl;
+  cout<<     "m_eventInfo.flag_duplicateMuons "<<m_eventInfo.flag_duplicateMuons<<endl;
+  cout<<     "m_eventInfo.flag_nobadMuons "<<m_eventInfo.flag_nobadMuons<<endl;*/
     if( !(m_eventInfo.PV_filter) ) return false;
     Hist( "METFilters", "0l" )->Fill(1);
-    if( !(m_eventInfo.passFilter_CSCHalo) ) return false;
-    Hist( "METFilters", "0l" )->Fill(2);
+
+    //CSC filter is deprecated
+    //    if( !(m_eventInfo.passFilter_CSCHalo) ) return false;
+    //Hist( "METFilters", "0l" )->Fill(2);
+
     if( !(m_eventInfo.passFilter_HBHE) ) return false;
     Hist( "METFilters", "0l" )->Fill(3);
     if( !(m_eventInfo.passFilter_HBHEIso) ) return false;
     Hist( "METFilters", "0l" )->Fill(4);
     if( !(m_eventInfo.passFilter_ECALDeadCell) ) return false;
     Hist( "METFilters", "0l" )->Fill(5);
+
     if(data) if( !(m_eventInfo.passFilter_EEBadSc) ) return false;
     Hist( "METFilters", "0l" )->Fill(6);
+
     if( !(m_eventInfo.passFilter_globalTightHalo2016) ) return false;
     Hist( "METFilters", "0l" )->Fill(7);
+
+    //These need updating after ICHEP, will leave them for now
     if( !(m_eventInfo.passFilter_muonBadTrack) ) return false;
     Hist( "METFilters", "0l" )->Fill(8);
     if( !(m_eventInfo.passFilter_chargedHadronTrackResolution) ) return false;
@@ -1429,6 +1451,7 @@ bool DMAnalysis::passMETFilters(bool data) {
     //  if( !(m_eventInfo.passFilter_METFilters) ) return false;
     //   Hist( "METFilters" )->Fill(10);
     if(data) {
+      //These need double checking, output seems to be 153 all the time
         if( (!m_eventInfo.flag_badMuons) ) return false;
         Hist( "METFilters", "0l" )->Fill(10);
         if( (!m_eventInfo.flag_duplicateMuons) ) return false;
