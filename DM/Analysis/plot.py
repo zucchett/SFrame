@@ -35,6 +35,7 @@ if options.bash: gROOT.SetBatch(True)
 ########## SETTINGS ##########
 
 gStyle.SetOptStat(0)
+gROOT.LoadMacro('functions.C')
 
 NTUPLEDIR   = "/scratch/zucchett/Ntuple/DM/"
 SIGNAL      = 1 # Signal magnification factor
