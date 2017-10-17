@@ -497,7 +497,7 @@ void DMAnalysis::EndInputData( const SInputData& ) throw( SError ) {
 void DMAnalysis::BeginInputFile( const SInputData& ) throw( SError ) {
     m_logger << INFO << "Connecting input variables" << SLogger::endmsg;
 
-    if(m_isData) m_eventInfo.ConnectVariables( m_recoTreeName.c_str(), Ntuple::EventInfoTrigger|Ntuple::EventInfoMETFilters/*|Ntuple::EventInfoMuonFilters*/, "" );
+    if(m_isData) m_eventInfo.ConnectVariables( m_recoTreeName.c_str(), Ntuple::EventInfoTrigger|Ntuple::EventInfoMETFilters|Ntuple::EventInfoMuonFilters, "" );
     else m_eventInfo.ConnectVariables( m_recoTreeName.c_str(), Ntuple::EventInfoBasic|Ntuple::EventInfoTrigger|Ntuple::EventInfoMETFilters|Ntuple::EventInfoTruth|Ntuple::EventInfoPDF, "" );
 
     if(m_isData) m_electron.ConnectVariables( m_recoTreeName.c_str(), Ntuple::ElectronBasic|Ntuple::ElectronID|Ntuple::ElectronAdvancedID|Ntuple::ElectronIsolation|Ntuple::ElectronSuperCluster, (m_electronName + "_").c_str() ); // |Ntuple::ElectronShowerID
@@ -1401,7 +1401,7 @@ bool DMAnalysis::passMETFilters(bool data) {
   //Updating to Morion17 recommendations
 
   //print statements for debugging, will remove later again
-  /*cout<< "m_eventInfo.PV_filter "<<m_eventInfo.PV_filter<<endl;
+  /*  cout<< "m_eventInfo.PV_filter "<<m_eventInfo.PV_filter<<endl;
   cout<<     "m_eventInfo.passFilter_CSCHalo "<<m_eventInfo.passFilter_CSCHalo<<endl;
   cout<<     "m_eventInfo.passFilter_HBHE "<<m_eventInfo.passFilter_HBHE<<endl;
   cout<<     "m_eventInfo.passFilter_HBHEIso "<<m_eventInfo.passFilter_HBHEIso<<endl;
@@ -1441,13 +1441,15 @@ bool DMAnalysis::passMETFilters(bool data) {
     //  if( !(m_eventInfo.passFilter_METFilters) ) return false;
     //   Hist( "METFilters" )->Fill(10);
     if(data) {
-      //These need double checking, output seems to be 153 all the time
-        if( (!m_eventInfo.flag_badMuons) ) return false;
+      //Fixed now, they are 0 when event is good and 1 when the MET in the event was corrected
+        if( (m_eventInfo.flag_badMuons) ) return false;
         Hist( "METFilters", "0l" )->Fill(10);
-        if( (!m_eventInfo.flag_duplicateMuons) ) return false;
+        if( (m_eventInfo.flag_duplicateMuons) ) return false;
         Hist( "METFilters", "0l" )->Fill(11);
-        if( (!m_eventInfo.flag_nobadMuons) ) return false;
-        Hist( "METFilters", "0l" )->Fill(12);
+
+	//still don't know what this is
+	// if( (m_eventInfo.flag_nobadMuons) ) return false;
+        //Hist( "METFilters", "0l" )->Fill(12);
     }
 
     return true;
