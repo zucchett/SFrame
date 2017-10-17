@@ -1401,7 +1401,7 @@ bool DMAnalysis::passMETFilters(bool data) {
   //Updating to Morion17 recommendations
 
   //print statements for debugging, will remove later again
-  cout<< "m_eventInfo.PV_filter "<<m_eventInfo.PV_filter<<endl;
+  /*  cout<< "m_eventInfo.PV_filter "<<m_eventInfo.PV_filter<<endl;
   cout<<     "m_eventInfo.passFilter_CSCHalo "<<m_eventInfo.passFilter_CSCHalo<<endl;
   cout<<     "m_eventInfo.passFilter_HBHE "<<m_eventInfo.passFilter_HBHE<<endl;
   cout<<     "m_eventInfo.passFilter_HBHEIso "<<m_eventInfo.passFilter_HBHEIso<<endl;
@@ -1412,7 +1412,7 @@ bool DMAnalysis::passMETFilters(bool data) {
   cout<<     "m_eventInfo.passFilter_chargedHadronTrackResolution "<< m_eventInfo.passFilter_chargedHadronTrackResolution<<endl;
   cout<<     "m_eventInfo.flag_badMuons "<<m_eventInfo.flag_badMuons<<endl;
   cout<<     "m_eventInfo.flag_duplicateMuons "<<m_eventInfo.flag_duplicateMuons<<endl;
-  cout<<     "m_eventInfo.flag_nobadMuons "<<m_eventInfo.flag_nobadMuons<<endl;
+  cout<<     "m_eventInfo.flag_nobadMuons "<<m_eventInfo.flag_nobadMuons<<endl;*/
     if( !(m_eventInfo.PV_filter) ) return false;
     Hist( "METFilters", "0l" )->Fill(1);
 
