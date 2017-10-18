@@ -75,10 +75,10 @@ xsection = {
     'ZJetsToNuNu_HT-100To200' : { 'nevents' : 1., 'xsec'    : 280.35, 'matcheff': 0.1, 'kfactor' : 1.37, 'br' : 1., },
     'ZJetsToNuNu_HT-200To400' : { 'nevents' : 1., 'xsec'    : 77.67, 'matcheff': 0.1, 'kfactor' : 1.52, 'br' : 1., },
     'ZJetsToNuNu_HT-400To600' : { 'nevents' : 1., 'xsec'    : 10.73, 'matcheff': 0.1, 'kfactor' : 1.37, 'br' : 1., }, #11.99
-    'ZJetsToNuNu_HT-600To800' : { 'nevents' : 1., 'xsec'    : 3.221, 'matcheff': 0.1, 'kfactor' : 1.04, 'br' : 1., }, #0.853
-    'ZJetsToNuNu_HT-800To1200' : { 'nevents' : 1., 'xsec'    : 1.474, 'matcheff': 0.1, 'kfactor' : 1.14, 'br' : 1., }, #0.3942
-    'ZJetsToNuNu_HT-1200To2500' : { 'nevents' : 1., 'xsec'    : 0.3586, 'matcheff': 0.1, 'kfactor' : 0.88, 'br' : 1., }, #0.0974
-    'ZJetsToNuNu_HT-2500ToInf' : { 'nevents' : 1., 'xsec'    : 0.008203, 'matcheff': 0.1, 'kfactor' : 0.88, 'br' : 1., }, #0.002308
+    'ZJetsToNuNu_HT-600To800' : { 'nevents' : 1., 'xsec'    : 2.559, 'matcheff': 0.1, 'kfactor' : 1.04, 'br' : 1., }, #0.853
+    'ZJetsToNuNu_HT-800To1200' : { 'nevents' : 1., 'xsec'    : 1.1796, 'matcheff': 0.1, 'kfactor' : 1.14, 'br' : 1., }, #0.3942
+    'ZJetsToNuNu_HT-1200To2500' : { 'nevents' : 1., 'xsec'    : 0.28833, 'matcheff': 0.1, 'kfactor' : 0.88, 'br' : 1., }, #0.0974
+    'ZJetsToNuNu_HT-2500ToInf' : { 'nevents' : 1., 'xsec'    : 0.006945, 'matcheff': 0.1, 'kfactor' : 0.88, 'br' : 1., }, #0.002308
 
     'DYBJetsToNuNu_Zpt-40toInf' : { 'nevents' : 1, 'xsec'    : 71.77, 'matcheff': 0.128, 'kfactor' : 1., 'br' : 1., },
     
@@ -107,11 +107,12 @@ xsection = {
     'WJetsToQQ_HT-600ToInf' : { 'nevents' : 1, 'xsec'    : 19.9, 'matcheff': 1., 'kfactor' : 1.004, 'br' : 1., },
     
     'TT' : { 'nevents' : 1, 'xsec'    : 831.76, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., }, #
-    'TTToSemiLeptonic' : { 'nevents' : 1, 'xsec'    : 831.76*(6./9.)*(3./9.)*2., 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
-    'TTTo2L2Nu' : { 'nevents' : 1, 'xsec'    : 831.76*(3./9.)*(3./9.), 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    #'TTToSemiLeptonic' : { 'nevents' : 1, 'xsec'    : 831.76*(6./9.)*(3./9.)*2., 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'TTToSemiLeptonic' : { 'nevents' : 1, 'xsec'    : 364.35, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'TTTo2L2Nu' : { 'nevents' : 1, 'xsec'    : 87.31, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     'ST_s-channel' : { 'nevents' : 1, 'xsec'    : 3.36, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
-    'ST_t-channel_antitop' : { 'nevents' : 1, 'xsec'    : 26.38, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
-    'ST_t-channel_top' : { 'nevents' : 1, 'xsec'    : 44.33, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'ST_t-channel_antitop' : { 'nevents' : 1, 'xsec'    : 80.95, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'ST_t-channel_top' : { 'nevents' : 1, 'xsec'    : 136.02, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     'ST_tW_antitop' : { 'nevents' : 1, 'xsec'    : 35.85, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     'ST_tW_top' : { 'nevents' : 1, 'xsec'    : 35.85, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     'TTWJetsToLNu' : { 'nevents' : 1., 'xsec'    : 0.2043, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
@@ -144,14 +145,14 @@ xsection = {
     'QCD_HT1500to2000_B' : { 'nevents' : 1, 'xsec'    : 21.31, 'matcheff': 0.1535, 'kfactor' : 1., 'br' : 1., },
     'QCD_HT2000toInf_B' : { 'nevents' : 1, 'xsec'    : 4.16, 'matcheff': 0.1481, 'kfactor' : 1., 'br' : 1., },
     
-    'QCD_HT100to200' : { 'nevents' : 1, 'xsec'    : 27540000., 'matcheff': 0.131, 'kfactor' : 1., 'br' : 1., },
-    'QCD_HT200to300' : { 'nevents' : 1, 'xsec'    : 1717000., 'matcheff': 0.098, 'kfactor' : 1., 'br' : 1., },
-    'QCD_HT300to500' : { 'nevents' : 1, 'xsec'    : 351300., 'matcheff': 0.088, 'kfactor' : 1., 'br' : 1., },
-    'QCD_HT500to700' : { 'nevents' : 1, 'xsec'    : 31630., 'matcheff': 0.067, 'kfactor' : 1., 'br' : 1., },
-    'QCD_HT700to1000' : { 'nevents' : 1, 'xsec'    : 6802., 'matcheff': 0.066, 'kfactor' : 1., 'br' : 1., }, #0.86
-    'QCD_HT1000to1500' : { 'nevents' : 1, 'xsec'    : 1206., 'matcheff': 0.059, 'kfactor' : 1., 'br' : 1., }, #0.78
-    'QCD_HT1500to2000' : { 'nevents' : 1, 'xsec'    : 120.4, 'matcheff': 0.067, 'kfactor' : 1., 'br' : 1., }, #0.74
-    'QCD_HT2000toInf' : { 'nevents' : 1, 'xsec'    : 25.25, 'matcheff': 0.07, 'kfactor' : 1., 'br' : 1., }, #0.64
+    'QCD_HT100to200' : { 'nevents' : 1, 'xsec'    : 27990000., 'matcheff': 0.131, 'kfactor' : 1., 'br' : 1., },
+    'QCD_HT200to300' : { 'nevents' : 1, 'xsec'    : 1712000., 'matcheff': 0.098, 'kfactor' : 1., 'br' : 1., },
+    'QCD_HT300to500' : { 'nevents' : 1, 'xsec'    : 347700., 'matcheff': 0.088, 'kfactor' : 1., 'br' : 1., },
+    'QCD_HT500to700' : { 'nevents' : 1, 'xsec'    : 32100., 'matcheff': 0.067, 'kfactor' : 1., 'br' : 1., },
+    'QCD_HT700to1000' : { 'nevents' : 1, 'xsec'    : 6831., 'matcheff': 0.066, 'kfactor' : 1., 'br' : 1., }, #0.86
+    'QCD_HT1000to1500' : { 'nevents' : 1, 'xsec'    : 1207., 'matcheff': 0.059, 'kfactor' : 1., 'br' : 1., }, #0.78
+    'QCD_HT1500to2000' : { 'nevents' : 1, 'xsec'    : 119.9, 'matcheff': 0.067, 'kfactor' : 1., 'br' : 1., }, #0.74
+    'QCD_HT2000toInf' : { 'nevents' : 1, 'xsec'    : 25.24, 'matcheff': 0.07, 'kfactor' : 1., 'br' : 1., }, #0.64
     
     #*(1./3.)
     'WprimeToWhToWlephbb_narrow_M-600' : { 'nevents' : 100000, 'xsec'    : 1., 'matcheff': 1., 'kfactor' : 1., 'br' : (1./3.)*0.5824, },
