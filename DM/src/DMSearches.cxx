@@ -306,6 +306,17 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( Jet3_csv,            "Jet3_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet4_csv,            "Jet4_csv",  m_outputTreeName.c_str());
     DeclareVariable( V_pt,                "V_pt",  m_outputTreeName.c_str());
+  
+    DeclareVariable( Sphericity,          "Sphericity", m_outputTreeName.c_str());
+    DeclareVariable( Aplanarity,          "Aplanarity", m_outputTreeName.c_str());
+    
+    DeclareVariable( CosThetaStar,        "CosThetaStar", m_outputTreeName.c_str());
+    DeclareVariable( CosTheta1,           "CosTheta1", m_outputTreeName.c_str());
+    DeclareVariable( CosTheta2,           "CosTheta2", m_outputTreeName.c_str());
+    DeclareVariable( Phi,                 "Phi", m_outputTreeName.c_str());
+    DeclareVariable( Phi1,                "Phi1", m_outputTreeName.c_str());
+    DeclareVariable( CosThetaJ,           "CosThetaJ", m_outputTreeName.c_str());
+
 
 
     //
@@ -484,6 +495,18 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "HLT_PFMET_OR_vs_JetHT_DEN", ";min(METNoMu, MHTNoMu) (GeV);Efficiency", 100, 100, 600), "Trigger" );
     Book( TH1F( "HLT_PFMET_OR_NUM", ";min(METNoMu, MHTNoMu) (GeV);Efficiency", 100, 100, 600), "Trigger" );
     Book( TH1F( "HLT_PFMET_OR_DEN", ";min(MET, MHT) (GeV);Efficiency", 100, 100, 600), "Trigger" );
+    
+    // Event shape variables
+    Book( TH1F( "Sphericity", "S", 100, 0., 1.), "Trigger" );
+    Book( TH1F( "Aplanarity", "A", 100, 0., 1./2.), "Trigger" );
+    
+    // Angular variables
+    Book( TH1F( "CosThetaStar", "cos #vartheta *", 100, -1., 1.), "Trigger" );
+    Book( TH1F( "CosTheta1", "cos #vartheta_1", 100, -1., 1.), "Trigger" );
+    Book( TH1F( "CosTheta2", "cos #vartheta_2", 100, -1., 1.), "Trigger" );
+    Book( TH1F( "Phi", "#varphi", 100, 0., 3.15), "Trigger" );
+    Book( TH1F( "Phi1", "#varphi_1", 100, 0., 3.15), "Trigger" );
+    Book( TH1F( "CosThetaJ", "cos #vartheta_J", 100, -1., 1.), "Trigger" );
 
     return;
 }
@@ -1329,6 +1352,20 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             if(fabs(MET_tlv.DeltaPhi(bJets[i])) > MaxBJetMetDPhi) MaxBJetMetDPhi = fabs(MET_tlv.DeltaPhi(bJets[i]));
         }
     }
+
+    // add event shape variable
+    std::vector<TLorentzVector> *Jets = new std::vector<TLorentzVector>;
+
+    for(int i = 0; i < nJets; i++) Jets->push_back(JetsVect[i].tlv());
+    for(int i = 0; i < nElectrons; i++) Jets->push_back(ElecVect[i].tlv());
+    for(int i = 0; i < nMuons; i++) Jets->push_back(MuonVect[i].tlv());
+    //for(int i = 0; i < nBTagJets ; i++) Jets->push_back(bJets[i]);
+    //Jets->push_back(MET_tlv);
+
+    m_VariableTool.EventShape(Jets, Sphericity, Aplanarity);
+
+
+    // angular correlations
 
     m_logger << INFO << " + Tree filled" << SLogger::endmsg;
 

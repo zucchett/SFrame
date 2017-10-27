@@ -281,7 +281,18 @@ class DMAnalysis : public SCycleBase {
         float Jet2_csv;
         float Jet3_csv;
         float Jet4_csv;
+  
+        // ESV
+        float Sphericity;
+        float Aplanarity;
 
+        // Angular correlations
+        float CosThetaStar;
+        float CosTheta1;
+        float CosTheta2;
+        float Phi;
+        float Phi1;
+        float CosThetaJ;
         // Macro adding the functions for dictionary generation
         ClassDef( DMAnalysis, 0 );
 
