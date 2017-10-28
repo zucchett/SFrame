@@ -108,46 +108,36 @@ void DMAnalysis::BeginCycle() throw( SError ) {
     //m_triggerNames[""] = std::vector<std::string> ();
     //m_triggerNames["SingleMu"].push_back("HLT_Mu45_eta2p1_v");
 
+    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_eta2p1_WPTight_Gsf_v");
+    m_triggerNames["SingleMu"].push_back("HLT_Mu50_v");
+    m_triggerNames["SingleMu"].push_back("HLT_TkMu50_v");
+    m_triggerNames["SingleIsoMu"].push_back("HLT_IsoMu27_v");
+    m_triggerNames["SingleIsoMu"].push_back("HLT_IsoTkMu27_v");
     m_triggerNames["SingleIsoMu"].push_back("HLT_IsoMu24_v");
     m_triggerNames["SingleIsoMu"].push_back("HLT_IsoTkMu24_v");
-    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");     
-    //m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_eta2p1_WPTight_Gsf_v");
-                                    
+    m_triggerNames["DoubleMu"].push_back("HLT_Mu27_TkMu8_v");
+    m_triggerNames["DoubleIsoMu"].push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
+    m_triggerNames["DoubleIsoMu"].push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
+    m_triggerNames["SingleEle"].push_back("HLT_Ele105_CaloIdVT_GsfTrkIdT_v");
+    m_triggerNames["SingleEle"].push_back("HLT_Ele115_CaloIdVT_GsfTrkIdT_v");
+    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele32_WPTight_Gsf_v");
+    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele32_eta2p1_WPTight_Gsf_v");
+    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_WPLoose_Gsf_v");
+    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_WPTight_Gsf_v");
+    m_triggerNames["DoubleIsoEle"].push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
+    m_triggerNames["DoubleEle"].push_back("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v");
     m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v");
-    m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight_v");
     m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_v");
     m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v");
-               
-    // m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_eta2p1_WPTight_Gsf_v");
-    // m_triggerNames["SingleMu"].push_back("HLT_Mu50_v");
-    // m_triggerNames["SingleMu"].push_back("HLT_TkMu50_v");
-    // m_triggerNames["SingleIsoMu"].push_back("HLT_IsoMu27_v");
-    // m_triggerNames["SingleIsoMu"].push_back("HLT_IsoTkMu27_v");
-    // m_triggerNames["SingleIsoMu"].push_back("HLT_IsoMu24_v");
-    // m_triggerNames["SingleIsoMu"].push_back("HLT_IsoTkMu24_v");
-    // m_triggerNames["DoubleMu"].push_back("HLT_Mu27_TkMu8_v");
-    // m_triggerNames["DoubleIsoMu"].push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
-    // m_triggerNames["DoubleIsoMu"].push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
-    // m_triggerNames["SingleEle"].push_back("HLT_Ele105_CaloIdVT_GsfTrkIdT_v");
-    // m_triggerNames["SingleEle"].push_back("HLT_Ele115_CaloIdVT_GsfTrkIdT_v");
-    // m_triggerNames["SingleIsoEle"].push_back("HLT_Ele32_WPTight_Gsf_v");
-    // m_triggerNames["SingleIsoEle"].push_back("HLT_Ele32_eta2p1_WPTight_Gsf_v");
-    // m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_WPLoose_Gsf_v");
-    // m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_WPTight_Gsf_v");
-    // m_triggerNames["DoubleIsoEle"].push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
-    // m_triggerNames["DoubleEle"].push_back("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v");
-    // m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v");
-    // m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_v");
-    // m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v");
-    // m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v");
-    // m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v");
-    // m_triggerNames["METMHTNoMu"].push_back("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v");
-    // m_triggerNames["METMHT"].push_back("HLT_PFMET110_PFMHT110_IDTight_v");
-    // m_triggerNames["METMHT"].push_back("HLT_PFMET120_PFMHT120_IDTight_v");
-    // //m_triggerNames["MET"].push_back("HLT_PFMET120_BTagCSV_p067_v");
-    // m_triggerNames["MET"].push_back("HLT_PFMET170_NoiseCleaned_v");
-    // m_triggerNames["MET"].push_back("HLT_PFMET170_HBHECleaned_v");
-    // m_triggerNames["MET"].push_back("HLT_PFMET170_HBHE_BeamHaloCleaned_v");
+    m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v");
+    m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v");
+    m_triggerNames["METMHTNoMu"].push_back("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v");
+    m_triggerNames["METMHT"].push_back("HLT_PFMET110_PFMHT110_IDTight_v");
+    m_triggerNames["METMHT"].push_back("HLT_PFMET120_PFMHT120_IDTight_v");
+    //m_triggerNames["MET"].push_back("HLT_PFMET120_BTagCSV_p067_v");
+    m_triggerNames["MET"].push_back("HLT_PFMET170_NoiseCleaned_v");
+    m_triggerNames["MET"].push_back("HLT_PFMET170_HBHECleaned_v");
+    m_triggerNames["MET"].push_back("HLT_PFMET170_HBHE_BeamHaloCleaned_v");
 
     return;
 }
@@ -963,7 +953,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             if((ElecVect[0].tlv() + ElecVect[1].tlv()).M() < 20.) {m_logger << INFO << " - No Z candidate"  << SLogger::endmsg;}
             else {
                 // Check trigger consistency
-                if(!triggerMap["SingleIsoEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+                if(!triggerMap["SingleIsoEle"] && !triggerMap["SingleEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
                 // SF
                 if(isMC) {
                     TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
@@ -1108,7 +1098,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         m_logger << INFO << " + Try to reconstruct W -> en" << SLogger::endmsg;
         //Hist("Events", "enqq")->Fill(2., EventWeight);
         // Check trigger consistency
-        if(!triggerMap["SingleIsoEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+        if(!triggerMap["SingleIsoEle"] && !triggerMap["SingleEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
         // SF
         if(isMC) {
             TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
