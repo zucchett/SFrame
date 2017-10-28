@@ -77,8 +77,10 @@ void VariableTool::EventShape(std::vector<TLorentzVector>* Jets, float& spherici
 
   EigenVec=PTensor.EigenVectors(EigenVal);
 
+  //std::cout << "eigenvalues " << EigenVal[0] << " " << EigenVal[1] << " " << EigenVal[2] << std::endl;
+
   sphericity=3./2.*(EigenVal[1]+EigenVal[2]);
-  aplanarity=3./2.*EigenVal[1];
+  aplanarity=3./2.*EigenVal[2];
 }
 
 

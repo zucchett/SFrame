@@ -105,37 +105,49 @@ void DMAnalysis::BeginCycle() throw( SError ) {
     }
 
     m_triggerNames.clear();
-//    m_triggerNames[""] = std::vector<std::string> ();
+    //m_triggerNames[""] = std::vector<std::string> ();
     //m_triggerNames["SingleMu"].push_back("HLT_Mu45_eta2p1_v");
-    m_triggerNames["SingleMu"].push_back("HLT_Mu50_v");
-    m_triggerNames["SingleMu"].push_back("HLT_TkMu50_v");
-    m_triggerNames["SingleIsoMu"].push_back("HLT_IsoMu27_v");
-    m_triggerNames["SingleIsoMu"].push_back("HLT_IsoTkMu27_v");
+
     m_triggerNames["SingleIsoMu"].push_back("HLT_IsoMu24_v");
     m_triggerNames["SingleIsoMu"].push_back("HLT_IsoTkMu24_v");
-    m_triggerNames["DoubleMu"].push_back("HLT_Mu27_TkMu8_v");
-    m_triggerNames["DoubleIsoMu"].push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
-    m_triggerNames["DoubleIsoMu"].push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
-    m_triggerNames["SingleEle"].push_back("HLT_Ele105_CaloIdVT_GsfTrkIdT_v");
-    m_triggerNames["SingleEle"].push_back("HLT_Ele115_CaloIdVT_GsfTrkIdT_v");
-    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele32_WPTight_Gsf_v");
-    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele32_eta2p1_WPTight_Gsf_v");
-    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_WPLoose_Gsf_v");
-    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_WPTight_Gsf_v");
-    m_triggerNames["DoubleIsoEle"].push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
-    m_triggerNames["DoubleEle"].push_back("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v");
+    m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_eta2p1_WPLoose_Gsf_v");     
+    //m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_eta2p1_WPTight_Gsf_v");
+                                    
     m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v");
+    m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu100_PFMHTNoMu100_IDTight_v");
     m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_v");
     m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v");
-    m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v");
-    m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v");
-    m_triggerNames["METMHTNoMu"].push_back("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v");
-    m_triggerNames["METMHT"].push_back("HLT_PFMET110_PFMHT110_IDTight_v");
-    m_triggerNames["METMHT"].push_back("HLT_PFMET120_PFMHT120_IDTight_v");
-    //m_triggerNames["MET"].push_back("HLT_PFMET120_BTagCSV_p067_v");
-    m_triggerNames["MET"].push_back("HLT_PFMET170_NoiseCleaned_v");
-    m_triggerNames["MET"].push_back("HLT_PFMET170_HBHECleaned_v");
-    m_triggerNames["MET"].push_back("HLT_PFMET170_HBHE_BeamHaloCleaned_v");
+               
+    // m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_eta2p1_WPTight_Gsf_v");
+    // m_triggerNames["SingleMu"].push_back("HLT_Mu50_v");
+    // m_triggerNames["SingleMu"].push_back("HLT_TkMu50_v");
+    // m_triggerNames["SingleIsoMu"].push_back("HLT_IsoMu27_v");
+    // m_triggerNames["SingleIsoMu"].push_back("HLT_IsoTkMu27_v");
+    // m_triggerNames["SingleIsoMu"].push_back("HLT_IsoMu24_v");
+    // m_triggerNames["SingleIsoMu"].push_back("HLT_IsoTkMu24_v");
+    // m_triggerNames["DoubleMu"].push_back("HLT_Mu27_TkMu8_v");
+    // m_triggerNames["DoubleIsoMu"].push_back("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v");
+    // m_triggerNames["DoubleIsoMu"].push_back("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v");
+    // m_triggerNames["SingleEle"].push_back("HLT_Ele105_CaloIdVT_GsfTrkIdT_v");
+    // m_triggerNames["SingleEle"].push_back("HLT_Ele115_CaloIdVT_GsfTrkIdT_v");
+    // m_triggerNames["SingleIsoEle"].push_back("HLT_Ele32_WPTight_Gsf_v");
+    // m_triggerNames["SingleIsoEle"].push_back("HLT_Ele32_eta2p1_WPTight_Gsf_v");
+    // m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_WPLoose_Gsf_v");
+    // m_triggerNames["SingleIsoEle"].push_back("HLT_Ele27_WPTight_Gsf_v");
+    // m_triggerNames["DoubleIsoEle"].push_back("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v");
+    // m_triggerNames["DoubleEle"].push_back("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v");
+    // m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu90_PFMHTNoMu90_IDTight_v");
+    // m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_v");
+    // m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v");
+    // m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v");
+    // m_triggerNames["METMHTNoMu"].push_back("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v");
+    // m_triggerNames["METMHTNoMu"].push_back("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v");
+    // m_triggerNames["METMHT"].push_back("HLT_PFMET110_PFMHT110_IDTight_v");
+    // m_triggerNames["METMHT"].push_back("HLT_PFMET120_PFMHT120_IDTight_v");
+    // //m_triggerNames["MET"].push_back("HLT_PFMET120_BTagCSV_p067_v");
+    // m_triggerNames["MET"].push_back("HLT_PFMET170_NoiseCleaned_v");
+    // m_triggerNames["MET"].push_back("HLT_PFMET170_HBHECleaned_v");
+    // m_triggerNames["MET"].push_back("HLT_PFMET170_HBHE_BeamHaloCleaned_v");
 
     return;
 }
@@ -310,12 +322,12 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( Sphericity,          "Sphericity", m_outputTreeName.c_str());
     DeclareVariable( Aplanarity,          "Aplanarity", m_outputTreeName.c_str());
     
-    DeclareVariable( CosThetaStar,        "CosThetaStar", m_outputTreeName.c_str());
-    DeclareVariable( CosTheta1,           "CosTheta1", m_outputTreeName.c_str());
-    DeclareVariable( CosTheta2,           "CosTheta2", m_outputTreeName.c_str());
-    DeclareVariable( Phi,                 "Phi", m_outputTreeName.c_str());
-    DeclareVariable( Phi1,                "Phi1", m_outputTreeName.c_str());
-    DeclareVariable( CosThetaJ,           "CosThetaJ", m_outputTreeName.c_str());
+    // DeclareVariable( CosThetaStar,        "CosThetaStar", m_outputTreeName.c_str());
+    // DeclareVariable( CosTheta1,           "CosTheta1", m_outputTreeName.c_str());
+    // DeclareVariable( CosTheta2,           "CosTheta2", m_outputTreeName.c_str());
+    // DeclareVariable( Phi,                 "Phi", m_outputTreeName.c_str());
+    // DeclareVariable( Phi1,                "Phi1", m_outputTreeName.c_str());
+    // DeclareVariable( CosThetaJ,           "CosThetaJ", m_outputTreeName.c_str());
 
 
 
@@ -500,13 +512,13 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "Sphericity", "S", 100, 0., 1.), "Trigger" );
     Book( TH1F( "Aplanarity", "A", 100, 0., 1./2.), "Trigger" );
     
-    // Angular variables
-    Book( TH1F( "CosThetaStar", "cos #vartheta *", 100, -1., 1.), "Trigger" );
-    Book( TH1F( "CosTheta1", "cos #vartheta_1", 100, -1., 1.), "Trigger" );
-    Book( TH1F( "CosTheta2", "cos #vartheta_2", 100, -1., 1.), "Trigger" );
-    Book( TH1F( "Phi", "#varphi", 100, 0., 3.15), "Trigger" );
-    Book( TH1F( "Phi1", "#varphi_1", 100, 0., 3.15), "Trigger" );
-    Book( TH1F( "CosThetaJ", "cos #vartheta_J", 100, -1., 1.), "Trigger" );
+    // // Angular variables
+    // Book( TH1F( "CosThetaStar", "cos #vartheta *", 100, -1., 1.), "Trigger" );
+    // Book( TH1F( "CosTheta1", "cos #vartheta_1", 100, -1., 1.), "Trigger" );
+    // Book( TH1F( "CosTheta2", "cos #vartheta_2", 100, -1., 1.), "Trigger" );
+    // Book( TH1F( "Phi", "#varphi", 100, 0., 3.15), "Trigger" );
+    // Book( TH1F( "Phi1", "#varphi_1", 100, 0., 3.15), "Trigger" );
+    // Book( TH1F( "CosThetaJ", "cos #vartheta_J", 100, -1., 1.), "Trigger" );
 
     return;
 }
@@ -951,7 +963,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             if((ElecVect[0].tlv() + ElecVect[1].tlv()).M() < 20.) {m_logger << INFO << " - No Z candidate"  << SLogger::endmsg;}
             else {
                 // Check trigger consistency
-                if(!triggerMap["SingleIsoEle"] && !triggerMap["SingleEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+                if(!triggerMap["SingleIsoEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
                 // SF
                 if(isMC) {
                     TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
@@ -1096,7 +1108,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         m_logger << INFO << " + Try to reconstruct W -> en" << SLogger::endmsg;
         //Hist("Events", "enqq")->Fill(2., EventWeight);
         // Check trigger consistency
-        if(!triggerMap["SingleIsoEle"] && !triggerMap["SingleEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+        if(!triggerMap["SingleIsoEle"]) { m_logger << INFO << " - Trigger inconsistency" << SLogger::endmsg; throw SError( SError::SkipEvent ); }
         // SF
         if(isMC) {
             TriggerWeight *= m_ScaleFactorTool.GetTrigSingleIsoEle(ElecVect[0].pt(), ElecVect[0].eta());
@@ -1502,6 +1514,7 @@ void DMAnalysis::clearBranches() {
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nForwardJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
     HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = fakeMET_pt = 0.;
     mZ = mT = mT2 = V_pt = 0.;
+    Sphericity, Aplanarity = -10;
     MinLepJetDPhi = MinLepMetDPhi = MinJetMetDPhi = MinJetMetDPhi12 = MinBJetMetDPhi = 10.;
     MaxLepMetDPhi = MaxLepJetDPhi = MaxJetMetDPhi = MaxBJetMetDPhi = -1.;
 
