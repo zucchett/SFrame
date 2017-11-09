@@ -714,9 +714,6 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     // --- MET ---
     UZH::MissingEt MET( &m_missingEt, 0 );
     MET_pt = MET.et();
-
-    std::cout << "MET_pt " << MET_pt << std::endl;
-
     MET_phi = MET.phi();
     MET_sign = MET_pt;
     TVector2 MET_tv2;
