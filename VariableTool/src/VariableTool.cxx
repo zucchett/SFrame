@@ -33,7 +33,7 @@ VariableTool::~VariableTool() {
 
 
 // Event Shape Variables, following http://home.fnal.gov/~mrenna/lutp0613man2/node233.html
-void VariableTool::EventShape(std::vector<TLorentzVector>* Jets, float& sphericity, float& thrust) {
+void VariableTool::EventShape(std::vector<TLorentzVector>* Jets, float& sphericity, float& aplanarity) {
   TLorentzVector Ptot;
   for(std::vector<TLorentzVector>::const_iterator ijet=Jets->begin(); ijet!=Jets->end(); ++ijet) {
     Ptot(0)+=ijet->Px();
@@ -49,7 +49,8 @@ void VariableTool::EventShape(std::vector<TLorentzVector>* Jets, float& spherici
   for(std::vector<TLorentzVector>::const_iterator ijet=Jets->begin(); ijet!=Jets->end(); ++ijet) {
     TLorentzVector* jet = new TLorentzVector(*ijet);
     jet->Boost(-beta);
-    p2+=jet->P()*jet->P();
+    //p2+=jet->P()*jet->P();
+    p2+=jet->Px()*jet->Px()+jet->Py()*jet->Py()+jet->Pz()*jet->Pz();
     PTensor(0,0)+=jet->Px()*jet->Px();
     PTensor(0,1)+=jet->Px()*jet->Py();
     PTensor(0,2)+=jet->Px()*jet->Pz();
@@ -73,10 +74,13 @@ void VariableTool::EventShape(std::vector<TLorentzVector>* Jets, float& spherici
 
   TVectorD EigenVal(3);
   TMatrixD EigenVec(3,3);
+
   EigenVec=PTensor.EigenVectors(EigenVal);
 
+  //std::cout << "eigenvalues " << EigenVal[0] << " " << EigenVal[1] << " " << EigenVal[2] << std::endl;
+
   sphericity=3./2.*(EigenVal[1]+EigenVal[2]);
-  thrust=3./2.*EigenVal[2];
+  aplanarity=3./2.*EigenVal[2];
 }
 
 

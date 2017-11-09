@@ -37,7 +37,7 @@ obj/
 *.pyc
 
 #root, pdf, png files
-*.root
+output/*.root
 *.pdf
 *.png 
 
