@@ -1,4 +1,8 @@
 #! /usr/bin/env python
+##Instructions####
+##Run with:
+#python submitFriendTrees.py -i /mnt/t3nfs01/data01/shome/dpinna/SFrame/CMSSW_8_0_26_patch1/src/SFrame/DM/AnalysisOutput_1Nov_newXsec/ -o testout
+# -c True -> enables copy of the original tree
 
 import os, multiprocessing, math, glob
 from array import array
