@@ -63,6 +63,11 @@ def plot(var, cut, norm=False, nm1=False):
     channel = cut
     plotdir = cut
     plotname = var
+
+    useformula = False
+    if 'formula' in variable[var]:
+        print variable[var]['formula']
+        useformula = True
     weight = "eventWeightLumi" #*(2.2/35.9)
     isBlind = BLIND and 'SR' in channel
     showSignal = True#('SR' in channel)
@@ -119,7 +124,10 @@ def plot(var, cut, norm=False, nm1=False):
             hist[s].Sumw2()
             cutstring = "("+weight+")" + ("*("+cut+")" if len(cut)>0 else "")
             if '-' in s: cutstring = cutstring.replace(cut, cut + "&& nBQuarks==" + s.split('-')[1][0])
-            tree[s].Project(s, var, cutstring)
+            if useformula == True:
+                tree[s].Project(s, variable[var]['formula'], cutstring)
+            else:
+                tree[s].Project(s, var, cutstring)
             if not tree[s].GetTree()==None: hist[s].SetOption("%s" % tree[s].GetTree().GetEntriesFast())
         else: # Histogram written to file
             for j, ss in enumerate(sample[s]['files']):

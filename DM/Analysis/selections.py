@@ -17,17 +17,17 @@ selection = {
     "AH1mTR" : "isWtoMN && MET_pt>250. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && mT<160. && nJets>=3 && nBTagJets>=1  && nElectrons==0 && nMuons==1 && MinDPhi>1.",
     
     # Semileptonic category
-    "SL1eSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets>=1 && MinDPhi12>1.2 && mT>160. && mT2>200."
+    "SL1eSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets>=1 && MinDPhi12>1.2 && mT>160. && mT2>200.",
     "SL1mSR" : "isWtoMN && nElectrons==0 && nMuons==1 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets>=1 && MinDPhi12>1.2 && mT>160. && mT2>200.",
     #
-    "SL1e1bSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && MinDPhi12>1.2 && mT>160. && mT2>200."
+    "SL1e1bSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && MinDPhi12>1.2 && mT>160. && mT2>200.",
     "SL1m1bSR" : "isWtoMN && nElectrons==0 && nMuons==1 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && MinDPhi12>1.2 && mT>160. && mT2>200.",
-    "SL1e2bSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets>=2 && MinDPhi12>1.2 && mT>160. && mT2>200."
+    "SL1e2bSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets>=2 && MinDPhi12>1.2 && mT>160. && mT2>200.",
     "SL1m2bSR" : "isWtoMN && nElectrons==0 && nMuons==1 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets>=2 && MinDPhi12>1.2 && mT>160. && mT2>200.",
     #
-    "SL1e0fSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && MinDPhi12>1.2 && mT>160. && mT2>200. && JetF_pt<40."
+    "SL1e0fSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && MinDPhi12>1.2 && mT>160. && mT2>200. && JetF_pt<40.",
     "SL1m0fSR" : "isWtoMN && nElectrons==0 && nMuons==1 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && MinDPhi12>1.2 && mT>160. && mT2>200. && JetF_pt<40.",
-    "SL1e1fSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && MinDPhi12>1.2 && mT>160. && mT2>200. && JetF_pt>40."
+    "SL1e1fSR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && MinDPhi12>1.2 && mT>160. && mT2>200. && JetF_pt>40.",
     "SL1m1fSR" : "isWtoMN && nElectrons==0 && nMuons==1 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && MinDPhi12>1.2 && mT>160. && mT2>200. && JetF_pt>40.",
     # control regions
     "SL1eWR" : "isWtoEN && nElectrons==1 && nMuons==0 && nTaus==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && (abs(lepton1_eta)<1.4442 || abs(lepton1_eta)>1.566) && Lepton1_id==4 && nJets>=2 && nBTagJets==0 && mT>160.",

@@ -1,6 +1,15 @@
 #! /usr/bin/env python
 
 variable = {
+    'DeltaPhi_Jet1Jet2': {
+        'title' : "Example variable using functions.cc",
+        'nbins' : 51,
+        'min' : 0,
+        'max' : 3,
+        'log' : False,
+        'formula' : "DeltaPhi(Jet1_phi,Jet2_phi)",
+    },
+
     'nPV': {
         'title' : "number of primary vertices",
         'nbins' : 51,
