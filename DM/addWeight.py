@@ -2,7 +2,7 @@
 
 import os, multiprocessing, math
 from array import array
-from ROOT import TFile, TH1, TF1, TLorentzVector
+from ROOT import TFile, TH1, TF1, TLorentzVector, TObject
 
 
 from xsections import xsection
@@ -10,8 +10,11 @@ from xsections import xsection
 import optparse
 usage = 'usage: %prog [options]'
 parser = optparse.OptionParser(usage)
-parser.add_option('-i', '--input', action='store', type='string', dest='origin', default='./AnalysisOutput/')
-parser.add_option('-o', '--output', action='store', type='string', dest='target', default='/scratch/zucchett/Ntuple/DM/')
+#parser.add_option('-i', '--input', action='store', type='string', dest='origin', default='./AnalysisOutput/')
+#parser.add_option('-o', '--output', action='store', type='string', dest='target', default='/scratch/zucchett/Ntuple/DM/')
+
+parser.add_option('-i', '--input', action='store', type='string', dest='origin', default='testinsig/')
+parser.add_option('-o', '--output', action='store', type='string', dest='target', default='testout/')
 parser.add_option('-f', '--filter', action='store', type='string', dest='filter', default='')
 parser.add_option('-s', '--single', action='store_true', dest='single', default=False)
 parser.add_option('-v', '--verbose', action='store_true', dest='verbose', default=False)
@@ -118,7 +121,7 @@ def processFile(sample_name, verbose=False):
                 eventWeightLumiBranch.Fill()
 
             new_file.cd()
-            new_tree.Write()
+            new_tree.Write("tree",TObject.kOverwrite)
             if verbose: print ' '
         
         # Directories
