@@ -80,7 +80,7 @@ Once the logfiles end with `Tschoe!` line, the jobs have finished. The temporary
 
 
 
-### Post-processing
+### Post-processing (old option)
 
 The post-processing script `addWeight.py` is also included. The simplest post-processing step consists in adding a new variable to the tree containing the weight relatove to each single event, by accounting for the equivalent luminosity and the cross section of the sample.
 The cross sections are taken from the `xsection.py` file, which is included by `addWeight.py`. Control histograms are rescaled as well. If needed, the post-processing step may be extended to perform more complicate operations, such as calculating multivariate discriminants.
@@ -88,6 +88,24 @@ The script accepts as argument a filter list with the `-f filterlist` where a st
 By default, the post-processing is performed in parallel between different samples, to expolit multi-core machines. The post-processing can be lauched with the command:
 ```bash
 python addWeight.py
+```
+
+### Post-processing (newer option)
+We have added a script (very similar to addWeights.py) that can be run instead and all jobs can be submitted to the batch system.
+```bash
+python submitFriendTrees.py -i INPUT_SFRAME_NTUPLES/ -o testout (-c True)
+```
+This code does the same as addWeights, but the default is to just create a friendtree that can be used in addition to the usual tree.
+If the option `-c True` is used the the input tree is copied. Running the code over already weighted files will not weight them again, there
+is a protection against that, however avoid it since it can causer other problems. 
+Working with Friendtrees:
+```bash
+root -l OldTreeFile.root
+TTree *T  = (TTree*)_file0->Get("tree")
+TFile *_FriendTree = TFile::Open("FriendTreeFile.root")
+TTree *FT  = (TTree*)_FriendTree->Get("Ftree")
+T->AddFriend(FT)
+T->Draw("bla","bli","blub")
 ```
 
 ### Plotting
