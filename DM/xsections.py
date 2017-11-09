@@ -57,14 +57,22 @@ xsection = {
     'DYJetsToLL_Pt-400To650' : { 'nevents' : 1, 'xsec'    : 0.3921, 'matcheff': 1., 'kfactor' : 1.14, 'br' : 1., },
     'DYJetsToLL_Pt-650ToInf' : { 'nevents' : 1, 'xsec'    : 0.03636, 'matcheff': 1., 'kfactor' : 1.14, 'br' : 1., },
     
-    'DYJetsToLL_HT-100to200' : { 'nevents' : 1, 'xsec'    : 147.4, 'matcheff': 0.093, 'kfactor' : 1.27*1.14, 'br' : 1., },
-    'DYJetsToLL_HT-200to400' : { 'nevents' : 1, 'xsec'    : 40.99, 'matcheff': 0.086, 'kfactor' : 1.40*1.14, 'br' : 1., },
-    'DYJetsToLL_HT-400to600' : { 'nevents' : 1, 'xsec'    : 5.678, 'matcheff': 1.494, 'kfactor' : 1.13*1.14, 'br' : 1., },
-    #'DYJetsToLL_HT-600toInf' : { 'nevents' : 1, 'xsec'    : 2.198, 'matcheff': 0.075, 'kfactor' : 1., 'br' : 1., },
-    'DYJetsToLL_HT-600to800' : { 'nevents' : 1, 'xsec'    : 1.367, 'matcheff': 0.07, 'kfactor' : 0.96*1.14, 'br' : 1., },
-    'DYJetsToLL_HT-800to1200' : { 'nevents' : 1, 'xsec'    : 0.6304, 'matcheff': 0.08, 'kfactor' : 0.92*1.14, 'br' : 1., },
-    'DYJetsToLL_HT-1200to2500' : { 'nevents' : 1, 'xsec'    : 0.1514, 'matcheff': 0.06, 'kfactor' : 0.69*1.14, 'br' : 1., },
-    'DYJetsToLL_HT-2500toInf' : { 'nevents' : 1, 'xsec'    : 0.003565, 'matcheff': 0.1, 'kfactor' : 0.69*1.14, 'br' : 1., },
+    # 'DYJetsToLL_HT-100to200' : { 'nevents' : 1, 'xsec'    : 147.4, 'matcheff': 0.093, 'kfactor' : 1.27*1.14, 'br' : 1., },
+    # 'DYJetsToLL_HT-200to400' : { 'nevents' : 1, 'xsec'    : 40.99, 'matcheff': 0.086, 'kfactor' : 1.40*1.14, 'br' : 1., },
+    # 'DYJetsToLL_HT-400to600' : { 'nevents' : 1, 'xsec'    : 5.678, 'matcheff': 1.494, 'kfactor' : 1.13*1.14, 'br' : 1., },
+    # #'DYJetsToLL_HT-600toInf' : { 'nevents' : 1, 'xsec'    : 2.198, 'matcheff': 0.075, 'kfactor' : 1., 'br' : 1., },
+    # 'DYJetsToLL_HT-600to800' : { 'nevents' : 1, 'xsec'    : 1.367, 'matcheff': 0.07, 'kfactor' : 0.96*1.14, 'br' : 1., },
+    # 'DYJetsToLL_HT-800to1200' : { 'nevents' : 1, 'xsec'    : 0.6304, 'matcheff': 0.08, 'kfactor' : 0.92*1.14, 'br' : 1., },
+    # 'DYJetsToLL_HT-1200to2500' : { 'nevents' : 1, 'xsec'    : 0.1514, 'matcheff': 0.06, 'kfactor' : 0.69*1.14, 'br' : 1., },
+    # 'DYJetsToLL_HT-2500toInf' : { 'nevents' : 1, 'xsec'    : 0.003565, 'matcheff': 0.1, 'kfactor' : 0.69*1.14, 'br' : 1., },
+
+    'DYJetsToLL_HT-100to200' : { 'nevents' : 1, 'xsec'    : 147.4, 'matcheff': 0.093, 'kfactor' : 1., 'br' : 1., },
+    'DYJetsToLL_HT-200to400' : { 'nevents' : 1, 'xsec'    : 40.99, 'matcheff': 0.086, 'kfactor' : 1., 'br' : 1., },
+    'DYJetsToLL_HT-400to600' : { 'nevents' : 1, 'xsec'    : 5.678, 'matcheff': 1.494, 'kfactor' : 1., 'br' : 1., },
+    'DYJetsToLL_HT-600to800' : { 'nevents' : 1, 'xsec'    : 1.367, 'matcheff': 0.07, 'kfactor' : 1., 'br' : 1., },
+    'DYJetsToLL_HT-800to1200' : { 'nevents' : 1, 'xsec'    : 0.6304, 'matcheff': 0.08, 'kfactor' : 1., 'br' : 1., },
+    'DYJetsToLL_HT-1200to2500' : { 'nevents' : 1, 'xsec'    : 0.1514, 'matcheff': 0.06, 'kfactor' : 1., 'br' : 1., },
+    'DYJetsToLL_HT-2500toInf' : { 'nevents' : 1, 'xsec'    : 0.003565, 'matcheff': 0.1, 'kfactor' : 1., 'br' : 1., },
     
     'DYJetsToNuNu_Pt-50To100' : { 'nevents' : 1, 'xsec'    : 593.9, 'matcheff': 0.38, 'kfactor' : 1., 'br' : 1., },
     'DYJetsToNuNu_Pt-100To250' : { 'nevents' : 1, 'xsec'    : 170.4, 'matcheff': 0.38, 'kfactor' : 1., 'br' : 1., },
@@ -72,27 +80,44 @@ xsection = {
     'DYJetsToNuNu_Pt-400To650' : { 'nevents' : 1, 'xsec'    : 0.9372, 'matcheff': 0.41, 'kfactor' : 1., 'br' : 1., },
     'DYJetsToNuNu_Pt-650ToInf' : { 'nevents' : 1, 'xsec'    : 0.1042, 'matcheff': 0.42, 'kfactor' : 1., 'br' : 1., },
     
-    'ZJetsToNuNu_HT-100To200' : { 'nevents' : 1., 'xsec'    : 280.35, 'matcheff': 0.1, 'kfactor' : 1.37, 'br' : 1., },
-    'ZJetsToNuNu_HT-200To400' : { 'nevents' : 1., 'xsec'    : 77.67, 'matcheff': 0.1, 'kfactor' : 1.52, 'br' : 1., },
-    'ZJetsToNuNu_HT-400To600' : { 'nevents' : 1., 'xsec'    : 10.73, 'matcheff': 0.1, 'kfactor' : 1.37, 'br' : 1., }, #11.99
-    'ZJetsToNuNu_HT-600To800' : { 'nevents' : 1., 'xsec'    : 2.559, 'matcheff': 0.1, 'kfactor' : 1.04, 'br' : 1., }, #0.853
-    'ZJetsToNuNu_HT-800To1200' : { 'nevents' : 1., 'xsec'    : 1.1796, 'matcheff': 0.1, 'kfactor' : 1.14, 'br' : 1., }, #0.3942
-    'ZJetsToNuNu_HT-1200To2500' : { 'nevents' : 1., 'xsec'    : 0.28833, 'matcheff': 0.1, 'kfactor' : 0.88, 'br' : 1., }, #0.0974
-    'ZJetsToNuNu_HT-2500ToInf' : { 'nevents' : 1., 'xsec'    : 0.006945, 'matcheff': 0.1, 'kfactor' : 0.88, 'br' : 1., }, #0.002308
+    # 'ZJetsToNuNu_HT-100To200' : { 'nevents' : 1., 'xsec'    : 280.35, 'matcheff': 0.1, 'kfactor' : 1.37, 'br' : 1., },
+    # 'ZJetsToNuNu_HT-200To400' : { 'nevents' : 1., 'xsec'    : 77.67, 'matcheff': 0.1, 'kfactor' : 1.52, 'br' : 1., },
+    # 'ZJetsToNuNu_HT-400To600' : { 'nevents' : 1., 'xsec'    : 10.73, 'matcheff': 0.1, 'kfactor' : 1.37, 'br' : 1., }, #11.99
+    # 'ZJetsToNuNu_HT-600To800' : { 'nevents' : 1., 'xsec'    : 2.559, 'matcheff': 0.1, 'kfactor' : 1.04, 'br' : 1., }, #0.853
+    # 'ZJetsToNuNu_HT-800To1200' : { 'nevents' : 1., 'xsec'    : 1.1796, 'matcheff': 0.1, 'kfactor' : 1.14, 'br' : 1., }, #0.3942
+    # 'ZJetsToNuNu_HT-1200To2500' : { 'nevents' : 1., 'xsec'    : 0.28833, 'matcheff': 0.1, 'kfactor' : 0.88, 'br' : 1., }, #0.0974
+    # 'ZJetsToNuNu_HT-2500ToInf' : { 'nevents' : 1., 'xsec'    : 0.006945, 'matcheff': 0.1, 'kfactor' : 0.88, 'br' : 1., }, #0.002308
+
+    'ZJetsToNuNu_HT-100To200' : { 'nevents' : 1., 'xsec'    : 280.35, 'matcheff': 0.1, 'kfactor' : 1., 'br' : 1., },
+    'ZJetsToNuNu_HT-200To400' : { 'nevents' : 1., 'xsec'    : 77.67, 'matcheff': 0.1, 'kfactor' : 1., 'br' : 1., },
+    'ZJetsToNuNu_HT-400To600' : { 'nevents' : 1., 'xsec'    : 10.73, 'matcheff': 0.1, 'kfactor' : 1., 'br' : 1., },
+    'ZJetsToNuNu_HT-600To800' : { 'nevents' : 1., 'xsec'    : 2.559, 'matcheff': 0.1, 'kfactor' : 1., 'br' : 1., },
+    'ZJetsToNuNu_HT-800To1200' : { 'nevents' : 1., 'xsec'    : 1.1796, 'matcheff': 0.1, 'kfactor' : 1., 'br' : 1., },
+    'ZJetsToNuNu_HT-1200To2500' : { 'nevents' : 1., 'xsec'    : 0.28833, 'matcheff': 0.1, 'kfactor' : 1., 'br' : 1., },
+    'ZJetsToNuNu_HT-2500ToInf' : { 'nevents' : 1., 'xsec'    : 0.006945, 'matcheff': 0.1, 'kfactor' : 1., 'br' : 1., },
 
     'DYBJetsToNuNu_Zpt-40toInf' : { 'nevents' : 1, 'xsec'    : 71.77, 'matcheff': 0.128, 'kfactor' : 1., 'br' : 1., },
     
     'ZJetsToQQ_HT-600ToInf' : { 'nevents' : 1, 'xsec'    : 15.23, 'matcheff': 1., 'kfactor' : 1.139, 'br' : 1., },
     
     'WJetsToLNu' : { 'nevents' : 1, 'xsec'    : 61526.7, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
-    'WJetsToLNu_HT-70To100' : { 'nevents' : 1, 'xsec'    : 1372, 'matcheff': 1., 'kfactor' : 1.26, 'br' : 1., },
-    'WJetsToLNu_HT-100To200' : { 'nevents' : 1, 'xsec'    : 1345, 'matcheff': 1., 'kfactor' : 1.26, 'br' : 1., },
-    'WJetsToLNu_HT-200To400' : { 'nevents' : 1, 'xsec'    : 359.7, 'matcheff': 1., 'kfactor' : 1.48, 'br' : 1., },
-    'WJetsToLNu_HT-400To600' : { 'nevents' : 1, 'xsec'    : 48.91, 'matcheff': 1., 'kfactor' : 1.26, 'br' : 1., },
-    'WJetsToLNu_HT-600To800' : { 'nevents' : 1, 'xsec'    : 12.05, 'matcheff': 1., 'kfactor' : 1.03, 'br' : 1., },
-    'WJetsToLNu_HT-800To1200' : { 'nevents' : 1, 'xsec'    : 5.501, 'matcheff': 1., 'kfactor' : 1.05, 'br' : 1., },
-    'WJetsToLNu_HT-1200To2500' : { 'nevents' : 1, 'xsec'    : 1.329, 'matcheff': 1., 'kfactor' : 0.77, 'br' : 1., },
-    'WJetsToLNu_HT-2500ToInf' : { 'nevents' : 1, 'xsec'    : 0.03216, 'matcheff': 1., 'kfactor' : 0.77, 'br' : 1., },
+    # 'WJetsToLNu_HT-70To100' : { 'nevents' : 1, 'xsec'    : 1372, 'matcheff': 1., 'kfactor' : 1.26, 'br' : 1., },
+    # 'WJetsToLNu_HT-100To200' : { 'nevents' : 1, 'xsec'    : 1345, 'matcheff': 1., 'kfactor' : 1.26, 'br' : 1., },
+    # 'WJetsToLNu_HT-200To400' : { 'nevents' : 1, 'xsec'    : 359.7, 'matcheff': 1., 'kfactor' : 1.48, 'br' : 1., },
+    # 'WJetsToLNu_HT-400To600' : { 'nevents' : 1, 'xsec'    : 48.91, 'matcheff': 1., 'kfactor' : 1.26, 'br' : 1., },
+    # 'WJetsToLNu_HT-600To800' : { 'nevents' : 1, 'xsec'    : 12.05, 'matcheff': 1., 'kfactor' : 1.03, 'br' : 1., },
+    # 'WJetsToLNu_HT-800To1200' : { 'nevents' : 1, 'xsec'    : 5.501, 'matcheff': 1., 'kfactor' : 1.05, 'br' : 1., },
+    # 'WJetsToLNu_HT-1200To2500' : { 'nevents' : 1, 'xsec'    : 1.329, 'matcheff': 1., 'kfactor' : 0.77, 'br' : 1., },
+    # 'WJetsToLNu_HT-2500ToInf' : { 'nevents' : 1, 'xsec'    : 0.03216, 'matcheff': 1., 'kfactor' : 0.77, 'br' : 1., },
+
+    'WJetsToLNu_HT-70To100' : { 'nevents' : 1, 'xsec'    : 1372, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'WJetsToLNu_HT-100To200' : { 'nevents' : 1, 'xsec'    : 1345, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'WJetsToLNu_HT-200To400' : { 'nevents' : 1, 'xsec'    : 359.7, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'WJetsToLNu_HT-400To600' : { 'nevents' : 1, 'xsec'    : 48.91, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'WJetsToLNu_HT-600To800' : { 'nevents' : 1, 'xsec'    : 12.05, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'WJetsToLNu_HT-800To1200' : { 'nevents' : 1, 'xsec'    : 5.501, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'WJetsToLNu_HT-1200To2500' : { 'nevents' : 1, 'xsec'    : 1.329, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'WJetsToLNu_HT-2500ToInf' : { 'nevents' : 1, 'xsec'    : 0.03216, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     
     'WJetsToLNu_Pt-100To250' : { 'nevents' : 1, 'xsec'    : 676.3, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     'WJetsToLNu_Pt-250To400' : { 'nevents' : 1, 'xsec'    : 23.94, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
@@ -118,6 +143,11 @@ xsection = {
     'TTWJetsToLNu' : { 'nevents' : 1., 'xsec'    : 0.2043, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     'TTZToLLNuNu' : { 'nevents' : 1., 'xsec'    : 0.2529, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     
+    'TTWJetsToQQ' : { 'nevents' : 1., 'xsec'    : 0.4062, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'TTZToQQ' : { 'nevents' : 1., 'xsec'    : 0.5297, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'WZTo1L3Nu' : { 'nevents' : 1., 'xsec'    : 3.033, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+    'WZTo3LNu' : { 'nevents' : 1., 'xsec'    : 4.42965, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
+
     'WWTo4Q' : { 'nevents' : 1., 'xsec'    : 51.723, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     'WWTo1L1Nu2Q' : { 'nevents' : 1., 'xsec'    : 49.997, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },
     'WWTo2L2Nu' : { 'nevents' : 1., 'xsec'    : 12.178, 'matcheff': 1., 'kfactor' : 1., 'br' : 1., },

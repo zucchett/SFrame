@@ -5,7 +5,7 @@
 
 // External include(s):
 #include "../GoodRunsLists/include/TGoodRunsListReader.h"
-
+#include "../include/kfactors.h"
 #include <TMath.h>
 
 bool SortByCSV(UZH::Jet j1, UZH::Jet j2) {return(j1.csv() > j2.csv());}
@@ -218,6 +218,8 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( EventWeight,         "eventWeight",  m_outputTreeName.c_str());
     DeclareVariable( WewkWeight,          "WewkWeight",  m_outputTreeName.c_str());
     DeclareVariable( ZewkWeight,          "ZewkWeight",  m_outputTreeName.c_str());
+    DeclareVariable( WqcdWeight,          "WqcdWeight",  m_outputTreeName.c_str());
+    DeclareVariable( ZqcdWeight,          "ZqcdWeight",  m_outputTreeName.c_str());
     DeclareVariable( TopWeight,           "TopWeight",  m_outputTreeName.c_str());
     DeclareVariable( QCDRenWeightUp,      "QCDRenWeightUp",  m_outputTreeName.c_str());
     DeclareVariable( QCDRenWeightDown,    "QCDRenWeightDown",  m_outputTreeName.c_str());
@@ -557,6 +559,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
 
     m_logger << INFO << "ExecuteEvent\tevent: " << m_eventInfo.eventNumber << "\tlumi: " << m_eventInfo.lumiBlock << "\trun: " << m_eventInfo.runNumber << "\tin sample: " << sample << SLogger::endmsg;
 
+    std::cout << "ExecuteEvent\tevent: " << m_eventInfo.eventNumber << "\tlumi: " << m_eventInfo.lumiBlock << "\trun: " << m_eventInfo.runNumber << std::endl;
+
     // --- Preliminary operations ---
     isMC = !m_isData;
     EventNumber = m_eventInfo.eventNumber;
@@ -598,7 +602,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     for(int i = 0; i < m_electron.N; ++i) {
         UZH::Electron el(&m_electron, i);
         if(el.pt() < m_ElecPtCut || fabs(el.eta()) > m_ElecEtaCut || (fabs(el.eta()) > 1.4442 && fabs(el.eta())< 1.566) ) continue;
-        nElectronsReco++;
+	nElectronsReco++;
         //if(i==0 && el.pt() < m_Elec1PtCut) break;
         //if(i==1 && el.pt() < m_Elec2PtCut) break;
         nElectronsPt++;
@@ -608,11 +612,13 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         if(i==1) Hist("Electron2_pfIso", "2e")->Fill(el.pfRhoCorrRelIso03(), EventWeight);
         //if(i==0 && !(el.isTightElectron())) break;
         //if(i==1 && !(el.isVetoElectron())) break;
+ 
         if(!(el.isVetoElectron())) continue;
         ST += el.pt();
         ElecVect.push_back(el);
         TLorentzVector el_tlv;
         el_tlv.SetPtEtaPhiE(el.pt(), el.eta(), el.phi(), el.e());
+	
         //double energy = m_CorrectionTool.GetCorrectedEnergy(el.e(), isMC, m_eventInfo.runNumber, (fabs(el.eta()) < 1.4442), el.full5x5_r9(), el.superCluster_eta(), el.et());
         //m_logger << INFO << " - Electron " << i+1 << " has correction factor " << energy/el.e() << SLogger::endmsg;
         //el_tlv *= el.e()/energy;
@@ -753,9 +759,19 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         if(GenV.Pt()>0.) GenVPt = GenV.Pt();
         else if(LepP.Pt()>0. && LepM.Pt()>0.) {GenVPt = (LepP+LepM).Pt(); GenVpdgId = (GenLepPpdgId == -GenLepMpdgId) ? 23 : 24;}
 
-        if(GenVPt > 0. && (sample.find("DYJetsToLL") != std::string::npos || sample.find("ZJetsToNuNu") != std::string::npos)) ZewkWeight *= m_ScaleFactorTool.GetEwkZ(GenVPt);
-        if(GenVPt > 0. && (sample.find("WJetsToLNu") != std::string::npos))  WewkWeight *= m_ScaleFactorTool.GetEwkW(GenVPt);
-        EventWeight *= WewkWeight * ZewkWeight;
+        // if(GenVPt > 0. && (sample.find("DYJetsToLL") != std::string::npos || sample.find("ZJetsToNuNu") != std::string::npos)) ZewkWeight *= m_ScaleFactorTool.GetEwkZ(GenVPt);
+        // if(GenVPt > 0. && (sample.find("WJetsToLNu") != std::string::npos))  WewkWeight *= m_ScaleFactorTool.GetEwkW(GenVPt);
+        // EventWeight *= WewkWeight * ZewkWeight;
+
+	if(GenVPt > 0. && (sample.find("DYJetsToLL") != std::string::npos || sample.find("ZJetsToNuNu") != std::string::npos)){
+          ZewkWeight *= getEWKZ(GenVPt);
+          ZqcdWeight *= getQCDZ(GenVPt);
+        }
+        if(GenVPt > 0. && (sample.find("WJetsToLNu") != std::string::npos)){
+          WewkWeight *= getEWKW(GenVPt);
+          WqcdWeight *= getQCDW(GenVPt);
+        }
+        EventWeight *= WewkWeight * WqcdWeight * ZewkWeight * ZqcdWeight;
     }
 
     // TTbar pT reweighting
@@ -1088,6 +1104,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Lepton1_id = MuonVect[0].isPFMuon()+MuonVect[0].isLooseMuon()+MuonVect[0].isMediumMuon()+MuonVect[0].isTightMuon();
 
         mT = sqrt(2.*MET.et()*MuonVect[0].pt()*(1.-cos(MuonVect[0].tlv().DeltaPhi(MET_tlv))));
+	
         fakeMET_pt = sqrt(pow(MET_tlv.Px() + MuonVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + MuonVect[0].tlv().Py(), 2));
         V_pt = fakeMET_pt;
         Hist("W_tmass", "1m")->Fill(mT, EventWeight);
@@ -1120,6 +1137,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Lepton1_pfIso = ElecVect[0].pfRhoCorrRelIso03();
         Lepton1_id = ElecVect[0].isVetoElectron()+ElecVect[0].isLooseElectron()+ElecVect[0].isMediumElectron()+ElecVect[0].isTightElectron();
         mT = sqrt(2.*MET.et()*ElecVect[0].pt()*(1.-cos(ElecVect[0].tlv().DeltaPhi(MET_tlv))));
+
         fakeMET_pt = sqrt(pow(MET_tlv.Px() + ElecVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + ElecVect[0].tlv().Py(), 2));
         V_pt = fakeMET_pt;
         Hist("W_tmass", "1e")->Fill(mT, EventWeight);
@@ -1355,16 +1373,16 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         }
     }
 
-    // add event shape variable
-    std::vector<TLorentzVector> *Jets = new std::vector<TLorentzVector>;
+    // // add event shape variable
+    // std::vector<TLorentzVector> *Jets = new std::vector<TLorentzVector>;
 
-    for(int i = 0; i < nJets; i++) Jets->push_back(JetsVect[i].tlv());
-    for(int i = 0; i < nElectrons; i++) Jets->push_back(ElecVect[i].tlv());
-    for(int i = 0; i < nMuons; i++) Jets->push_back(MuonVect[i].tlv());
+    // for(int i = 0; i < nJets; i++) Jets->push_back(JetsVect[i].tlv());
+    // for(int i = 0; i < nElectrons; i++) Jets->push_back(ElecVect[i].tlv());
+    // for(int i = 0; i < nMuons; i++) Jets->push_back(MuonVect[i].tlv());
     //for(int i = 0; i < nBTagJets ; i++) Jets->push_back(bJets[i]);
     //Jets->push_back(MET_tlv);
 
-    m_VariableTool.EventShape(Jets, Sphericity, Aplanarity);
+    //m_VariableTool.EventShape(Jets, Sphericity, Aplanarity);
 
 
     // angular correlations
@@ -1501,6 +1519,7 @@ void DMAnalysis::clearBranches() {
     EventWeight = GenWeight = ZewkWeight = WewkWeight = TopWeight = QCDRenWeightUp = QCDRenWeightDown = QCDFacWeightUp = QCDFacWeightDown = PUWeight = PUWeightUp = PUWeightDown = TriggerWeight = TriggerWeightUp = TriggerWeightDown = LeptonWeight = LeptonWeightUp = LeptonWeightDown = BTagWeight = BTagWeightUp = BTagWeightDown = 1.;
     isZtoNN = isWtoEN = isWtoMN = isTtoEM = isZtoEE = isZtoMM = isTveto = false;
     LheV_pt = LheHT = LheNl = LheNj = LheNb = 0;
+    ZqcdWeight = WqcdWeight = 1.;
     nPV = nElectrons = nMuons = nTaus = nPhotons = nJets = nForwardJets = nBJets = nBQuarks = nBTagJets = nBVetoJets = 0;
     HT = HTx = HTy = MHT = MHTNoMu = METNoMu = MinMETMHT = MinMETNoMuMHTNoMu = ST = MET_pt = MET_phi = MET_sign = fakeMET_pt = 0.;
     mZ = mT = mT2 = V_pt = 0.;
