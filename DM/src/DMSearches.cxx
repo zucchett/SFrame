@@ -578,8 +578,6 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
 
     m_logger << INFO << "ExecuteEvent\tevent: " << m_eventInfo.eventNumber << "\tlumi: " << m_eventInfo.lumiBlock << "\trun: " << m_eventInfo.runNumber << "\tin sample: " << sample << SLogger::endmsg;
 
-    std::cout << "ExecuteEvent\tevent: " << m_eventInfo.eventNumber << "\tlumi: " << m_eventInfo.lumiBlock << "\trun: " << m_eventInfo.runNumber << std::endl;
-
     // --- Preliminary operations ---
     isMC = !m_isData;
     EventNumber = m_eventInfo.eventNumber;
