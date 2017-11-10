@@ -38,12 +38,11 @@ if not os.path.exists(origin):
     print 'Origin directory', origin, 'does not exist, aborting'
     exit()
     
-if not os.path.exists(target):
-    print 'Target directory', target,'does not exist, creating structure'
-    try: os.stat(target)
-    except: os.mkdir(target)
-    try: os.stat(target+'/logs')
-    except: os.mkdir(target+'/logs')
+    
+try: os.stat(target)
+except: os.mkdir(target)
+try: os.stat(target+'/logs')
+except: os.mkdir(target+'/logs')
     
 
 
