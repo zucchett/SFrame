@@ -1394,8 +1394,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     for(int i = 0; i < nJets; i++){
         if(isWtoEN || isZtoEE){
             for(int j = 0; j < nElectrons; j++){
-                if(fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) < MinJetMetDPhi) MinLepJetDPhi = fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
-                if(fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) > MaxJetMetDPhi) MaxLepJetDPhi = fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
+                if(fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) < MinLepJetDPhi) MinLepJetDPhi = fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
+                if(fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) > MaxLepJetDPhi) MaxLepJetDPhi = fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
             }
         }
         if(isWtoMN || isZtoMM){
