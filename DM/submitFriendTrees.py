@@ -49,7 +49,7 @@ except: os.mkdir(target+'/logs')
 def createJobs(f , jobs):
     cmd = 'python createFriendTrees.py -i ' + origin + ' -o '+  target + ' -t ' + f + '\n'
     if copytree:
-        cmd = 'python createFriendTrees.py -i ' + origin + ' -o '+  target + ' -t ' + f + '-c True \n'
+        cmd = 'python createFriendTrees.py -i ' + origin + ' -o '+  target + ' -t ' + f + ' -c True \n'
     jobs.write(cmd)
     return 1
 
