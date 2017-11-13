@@ -34,9 +34,11 @@ ANALYSIS = "DMAnalysis"
 if not os.path.exists(origin):
     print 'Origin directory', origin, 'does not exist, aborting...'
     exit()
-if not os.path.exists(target):
-    print 'Target directory', target,'does not exist, aborting...'
-    exit()
+
+try: os.stat(target)
+except: os.mkdir(target)
+try: os.stat(target+'/logs')
+except: os.mkdir(target+'/logs')
 
 
 ##############################
@@ -139,7 +141,7 @@ def processFile(sample_name, verbose=False):
 
         #calculate new variable and fill
         dummy[0] = 1
-        dummyBranch.Fill()
+
 
         if not (hasLumiWeights):
             eventWeightLumi[0] = stitchWeight[0] = 1
@@ -152,12 +154,12 @@ def processFile(sample_name, verbose=False):
                 eventWeightLumi[0] *= LUMI*XS/totalEntries
 
             #fill the new branches of the tree
-            if not (hasLumiWeights):
-                stitchWeightBranch.Fill()
-                eventWeightLumiBranch.Fill()
-            
-
-
+#            if not (hasLumiWeights):
+                #stitchWeightBranch.Fill()
+                #eventWeightLumiBranch.Fill()
+        new_tree.Fill()
+        #dummyBranch.Fill()
+                
     new_file.cd()
     new_tree.Write(tname,TObject.kOverwrite)
     if verbose: print ' '
