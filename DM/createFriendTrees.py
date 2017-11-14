@@ -154,12 +154,16 @@ def processFile(sample_name, verbose=False):
                 eventWeightLumi[0] *= LUMI*XS/totalEntries
 
             #fill the new branches of the tree
-#            if not (hasLumiWeights):
-                #stitchWeightBranch.Fill()
-                #eventWeightLumiBranch.Fill()
-        new_tree.Fill()
-        #dummyBranch.Fill()
-                
+            if not (hasLumiWeights):
+                if copytree:
+                    stitchWeightBranch.Fill()
+                    eventWeightLumiBranch.Fill()
+
+        if copytree:
+            dummyBranch.Fill()
+        else:
+            new_tree.Fill()
+
     new_file.cd()
     new_tree.Write(tname,TObject.kOverwrite)
     if verbose: print ' '
