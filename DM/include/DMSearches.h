@@ -268,21 +268,36 @@ class DMAnalysis : public SCycleBase {
         float Jet2_pt;
         float Jet3_pt;
         float Jet4_pt;
+        float Jet5_pt;
+        float Jet6_pt;
         float JetF_pt;
+        float Jet1_E;
+        float Jet2_E;
+        float Jet3_E;
+        float Jet4_E;
+        float Jet5_E;
+        float Jet6_E;
+        float JetF_E;
         float Jet1_eta;
         float Jet2_eta;
         float Jet3_eta;
         float Jet4_eta;
+        float Jet5_eta;
+        float Jet6_eta;
         float JetF_eta;
         float Jet1_phi;
         float Jet2_phi;
         float Jet3_phi;
         float Jet4_phi;
+        float Jet5_phi;
+        float Jet6_phi;
         float JetF_phi;
         float Jet1_csv;
         float Jet2_csv;
         float Jet3_csv;
         float Jet4_csv;
+        float Jet5_csv;
+        float Jet6_csv;
   
         // ESV
         float Sphericity;

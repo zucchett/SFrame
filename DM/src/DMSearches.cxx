@@ -290,25 +290,42 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( Lepton2_id,          "Lepton2_id",  m_outputTreeName.c_str());
     DeclareVariable( Lepton1_pfIso,       "Lepton1_pfIso",  m_outputTreeName.c_str());
     DeclareVariable( Lepton2_pfIso,       "Lepton2_pfIso",  m_outputTreeName.c_str());
+
     DeclareVariable( Jet1_pt,             "Jet1_pt",  m_outputTreeName.c_str());
     DeclareVariable( Jet2_pt,             "Jet2_pt",  m_outputTreeName.c_str());
     DeclareVariable( Jet3_pt,             "Jet3_pt",  m_outputTreeName.c_str());
     DeclareVariable( Jet4_pt,             "Jet4_pt",  m_outputTreeName.c_str());
+    DeclareVariable( Jet5_pt,             "Jet5_pt",  m_outputTreeName.c_str());
+    DeclareVariable( Jet6_pt,             "Jet6_pt",  m_outputTreeName.c_str());
     DeclareVariable( JetF_pt,             "JetF_pt",  m_outputTreeName.c_str());
+    DeclareVariable( Jet1_E,              "Jet1_E",  m_outputTreeName.c_str());
+    DeclareVariable( Jet2_E,              "Jet2_E",  m_outputTreeName.c_str());
+    DeclareVariable( Jet3_E,              "Jet3_E",  m_outputTreeName.c_str());
+    DeclareVariable( Jet4_E,              "Jet4_E",  m_outputTreeName.c_str());
+    DeclareVariable( Jet5_E,              "Jet5_E",  m_outputTreeName.c_str());
+    DeclareVariable( Jet6_E,              "Jet6_E",  m_outputTreeName.c_str());
+    DeclareVariable( JetF_E,              "JetF_E",  m_outputTreeName.c_str());
     DeclareVariable( Jet1_eta,            "Jet1_eta",  m_outputTreeName.c_str());
     DeclareVariable( Jet2_eta,            "Jet2_eta",  m_outputTreeName.c_str());
     DeclareVariable( Jet3_eta,            "Jet3_eta",  m_outputTreeName.c_str());
     DeclareVariable( Jet4_eta,            "Jet4_eta",  m_outputTreeName.c_str());
+    DeclareVariable( Jet5_eta,            "Jet5_eta",  m_outputTreeName.c_str());
+    DeclareVariable( Jet6_eta,            "Jet6_eta",  m_outputTreeName.c_str());
     DeclareVariable( JetF_eta,            "JetF_eta",  m_outputTreeName.c_str());
     DeclareVariable( Jet1_phi,            "Jet1_phi",  m_outputTreeName.c_str());
     DeclareVariable( Jet2_phi,            "Jet2_phi",  m_outputTreeName.c_str());
     DeclareVariable( Jet3_phi,            "Jet3_phi",  m_outputTreeName.c_str());
     DeclareVariable( Jet4_phi,            "Jet4_phi",  m_outputTreeName.c_str());
+    DeclareVariable( Jet5_phi,            "Jet5_phi",  m_outputTreeName.c_str());
+    DeclareVariable( Jet6_phi,            "Jet6_phi",  m_outputTreeName.c_str());
     DeclareVariable( JetF_phi,            "JetF_phi",  m_outputTreeName.c_str());
     DeclareVariable( Jet1_csv,            "Jet1_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet2_csv,            "Jet2_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet3_csv,            "Jet3_csv",  m_outputTreeName.c_str());
     DeclareVariable( Jet4_csv,            "Jet4_csv",  m_outputTreeName.c_str());
+    DeclareVariable( Jet5_csv,            "Jet5_csv",  m_outputTreeName.c_str());
+    DeclareVariable( Jet6_csv,            "Jet6_csv",  m_outputTreeName.c_str());
+
     DeclareVariable( V_pt,                "V_pt",  m_outputTreeName.c_str());
   
     DeclareVariable( Sphericity,          "Sphericity", m_outputTreeName.c_str());
@@ -559,8 +576,6 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
 
     m_logger << INFO << "ExecuteEvent\tevent: " << m_eventInfo.eventNumber << "\tlumi: " << m_eventInfo.lumiBlock << "\trun: " << m_eventInfo.runNumber << "\tin sample: " << sample << SLogger::endmsg;
 
-    std::cout << "ExecuteEvent\tevent: " << m_eventInfo.eventNumber << "\tlumi: " << m_eventInfo.lumiBlock << "\trun: " << m_eventInfo.runNumber << std::endl;
-
     // --- Preliminary operations ---
     isMC = !m_isData;
     EventNumber = m_eventInfo.eventNumber;
@@ -724,12 +739,14 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     MinMETMHT = std::min(float(MET.et()), MHT);
     MinMETNoMuMHTNoMu = std::min(METNoMu, MHTNoMu);
 
+
     // min/max deltaphi (MET, jet)
     for(int i = 0; i < nJets; i++) {
       if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) < MinJetMetDPhi) MinJetMetDPhi = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
       if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) > MaxJetMetDPhi) MaxJetMetDPhi = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
     }
     for(int i = 0; i < std::min(2, nJets); i++) if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) < MinJetMetDPhi12) MinJetMetDPhi12 = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
+
     if(nJets == 0) MinJetMetDPhi = MinJetMetDPhi12 = MaxJetMetDPhi = -1.;
 
     // --- GEN ---
@@ -792,6 +809,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     // QCD scales
     //QCDWeightUp = std::min(std::min(m_eventInfo.genFacWeightUp, m_eventInfo.genRenWeightUp), m_eventInfo.genFacRenWeightUp);
     //QCDWeightDown = std::max(std::max(m_eventInfo.genFacWeightDown, m_eventInfo.genRenWeightDown), m_eventInfo.genFacRenWeightDown);
+    
     QCDRenWeightUp = std::max(0., std::min(2., double(m_eventInfo.genRenWeightUp)));
     QCDRenWeightDown = std::max(0., std::min(2., double(m_eventInfo.genRenWeightDown)));
     QCDFacWeightUp = std::max(0., std::min(2., double(m_eventInfo.genFacWeightUp)));
@@ -1234,41 +1252,59 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     m_logger << INFO << " + Filling jets" << SLogger::endmsg;
 
     if(nJets >= 1) {
-        Jet1.SetPtEtaPhiE(JetsVect[0].pt(), JetsVect[0].eta(), JetsVect[0].phi(), JetsVect[0].e());
-        Jet1_pt = JetsVect[0].pt();
-        Jet1_eta = JetsVect[0].eta();
-        Jet1_phi = JetsVect[0].phi();
-        Jet1_csv = JetsVect[0].csv();
+      //Jet1.SetPtEtaPhiE(JetsVect[0].pt(), JetsVect[0].eta(), JetsVect[0].phi(), JetsVect[0].e());
+      Jet1_pt = JetsVect[0].pt(); 
+      Jet1_E = JetsVect[0].e();
+      Jet1_eta = JetsVect[0].eta();        
+      Jet1_phi = JetsVect[0].phi();
+      Jet1_csv = JetsVect[0].csv();
     }
     if(nJets >= 2) {
-        Jet2.SetPtEtaPhiE(JetsVect[1].pt(), JetsVect[1].eta(), JetsVect[1].phi(), JetsVect[1].e());
-        Jet2_pt = JetsVect[1].pt();
-        Jet2_eta = JetsVect[1].eta();
-        Jet2_phi = JetsVect[1].phi();
-        Jet2_csv = JetsVect[1].csv();
+      //Jet2.SetPtEtaPhiE(JetsVect[1].pt(), JetsVect[1].eta(), JetsVect[1].phi(), JetsVect[1].e());
+      Jet2_pt = JetsVect[1].pt();
+      Jet2_E = JetsVect[1].e();
+      Jet2_eta = JetsVect[1].eta();
+      Jet2_phi = JetsVect[1].phi();
+      Jet2_csv = JetsVect[1].csv();
     }
     if(nJets >= 3) {
-        Jet3.SetPtEtaPhiE(JetsVect[2].pt(), JetsVect[2].eta(), JetsVect[2].phi(), JetsVect[2].e());
-        Jet3_pt = JetsVect[2].pt();
-        Jet3_eta = JetsVect[2].eta();
-        Jet3_phi = JetsVect[2].phi();
-        Jet3_csv = JetsVect[2].csv();
+      //Jet3.SetPtEtaPhiE(JetsVect[2].pt(), JetsVect[2].eta(), JetsVect[2].phi(), JetsVect[2].e());
+      Jet3_pt = JetsVect[2].pt();
+      Jet3_E = JetsVect[2].e();
+      Jet3_eta = JetsVect[2].eta();
+      Jet3_phi = JetsVect[2].phi();
+      Jet3_csv = JetsVect[2].csv();
     }
     if(nJets >= 4) {
-        Jet4.SetPtEtaPhiE(JetsVect[3].pt(), JetsVect[3].eta(), JetsVect[3].phi(), JetsVect[3].e());
-        Jet4_pt = JetsVect[3].pt();
-        Jet4_eta = JetsVect[3].eta();
-        Jet4_phi = JetsVect[3].phi();
-        Jet4_csv = JetsVect[3].csv();
+      //Jet4.SetPtEtaPhiE(JetsVect[3].pt(), JetsVect[3].eta(), JetsVect[3].phi(), JetsVect[3].e());
+      Jet4_pt = JetsVect[3].pt();
+      Jet4_E = JetsVect[3].e();
+      Jet4_eta = JetsVect[3].eta();
+      Jet4_phi = JetsVect[3].phi();
+      Jet4_csv = JetsVect[3].csv();
+    }
+    if(nJets >= 5) {
+      Jet5_pt = JetsVect[4].pt();
+      Jet5_E = JetsVect[4].e();
+      Jet5_eta = JetsVect[4].eta();
+      Jet5_phi = JetsVect[4].phi();
+      Jet5_csv = JetsVect[4].csv();
+    }
+    if(nJets >= 6) {
+      Jet6_pt = JetsVect[5].pt();
+      Jet6_E = JetsVect[5].e();
+      Jet6_eta = JetsVect[5].eta();
+      Jet6_phi = JetsVect[5].phi();
+      Jet6_csv = JetsVect[5].csv();
     }
     if(nForwardJets >= 1) {
-        //JetF.SetPtEtaPhiE(JetsVectFor[0].pt(), JetsVectFor[0].eta(), JetsVectFor[0].phi(), JetsVectFor[0].e());
-        JetF_pt = JetsVectFor[0].pt();
-        JetF_eta = JetsVectFor[0].eta();
-        JetF_phi = JetsVectFor[0].phi();
-        //JetF_csv = JetsVectFor[0].csv();
+      //JetF.SetPtEtaPhiE(JetsVectFor[0].pt(), JetsVectFor[0].eta(), JetsVectFor[0].phi(), JetsVectFor[0].e());
+      JetF_pt = JetsVectFor[0].pt();
+      JetF_E = JetsVectFor[0].e();
+      JetF_eta = JetsVectFor[0].eta();
+      JetF_phi = JetsVectFor[0].phi();
+      //JetF_csv = JetsVectFor[0].csv();
     }
-
 
     // For MT2W
     std::vector<TLorentzVector> bJets, lJets;
@@ -1324,52 +1360,51 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
             m_bTaggingScaleTool.fillEfficiencies_tag(JetsVect);
         }
     }
-    //Hist("BTagWeight", category.c_str())->Fill(BTagWeight);
 
 
     // Min/Max DeltaPhi for lepton
-    // min/max deltaphi(lepton, MET)
-
-    if(isWtoEN){
+    if(isWtoEN || isZtoEE){
         for(int i = 0; i < nElectrons; ++i){
             if(fabs(MET_tlv.DeltaPhi(ElecVect[i].tlv())) < MinLepMetDPhi) MinLepMetDPhi = fabs(MET_tlv.DeltaPhi(ElecVect[i].tlv()));
             if(fabs(MET_tlv.DeltaPhi(ElecVect[i].tlv())) > MaxLepMetDPhi) MaxLepMetDPhi = fabs(MET_tlv.DeltaPhi(ElecVect[i].tlv()));
         }
     }
-    if(isWtoMN){
+    if(isWtoMN || isZtoMM){
         for(int i = 0; i < nMuons; ++i){
             if(fabs(MET_tlv.DeltaPhi(MuonVect[i].tlv())) < MinLepMetDPhi) MinLepMetDPhi = fabs(MET_tlv.DeltaPhi(MuonVect[i].tlv()));
             if(fabs(MET_tlv.DeltaPhi(MuonVect[i].tlv())) > MaxLepMetDPhi) MaxLepMetDPhi = fabs(MET_tlv.DeltaPhi(MuonVect[i].tlv()));
         }
     }
-
-    //Hist("MinLepMetDPhi", "1e")->Fill(MinLepMetDPhi, EventWeight);
-    //Hist("MaxLepMetDPhi", "1e")->Fill(MaxLepMetDPhi, EventWeight);
-
-
-    // min/max deltaphi (lepton, jet)
-
-    for(int i = 0; i < nJets; i++){
-        if(isWtoEN){
-            for(int j = 0; j < nElectrons; j++){
-                if(fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) < MinLepMetDPhi) MinLepJetDPhi = fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
-                if(fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) > MaxLepMetDPhi) MaxLepJetDPhi = fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
-            }
-        }
-        if(isWtoMN){
-            for(int j = 0; j < nMuons; j++){
-                if(fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) < MinLepMetDPhi) MinLepJetDPhi = fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
-                if(fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) > MaxLepMetDPhi) MaxLepJetDPhi = fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
-            }
-        }
+    if(isTtoEM){
+      if(fabs(MET_tlv.DeltaPhi(MuonVect[0].tlv())) > MaxLepMetDPhi) MaxLepMetDPhi = fabs(MET_tlv.DeltaPhi(MuonVect[0].tlv()));
+      if(fabs(MET_tlv.DeltaPhi(ElecVect[0].tlv())) > MaxLepMetDPhi) MaxLepMetDPhi = fabs(MET_tlv.DeltaPhi(ElecVect[0].tlv()));
     }
 
+    // min/max deltaphi (lepton, jet)
+    for(int i = 0; i < nJets; i++){
+        if(isWtoEN || isZtoEE){
+            for(int j = 0; j < nElectrons; j++){
+                if(fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) < MinLepJetDPhi) MinLepJetDPhi = fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
+                if(fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) > MaxLepJetDPhi) MaxLepJetDPhi = fabs((ElecVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
+            }
+        }
+        if(isWtoMN || isZtoMM){
+            for(int j = 0; j < nMuons; j++){
+	      if(fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) < MinLepJetDPhi) MinLepJetDPhi = fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
+	      if(fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv())) > MaxLepJetDPhi) MaxLepJetDPhi = fabs((MuonVect[j].tlv()).DeltaPhi(JetsVect[i].tlv()));
+            }
+        }
+        if(isTtoEM){
+	  if(fabs((MuonVect[0].tlv()).DeltaPhi(JetsVect[i].tlv())) < MinLepJetDPhi) MinLepJetDPhi = fabs((MuonVect[0].tlv()).DeltaPhi(JetsVect[i].tlv()));
+	  if(fabs((ElecVect[0].tlv()).DeltaPhi(JetsVect[i].tlv())) > MaxLepJetDPhi) MaxLepJetDPhi = fabs((ElecVect[0].tlv()).DeltaPhi(JetsVect[i].tlv()));
+        }
+    }
 
     // min/max deltaphi (b-jets, MET)
     if (nBTagJets > 0){
         for(int i = 0; i < nBTagJets ;++i){
-            if(fabs(MET_tlv.DeltaPhi(bJets[i])) < MinBJetMetDPhi) MinBJetMetDPhi = fabs(MET_tlv.DeltaPhi(bJets[i]));
-            if(fabs(MET_tlv.DeltaPhi(bJets[i])) > MaxBJetMetDPhi) MaxBJetMetDPhi = fabs(MET_tlv.DeltaPhi(bJets[i]));
+	  if(fabs(MET_tlv.DeltaPhi(bJets[i])) < MinBJetMetDPhi) MinBJetMetDPhi = fabs(MET_tlv.DeltaPhi(bJets[i]));
+	  if(fabs(MET_tlv.DeltaPhi(bJets[i])) > MaxBJetMetDPhi) MaxBJetMetDPhi = fabs(MET_tlv.DeltaPhi(bJets[i]));
         }
     }
 
@@ -1528,5 +1563,5 @@ void DMAnalysis::clearBranches() {
     MaxLepMetDPhi = MaxLepJetDPhi = MaxJetMetDPhi = MaxBJetMetDPhi = -1.;
 
     Lepton1 = Lepton2 = Jet1 = Jet2 = Jet3 = Jet4 = V = TLorentzVector();
-    Lepton1_pt = Lepton2_pt = Lepton1_eta = Lepton2_eta = Lepton1_phi = Lepton2_phi = Lepton1_pfIso = Lepton2_pfIso = Lepton1_id = Lepton2_id = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = JetF_pt = Jet1_eta = Jet2_eta = Jet3_eta = Jet4_eta = JetF_eta = Jet1_phi = Jet2_phi = Jet3_phi = Jet4_phi = JetF_phi = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = -9.;
+    Lepton1_pt = Lepton2_pt = Lepton1_eta = Lepton2_eta = Lepton1_phi = Lepton2_phi = Lepton1_pfIso = Lepton2_pfIso = Lepton1_id = Lepton2_id = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = Jet5_pt = Jet6_pt =JetF_pt = Jet1_E = Jet2_E = Jet3_E = Jet4_E = Jet5_E = Jet6_E =JetF_E = Jet1_eta = Jet2_eta = Jet3_eta = Jet4_eta = Jet5_eta = Jet6_eta =JetF_eta = Jet1_phi = Jet2_phi = Jet3_phi = Jet4_phi = Jet5_phi = Jet6_phi =JetF_phi = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = Jet5_csv = Jet6_csv = -9.;
 }
