@@ -282,8 +282,6 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
 
     DeclareVariable( Lepton1_pt,          "Lepton1_pt",  m_outputTreeName.c_str());
     DeclareVariable( Lepton2_pt,          "Lepton2_pt",  m_outputTreeName.c_str());
-    DeclareVariable( Lepton1_E,           "Lepton1_E",  m_outputTreeName.c_str());
-    DeclareVariable( Lepton2_E,           "Lepton2_E",  m_outputTreeName.c_str());
     DeclareVariable( Lepton1_eta,         "Lepton1_eta",  m_outputTreeName.c_str());
     DeclareVariable( Lepton2_eta,         "Lepton2_eta",  m_outputTreeName.c_str());
     DeclareVariable( Lepton1_phi,         "Lepton1_phi",  m_outputTreeName.c_str());
@@ -741,6 +739,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     MinMETMHT = std::min(float(MET.et()), MHT);
     MinMETNoMuMHTNoMu = std::min(METNoMu, MHTNoMu);
 
+
     // min/max deltaphi (MET, jet)
     for(int i = 0; i < nJets; i++) {
       if(fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv())) < MinJetMetDPhi) MinJetMetDPhi = fabs(MET_tlv.DeltaPhi(JetsVect[i].tlv()));
@@ -810,6 +809,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     // QCD scales
     //QCDWeightUp = std::min(std::min(m_eventInfo.genFacWeightUp, m_eventInfo.genRenWeightUp), m_eventInfo.genFacRenWeightUp);
     //QCDWeightDown = std::max(std::max(m_eventInfo.genFacWeightDown, m_eventInfo.genRenWeightDown), m_eventInfo.genFacRenWeightDown);
+    
     QCDRenWeightUp = std::max(0., std::min(2., double(m_eventInfo.genRenWeightUp)));
     QCDRenWeightDown = std::max(0., std::min(2., double(m_eventInfo.genRenWeightDown)));
     QCDFacWeightUp = std::max(0., std::min(2., double(m_eventInfo.genFacWeightUp)));
@@ -948,8 +948,6 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 Lepton2 = MuonVect[1].tlv();
                 Lepton1_pt = MuonVect[0].pt();
                 Lepton2_pt = MuonVect[1].pt();
-                Lepton1_E = MuonVect[0].e();
-                Lepton2_E = MuonVect[1].e();
                 Lepton1_eta = MuonVect[0].eta();
                 Lepton2_eta = MuonVect[1].eta();
                 Lepton1_phi = MuonVect[0].phi();
@@ -1014,8 +1012,6 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                 Lepton2 = CalibratedElecVect[1];
                 Lepton1_pt = CalibratedElecVect[0].Pt();
                 Lepton2_pt = CalibratedElecVect[1].Pt();
-                Lepton1_E = CalibratedElecVect[0].E();
-                Lepton2_E = CalibratedElecVect[1].E();
                 Lepton1_eta = CalibratedElecVect[0].Eta();
                 Lepton2_eta = CalibratedElecVect[1].Eta();
                 Lepton1_phi = CalibratedElecVect[0].Phi();
@@ -1081,8 +1077,6 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         Lepton2 = MuonVect[0].tlv();
         Lepton1_pt = ElecVect[0].pt();
         Lepton2_pt = MuonVect[0].pt();
-        Lepton1_E = ElecVect[0].e();
-        Lepton2_E = MuonVect[0].e();
         Lepton1_eta = ElecVect[0].eta();
         Lepton2_eta = MuonVect[0].eta();
         Lepton1_phi = ElecVect[0].phi();
@@ -1122,7 +1116,6 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         isWtoMN = true;
         Lepton1 = MuonVect[0].tlv();
         Lepton1_pt = MuonVect[0].pt();
-        Lepton1_E = MuonVect[0].e();
         Lepton1_eta = MuonVect[0].eta();
         Lepton1_phi = MuonVect[0].phi();
         Lepton1_pfIso = MuonVect[0].pfDeltaCorrRelIso();
@@ -1157,7 +1150,6 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         isWtoEN = true;
         Lepton1 = ElecVect[0].tlv();
         Lepton1_pt = ElecVect[0].pt();
-        Lepton1_E = ElecVect[0].e();
         Lepton1_eta = ElecVect[0].eta();
         Lepton1_phi = ElecVect[0].phi();
         Lepton1_pfIso = ElecVect[0].pfRhoCorrRelIso03();
@@ -1571,5 +1563,5 @@ void DMAnalysis::clearBranches() {
     MaxLepMetDPhi = MaxLepJetDPhi = MaxJetMetDPhi = MaxBJetMetDPhi = -1.;
 
     Lepton1 = Lepton2 = Jet1 = Jet2 = Jet3 = Jet4 = V = TLorentzVector();
-    Lepton1_pt = Lepton2_pt = Lepton1_E = Lepton2_E = Lepton1_eta = Lepton2_eta = Lepton1_phi = Lepton2_phi = Lepton1_pfIso = Lepton2_pfIso = Lepton1_id = Lepton2_id = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = Jet5_pt = Jet6_pt =JetF_pt = Jet1_E = Jet2_E = Jet3_E = Jet4_E = Jet5_E = Jet6_E =JetF_E = Jet1_eta = Jet2_eta = Jet3_eta = Jet4_eta = Jet5_eta = Jet6_eta =JetF_eta = Jet1_phi = Jet2_phi = Jet3_phi = Jet4_phi = Jet5_phi = Jet6_phi =JetF_phi = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = Jet5_csv = Jet6_csv = -9.;
+    Lepton1_pt = Lepton2_pt = Lepton1_eta = Lepton2_eta = Lepton1_phi = Lepton2_phi = Lepton1_pfIso = Lepton2_pfIso = Lepton1_id = Lepton2_id = Jet1_pt = Jet2_pt = Jet3_pt = Jet4_pt = Jet5_pt = Jet6_pt =JetF_pt = Jet1_E = Jet2_E = Jet3_E = Jet4_E = Jet5_E = Jet6_E =JetF_E = Jet1_eta = Jet2_eta = Jet3_eta = Jet4_eta = Jet5_eta = Jet6_eta =JetF_eta = Jet1_phi = Jet2_phi = Jet3_phi = Jet4_phi = Jet5_phi = Jet6_phi =JetF_phi = Jet1_csv = Jet2_csv = Jet3_csv = Jet4_csv = Jet5_csv = Jet6_csv = -9.;
 }

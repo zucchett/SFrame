@@ -256,8 +256,6 @@ class DMAnalysis : public SCycleBase {
         TLorentzVector V;
         float Lepton1_pt;
         float Lepton2_pt;
-        float Lepton1_E;
-        float Lepton2_E;
         float Lepton1_eta;
         float Lepton2_eta;
         float Lepton1_phi;
