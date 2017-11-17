@@ -58,9 +58,9 @@ def Return_mTbs( jet, metPt, metPhi):
     bjet4Vec.SetPtEtaPhiE(jet[0],jet[1],jet[2],jet[3])
 
 
-    mTb = (met4Vec+bjet4Vec).Mt() #hmm maybe default implementation of Mt is weird? need to check
+    mTb = (met4Vec+bjet4Vec).Mt() # this assumes masses for the b-jet
 
-    #using 4vectors and dPhi method
+    #using 4vectors and dPhi method (massless particles)
     mTb0 = math.sqrt(2.*met4Vec.Et()*bjet4Vec.Et()*(1.-math.cos(met4Vec.DeltaPhi(bjet4Vec))))
 
 
