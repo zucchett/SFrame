@@ -42,6 +42,31 @@ except: os.mkdir(target+'/logs')
 
 
 ##############################
+def DeltaPhi(phi1, phi2):
+    dPhi = math.fabs(phi1-phi2)
+    if dPhi > 3.14159265:
+        dPhi -= 2*3.14159265
+    if dPhi <= -3.14159265:
+        dPhi += 2*3.14159265
+    return dPhi
+
+def Return_mTbs( jet, metPt, metPhi):
+    #setting of the 4vectors seems fine naeively?
+    met4Vec = TLorentzVector()
+    met4Vec.SetPtEtaPhiE(metPt,0,metPhi,metPt)
+    bjet4Vec = TLorentzVector()
+    bjet4Vec.SetPtEtaPhiE(jet[0],jet[1],jet[2],jet[3])
+
+
+    mTb = (met4Vec+bjet4Vec).Mt() # this assumes masses for the b-jet
+
+    #using 4vectors and dPhi method (massless particles)
+    mTb0 = math.sqrt(2.*met4Vec.Et()*bjet4Vec.Et()*(1.-math.cos(met4Vec.DeltaPhi(bjet4Vec))))
+
+
+
+    return {'mTb_mass':mTb, 'mTb_massless':mTb0}
+
 
 def processFile(sample_name, verbose=False):
     sample = sample_name.replace(ANALYSIS+".", "").replace(".root", "")
@@ -110,7 +135,9 @@ def processFile(sample_name, verbose=False):
         
 
     # Variables declaration
-    dummy = array('f', [1.0]) #example variable
+    #dummy = array('f', [1.0]) #example variable
+    mTb_massless = array('f', [1.0]) #example variable
+    mTb_mass = array('f', [1.0]) #example variable
     stitchWeight = array('f', [1.0])
     eventWeightLumi = array('f', [1.0])  # global event weight with lumi
 
@@ -127,7 +154,8 @@ def processFile(sample_name, verbose=False):
 
     #define new branches you want to add here
     #!!!Attention: if run twice, this will create a new branch with the same name as the old one
-    dummyBranch = new_tree.Branch('dummy', dummy, 'dummy/F')
+    mTb_massBranch = new_tree.Branch('mTb_mass', mTb_mass, 'mTb_mass/F')
+    mTb_masslessBranch = new_tree.Branch('mTb_massless', mTb_massless, 'mTb_massless/F')
     if not (hasLumiWeights): #only do lumi branches if they don't exist already
         stitchWeightBranch = new_tree.Branch('stitchWeight', stitchWeight, 'stitchWeight/F')
         eventWeightLumiBranch = new_tree.Branch('eventWeightLumi', eventWeightLumi, 'eventWeightLumi/F')
@@ -140,8 +168,24 @@ def processFile(sample_name, verbose=False):
         old_tree.GetEntry(event)
 
         #calculate new variable and fill
-        dummy[0] = 1
+        #dummy[0] = 1
+        ##CS implemtentation, not very elegant but it should work
+        csv = [old_tree.Jet1_csv, old_tree.Jet2_csv, old_tree.Jet3_csv, old_tree.Jet4_csv]
+        id_csv = csv.index(max(csv))
+        jets = [(old_tree.Jet1_pt, old_tree.Jet1_eta, old_tree.Jet1_phi, old_tree.Jet1_E),
+                (old_tree.Jet2_pt, old_tree.Jet2_eta, old_tree.Jet2_phi, old_tree.Jet2_E),
+                (old_tree.Jet3_pt, old_tree.Jet3_eta, old_tree.Jet3_phi, old_tree.Jet3_E),
+                (old_tree.Jet4_pt, old_tree.Jet4_eta, old_tree.Jet4_phi, old_tree.Jet4_E),]
+#        print jets
+#        print jets[id_csv]
+        if max(csv) >= 0:
+            mTbs = Return_mTbs(jets[id_csv], old_tree.MET_pt, old_tree.MET_phi)
 
+
+            mTb_mass[0] = mTbs['mTb_mass']
+            mTb_massless[0] = mTbs['mTb_massless']
+        else:
+            mTb_mass[0] =  mTb_massless[0]= -99
 
         if not (hasLumiWeights):
             eventWeightLumi[0] = stitchWeight[0] = 1
@@ -160,7 +204,9 @@ def processFile(sample_name, verbose=False):
                     eventWeightLumiBranch.Fill()
 
         if copytree:
-            dummyBranch.Fill()
+            #dummyBranch.Fill()
+            mTb_massBranch.Fill()
+            mTb_masslessBranch.Fill()
         else:
             new_tree.Fill()
 
