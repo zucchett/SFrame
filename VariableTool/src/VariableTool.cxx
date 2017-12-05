@@ -33,7 +33,7 @@ VariableTool::~VariableTool() {
 
 
 // Event Shape Variables, following http://home.fnal.gov/~mrenna/lutp0613man2/node233.html
-void VariableTool::EventShape(std::vector<TLorentzVector>* Jets, float& sphericity, float& aplanarity) {
+void VariableTool::EventShape(std::vector<TLorentzVector>* Jets, float& sphericity, float& thrust) {
   TLorentzVector Ptot;
   for(std::vector<TLorentzVector>::const_iterator ijet=Jets->begin(); ijet!=Jets->end(); ++ijet) {
     Ptot(0)+=ijet->Px();
@@ -49,8 +49,7 @@ void VariableTool::EventShape(std::vector<TLorentzVector>* Jets, float& spherici
   for(std::vector<TLorentzVector>::const_iterator ijet=Jets->begin(); ijet!=Jets->end(); ++ijet) {
     TLorentzVector* jet = new TLorentzVector(*ijet);
     jet->Boost(-beta);
-    //p2+=jet->P()*jet->P();
-    p2+=jet->Px()*jet->Px()+jet->Py()*jet->Py()+jet->Pz()*jet->Pz();
+    p2+=jet->P()*jet->P();
     PTensor(0,0)+=jet->Px()*jet->Px();
     PTensor(0,1)+=jet->Px()*jet->Py();
     PTensor(0,2)+=jet->Px()*jet->Pz();
@@ -74,13 +73,10 @@ void VariableTool::EventShape(std::vector<TLorentzVector>* Jets, float& spherici
 
   TVectorD EigenVal(3);
   TMatrixD EigenVec(3,3);
-
   EigenVec=PTensor.EigenVectors(EigenVal);
 
-  //std::cout << "eigenvalues " << EigenVal[0] << " " << EigenVal[1] << " " << EigenVal[2] << std::endl;
-
   sphericity=3./2.*(EigenVal[1]+EigenVal[2]);
-  aplanarity=3./2.*EigenVal[2];
+  thrust=3./2.*EigenVal[2];
 }
 
 
@@ -319,6 +315,29 @@ float VariableTool::ReturnCosThetaJ(TLorentzVector& theV, TLorentzVector& theQ1)
   float value=pQ1.Vect().Dot( pV.Vect() ) / ( pQ1.Vect().Mag()*pV.Vect().Mag() );
   if(value!=value || isinf(value)) return -2.;
   return value;
+}
+
+//
+float VariableTool::RecoverNeutrinoPz(TLorentzVector lep, TLorentzVector met) {
+    // W kinematical reconstruction
+    float pz = 0.;
+    float a = pow(80.4,2) - pow(lep.M(),2) + 2.*lep.Px()*met.Px() + 2.*lep.Py()*met.Py();
+    float A = 4*( pow(lep.E(),2) - pow(lep.Pz(),2) );
+    float B = -4*a*lep.Pz();
+    float C = 4*pow(lep.E(),2) * (pow(met.Px(),2)  + pow(met.Py(),2)) - pow(a,2);
+    float D = pow(B,2) - 4*A*C;
+    // If there are real solutions, use the one with lowest pz                                            
+    if (D>=0) {
+        float s1 = (-B+sqrt(D))/(2*A);
+        float s2 = (-B-sqrt(D))/(2*A);
+        if(fabs(s1)<fabs(s2)) pz=s1;
+        else pz=s2;
+    }
+    // Otherwise, use real part                                                                           
+    else {
+        pz = -B/(2*A);
+    }
+    return pz;
 }
 
 
