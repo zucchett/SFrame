@@ -1250,7 +1250,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     Hist("HT", category.c_str())->Fill(HT, EventWeight);
 
     // Jet multiplicity selection
-    if(nJets+nForwardJets < m_nJetsCut) { m_logger << INFO << " - Number of jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    if(nJets/*+nForwardJets*/ < m_nJetsCut) { m_logger << INFO << " - Number of jets < " << m_nJetsCut << SLogger::endmsg; throw SError( SError::SkipEvent ); }
+    if(isZtoNN && nJets < m_nJetsCut+1) { m_logger << INFO << " - Number of jets < " << m_nJetsCut+1 << SLogger::endmsg; throw SError( SError::SkipEvent ); }
 
     std::vector<UZH::Jet> JetsVectSorted(JetsVect.begin(), JetsVect.end());
     std::sort(JetsVectSorted.begin(), JetsVectSorted.end(), SortByCSV);
