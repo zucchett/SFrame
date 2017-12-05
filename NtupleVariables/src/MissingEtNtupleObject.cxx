@@ -48,6 +48,15 @@ if(  ((detail_level & Ntuple::MissingEtAnalysis) == Ntuple::MissingEtAnalysis)  
     setConnectSucceeded(9, ConnectVariable( treeName, prefix + m_objectNames.getName("cov11"), cov11)); 
 } // end of detail level Analysis
 
+if(  ((detail_level & Ntuple::MissingEtAnalysisSyst) == Ntuple::MissingEtAnalysisSyst)  ) {
+     setConnectSucceeded(10, ConnectVariable( treeName, prefix + m_objectNames.getName("JetEnUp"), JetEnUp)); 
+    setConnectSucceeded(11, ConnectVariable( treeName, prefix + m_objectNames.getName("JetEnDown"), JetEnDown)); 
+    setConnectSucceeded(12, ConnectVariable( treeName, prefix + m_objectNames.getName("JetResUp"), JetResUp)); 
+    setConnectSucceeded(13, ConnectVariable( treeName, prefix + m_objectNames.getName("JetResDown"), JetResDown)); 
+    setConnectSucceeded(14, ConnectVariable( treeName, prefix + m_objectNames.getName("UnclusteredEnUp"), UnclusteredEnUp)); 
+    setConnectSucceeded(15, ConnectVariable( treeName, prefix + m_objectNames.getName("UnclusteredEnDown"), UnclusteredEnDown)); 
+} // end of detail level AnalysisSyst
+
 if(  ((detail_level & Ntuple::MissingEtBasic) == Ntuple::MissingEtBasic)  ) {
      setConnectSucceeded(1, ConnectVariable( treeName, prefix + m_objectNames.getName("et"), et)); 
     setConnectSucceeded(2, ConnectVariable( treeName, prefix + m_objectNames.getName("phi"), phi)); 

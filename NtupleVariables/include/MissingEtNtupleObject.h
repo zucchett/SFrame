@@ -36,9 +36,10 @@ namespace Ntuple {
   */
   
   enum MissingEtDetails {
-    MissingEtAnalysis = 1,
-    MissingEtBasic = 2,
-    MissingEtAll = 3,
+    MissingEtBasic = 1,
+    MissingEtAnalysis = 2,
+    MissingEtAnalysisSyst = 4,
+    MissingEtAll = 7,
 
   };
   
@@ -74,6 +75,12 @@ namespace Ntuple {
      kcov00=7, 
      kcov10=8, 
      kcov11=9, 
+     kJetEnUp=10, 
+     kJetEnDown=11, 
+     kJetResUp=12, 
+     kJetResDown=13, 
+     kUnclusteredEnUp=14, 
+     kUnclusteredEnDown=15, 
      ket=1, 
      kphi=2, 
      ksumEt=3, 
@@ -93,6 +100,12 @@ namespace Ntuple {
     std::vector< floatingnumber >  *cov00;
     std::vector< floatingnumber >  *cov10;
     std::vector< floatingnumber >  *cov11;
+    std::vector< floatingnumber >  *JetEnUp;
+    std::vector< floatingnumber >  *JetEnDown;
+    std::vector< floatingnumber >  *JetResUp;
+    std::vector< floatingnumber >  *JetResDown;
+    std::vector< floatingnumber >  *UnclusteredEnUp;
+    std::vector< floatingnumber >  *UnclusteredEnDown;
     std::vector< floatingnumber >  *et;
     std::vector< floatingnumber >  *phi;
     std::vector< floatingnumber >  *sumEt;

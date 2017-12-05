@@ -54,6 +54,12 @@ namespace UZH {
     floatingnumber* m_cov00;
     floatingnumber* m_cov10;
     floatingnumber* m_cov11;
+    floatingnumber* m_JetEnUp;
+    floatingnumber* m_JetEnDown;
+    floatingnumber* m_JetResUp;
+    floatingnumber* m_JetResDown;
+    floatingnumber* m_UnclusteredEnUp;
+    floatingnumber* m_UnclusteredEnDown;
     floatingnumber* m_et;
     floatingnumber* m_phi;
     floatingnumber* m_sumEt;
@@ -71,6 +77,12 @@ namespace UZH {
     floatingnumber cov00() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kcov00)) std::cout<<"cov00 not connected!"<<std::endl;*/ return *(m_cov00); } 
     floatingnumber cov10() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kcov10)) std::cout<<"cov10 not connected!"<<std::endl;*/ return *(m_cov10); } 
     floatingnumber cov11() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kcov11)) std::cout<<"cov11 not connected!"<<std::endl;*/ return *(m_cov11); } 
+    floatingnumber JetEnUp() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kJetEnUp)) std::cout<<"JetEnUp not connected!"<<std::endl;*/ return *(m_JetEnUp); } 
+    floatingnumber JetEnDown() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kJetEnDown)) std::cout<<"JetEnDown not connected!"<<std::endl;*/ return *(m_JetEnDown); } 
+    floatingnumber JetResUp() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kJetResUp)) std::cout<<"JetResUp not connected!"<<std::endl;*/ return *(m_JetResUp); } 
+    floatingnumber JetResDown() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kJetResDown)) std::cout<<"JetResDown not connected!"<<std::endl;*/ return *(m_JetResDown); } 
+    floatingnumber UnclusteredEnUp() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kUnclusteredEnUp)) std::cout<<"UnclusteredEnUp not connected!"<<std::endl;*/ return *(m_UnclusteredEnUp); } 
+    floatingnumber UnclusteredEnDown() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kUnclusteredEnDown)) std::cout<<"UnclusteredEnDown not connected!"<<std::endl;*/ return *(m_UnclusteredEnDown); } 
     floatingnumber et() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::ket)) std::cout<<"et not connected!"<<std::endl;*/ return *(m_et); } 
     floatingnumber phi() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::kphi)) std::cout<<"phi not connected!"<<std::endl;*/ return *(m_phi); } 
     floatingnumber sumEt() const { /*if(!m_ana->getConnectSucceeded(Ntuple::MissingEtNtupleObject::ksumEt)) std::cout<<"sumEt not connected!"<<std::endl;*/ return *(m_sumEt); } 
@@ -81,6 +93,12 @@ namespace UZH {
     void cov00( const floatingnumber& val){ *(m_cov00)=val; } 
     void cov10( const floatingnumber& val){ *(m_cov10)=val; } 
     void cov11( const floatingnumber& val){ *(m_cov11)=val; } 
+    void JetEnUp( const floatingnumber& val){ *(m_JetEnUp)=val; } 
+    void JetEnDown( const floatingnumber& val){ *(m_JetEnDown)=val; } 
+    void JetResUp( const floatingnumber& val){ *(m_JetResUp)=val; } 
+    void JetResDown( const floatingnumber& val){ *(m_JetResDown)=val; } 
+    void UnclusteredEnUp( const floatingnumber& val){ *(m_UnclusteredEnUp)=val; } 
+    void UnclusteredEnDown( const floatingnumber& val){ *(m_UnclusteredEnDown)=val; } 
     void et( const floatingnumber& val){ *(m_et)=val; } 
     void phi( const floatingnumber& val){ *(m_phi)=val; } 
     void sumEt( const floatingnumber& val){ *(m_sumEt)=val; } 

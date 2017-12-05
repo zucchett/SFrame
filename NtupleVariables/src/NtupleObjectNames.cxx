@@ -119,6 +119,12 @@ namespace Ntuple {
     m_names["cov00"] = "cov00";
     m_names["cov10"] = "cov10";
     m_names["cov11"] = "cov11";
+    m_names["JetEnUp"] = "JetEnUp";
+    m_names["JetEnDown"] = "JetEnDown";
+    m_names["JetResUp"] = "JetResUp";
+    m_names["JetResDown"] = "JetResDown";
+    m_names["UnclusteredEnUp"] = "UnclusteredEnUp";
+    m_names["UnclusteredEnDown"] = "UnclusteredEnDown";
 
     // jets
     // flavour

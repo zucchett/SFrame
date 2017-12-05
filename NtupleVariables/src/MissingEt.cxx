@@ -38,6 +38,15 @@ if(  ((ana->detailLevel & Ntuple::MissingEtAnalysis) == Ntuple::MissingEtAnalysi
     if (ana->m_connectsucceeded[9]) m_cov11 = &((*ana->cov11)[idx]); else m_cov11 = 0; 
 } // end of detail level Analysis
 
+if(  ((ana->detailLevel & Ntuple::MissingEtAnalysisSyst) == Ntuple::MissingEtAnalysisSyst)  ) {
+     if (ana->m_connectsucceeded[10]) m_JetEnUp = &((*ana->JetEnUp)[idx]); else m_JetEnUp = 0; 
+    if (ana->m_connectsucceeded[11]) m_JetEnDown = &((*ana->JetEnDown)[idx]); else m_JetEnDown = 0; 
+    if (ana->m_connectsucceeded[12]) m_JetResUp = &((*ana->JetResUp)[idx]); else m_JetResUp = 0; 
+    if (ana->m_connectsucceeded[13]) m_JetResDown = &((*ana->JetResDown)[idx]); else m_JetResDown = 0; 
+    if (ana->m_connectsucceeded[14]) m_UnclusteredEnUp = &((*ana->UnclusteredEnUp)[idx]); else m_UnclusteredEnUp = 0; 
+    if (ana->m_connectsucceeded[15]) m_UnclusteredEnDown = &((*ana->UnclusteredEnDown)[idx]); else m_UnclusteredEnDown = 0; 
+} // end of detail level AnalysisSyst
+
 if(  ((ana->detailLevel & Ntuple::MissingEtBasic) == Ntuple::MissingEtBasic)  ) {
      if (ana->m_connectsucceeded[1]) m_et = &((*ana->et)[idx]); else m_et = 0; 
     if (ana->m_connectsucceeded[2]) m_phi = &((*ana->phi)[idx]); else m_phi = 0; 
@@ -74,6 +83,16 @@ if(  ((rhs.getLvl() & Ntuple::MissingEtAnalysis) == Ntuple::MissingEtAnalysis)  
   out << " cov11 " << rhs.cov11();
 ;
 } // end of detail level Analysis
+
+if(  ((rhs.getLvl() & Ntuple::MissingEtAnalysisSyst) == Ntuple::MissingEtAnalysisSyst)  ) {
+   out << " JetEnUp " << rhs.JetEnUp();
+  out << " JetEnDown " << rhs.JetEnDown();
+  out << " JetResUp " << rhs.JetResUp();
+  out << " JetResDown " << rhs.JetResDown();
+  out << " UnclusteredEnUp " << rhs.UnclusteredEnUp();
+  out << " UnclusteredEnDown " << rhs.UnclusteredEnDown();
+;
+} // end of detail level AnalysisSyst
 
 if(  ((rhs.getLvl() & Ntuple::MissingEtBasic) == Ntuple::MissingEtBasic)  ) {
    out << " et " << rhs.et();

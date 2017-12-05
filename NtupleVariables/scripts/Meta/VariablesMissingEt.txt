@@ -16,3 +16,10 @@ Analysis	floatingnumber*	significance
 Analysis	floatingnumber*	cov00
 Analysis	floatingnumber*	cov10
 Analysis	floatingnumber*	cov11
+
+AnalysisSyst	floatingnumber*	JetEnUp
+AnalysisSyst	floatingnumber*	JetEnDown
+AnalysisSyst	floatingnumber*	JetResUp
+AnalysisSyst	floatingnumber*	JetResDown
+AnalysisSyst	floatingnumber*	UnclusteredEnUp
+AnalysisSyst	floatingnumber*	UnclusteredEnDown
