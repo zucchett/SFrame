@@ -245,6 +245,9 @@ class DMAnalysis : public SCycleBase {
         float mT;
         float mT2;
         float V_pt;
+        float mW;
+        float mTop;
+        float kTop;
 
         // --- Tree Variables ---
         TLorentzVector Lepton1;
