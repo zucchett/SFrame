@@ -282,7 +282,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     DeclareVariable( mZ,                  "mZ",  m_outputTreeName.c_str());
     DeclareVariable( mT,                  "mT",  m_outputTreeName.c_str());
     DeclareVariable( mT2,                 "mT2",  m_outputTreeName.c_str());
-    
+    DeclareVariable( mTb,                 "mTb",  m_outputTreeName.c_str());
     DeclareVariable( mW,                  "mW",  m_outputTreeName.c_str());
     DeclareVariable( mTop,                "mTop",  m_outputTreeName.c_str());
     DeclareVariable( kTop,                "kTop",  m_outputTreeName.c_str());
@@ -1263,7 +1263,8 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     std::vector<UZH::Jet> JetsVectSorted(JetsVect.begin(), JetsVect.end());
     std::sort(JetsVectSorted.begin(), JetsVectSorted.end(), SortByCSV);
     //std::vector<UZH::Jet> JetsVectSortedLoose(JetsVectSorted.begin()+1, JetsVectSorted.end()); // Only for Loose SF
-
+    mTb = sqrt(2.*MET.et()*JetsVectSorted[0].pt()*(1.-cos(JetsVectSorted[0].tlv().DeltaPhi(MET_tlv))));
+    
     m_logger << INFO << " + Filling jets" << SLogger::endmsg;
 
     if(nJets >= 1) {
@@ -1339,21 +1340,30 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
     
     // Top kinematic reconstruction
     if(isZtoNN) { // Only in all-hadonic for now
-        int ij1, ij2;
-        if(JetsVectSorted[1].pt() > JetsVectSorted[2].pt()) {ij1 = 1; ij2 = 2;}
-        else {ij1 = 2; ij2 = 1;}
-        mW = (JetsVectSorted[ij1].tlv() + JetsVectSorted[ij2].tlv()).M();
-        mTop = (JetsVectSorted[0].tlv() + JetsVectSorted[ij1].tlv() + JetsVectSorted[ij2].tlv()).M();
-        
-        TLorentzVector kJet1, kJet2;
-        float jec1(mW > 80.18 ? JetsVectSorted[ij1].jecDown() : JetsVectSorted[ij1].jecUp()), jec2(mW > 80.18 ? JetsVectSorted[ij2].jecDown() : JetsVectSorted[ij2].jecUp());
-        float kF(80.18/mW), w1(2.*jec1/(jec1+jec2)), w2(2.*jec2/(jec1+jec2));
-        kJet1 = JetsVectSorted[ij1].tlv() * kF * w1;
-        kJet2 = JetsVectSorted[ij2].tlv() * kF * w2;
-        mW = (kJet1 + kJet2).M();
-        kTop = (kJet1 + kJet2 + JetsVectSorted[0].tlv()).M();
-        Hist("Jet1_pulls", "Kin")->Fill((kF*w1-1.)/jec1);
-        Hist("Jet2_pulls", "Kin")->Fill((kF*w2-1.)/jec2);
+        int ij1(-1), ij2(-1);
+        float minDR(10.);
+        for(int i = 0; i < nJets; i++) {
+            for(int j = i+1; j < nJets; j++) {
+                if(i==j || JetsVectSorted[0].DeltaR(JetsVect[i]) < 0.1 || JetsVectSorted[0].DeltaR(JetsVect[j]) < 0.1) continue;
+                if(JetsVect[i].DeltaR(JetsVect[j]) < minDR) {ij1 = i; ij2 = j;}
+            }
+        }
+        if(ij1<0 || ij2<0) {
+            m_logger << INFO << " + Kinematic W reconstruction failed" << SLogger::endmsg;
+        }
+        else {
+            mW = (JetsVect[ij1].tlv() + JetsVect[ij2].tlv()).M();
+            mTop = (JetsVectSorted[0].tlv() + JetsVect[ij1].tlv() + JetsVect[ij2].tlv()).M();
+            // Kin fit
+            TLorentzVector kJet1, kJet2;
+            float jec1(mW > 80.4 ? JetsVect[ij1].jecDown() : JetsVect[ij1].jecUp()), jec2(mW > 80.4 ? JetsVect[ij2].jecDown() : JetsVect[ij2].jecUp());
+            float kF(80.4/mW), w1(2.*jec1/(jec1+jec2)), w2(2.*jec2/(jec1+jec2));
+            kJet1 = JetsVect[ij1].tlv() * kF * w1;
+            kJet2 = JetsVect[ij2].tlv() * kF * w2;
+            kTop = (kJet1 + kJet2 + JetsVectSorted[0].tlv()).M();
+            Hist("Jet1_pulls", "Kin")->Fill((kF*w1-1.)/jec1);
+            Hist("Jet2_pulls", "Kin")->Fill((kF*w2-1.)/jec2);
+        }
     }
     else if(isWtoEN || isWtoMN){
         TLorentzVector Neutrino;
