@@ -65,6 +65,7 @@ DMAnalysis::DMAnalysis() : SCycleBase(),
     DeclareProperty( "AK4PtCut",                  m_AK4PtCut                 =  30. );
     DeclareProperty( "AK4EtaCut",                 m_AK4EtaCut                =  2.4 );
     DeclareProperty( "MEtPtCut",                  m_MEtPtCut                 =  250. );
+    DeclareProperty( "RecPtCut",                  m_RecPtCut                 =  160. );
     DeclareProperty( "VPtCut",                    m_VPtCut                   = -1. );
     DeclareProperty( "nJetsCut",                  m_nJetsCut                 = 2 );
 
@@ -178,6 +179,7 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     m_logger << INFO << "AK4PtCut:\t" <<              m_AK4PtCut             << SLogger::endmsg;
     m_logger << INFO << "AK4EtaCut:\t" <<             m_AK4EtaCut            << SLogger::endmsg;
     m_logger << INFO << "MEtPtCut:\t" <<              m_MEtPtCut             << SLogger::endmsg;
+    m_logger << INFO << "RecPtCut:\t" <<              m_RecPtCut             << SLogger::endmsg;
     m_logger << INFO << "VPtCut:\t" <<                m_VPtCut               << SLogger::endmsg;
     m_logger << INFO << "nJetsCut:\t" <<              m_nJetsCut             << SLogger::endmsg;
 
@@ -974,6 +976,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                     V_pt = V.Pt();
                     fakeMET_pt = sqrt(pow(MET_tlv.Px() + MuonVect[0].tlv().Px() + MuonVect[1].tlv().Px(), 2) + pow(MET_tlv.Py() + MuonVect[0].tlv().Py() + MuonVect[1].tlv().Py(), 2));
                     m_logger << INFO << " + Z -> mm candidate reconstructed" << SLogger::endmsg;
+                    if(fakeMET_pt < m_MEtPtCut) {m_logger << INFO << " - Z -> mm candidate recoil too small"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
                 }
             }
         }
@@ -1038,6 +1041,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
                     V_pt = V.Pt();
                     fakeMET_pt = sqrt(pow(MET_tlv.Px() + ElecVect[0].tlv().Px() + ElecVect[1].tlv().Px(), 2) + pow(MET_tlv.Py() + ElecVect[0].tlv().Py() + ElecVect[1].tlv().Py(), 2));
                     m_logger << INFO << " + Z -> ee candidate reconstructed" << SLogger::endmsg;
+                    if(fakeMET_pt < m_MEtPtCut) {m_logger << INFO << " - Z -> ee candidate recoil too small"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
                 }
             }
         }
@@ -1089,6 +1093,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         V_pt = (Lepton1 + Lepton2).Pt();
         fakeMET_pt = sqrt(pow(MET_tlv.Px() + ElecVect[0].tlv().Px() + MuonVect[0].tlv().Px(), 2) + pow(MET_tlv.Py() + ElecVect[0].tlv().Py() + MuonVect[0].tlv().Py(), 2));
         m_logger << INFO << " + TT -> mnen candidate reconstructed" << SLogger::endmsg;
+        if(MET.et() < m_RecPtCut) {m_logger << INFO << " - TT -> mnen candidate met too small"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     }
     // ---------- W TO LEPTON and NEUTRINO ----------
     // --- W -> munu ---
@@ -1127,6 +1132,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         V_pt = fakeMET_pt;
         Hist("W_tmass", "1m")->Fill(mT, EventWeight);
         m_logger << INFO << " + W -> mn candidate reconstructed" << SLogger::endmsg;
+        if(MET.et() < m_RecPtCut) {m_logger << INFO << " - W -> mn candidate met too small"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     }
     // --- W -> enu ---
     if(!isZtoMM && !isZtoEE && !isWtoMN && !isTtoEM && ElecVect.size()>=1) {
@@ -1160,6 +1166,7 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         V_pt = fakeMET_pt;
         Hist("W_tmass", "1e")->Fill(mT, EventWeight);
         m_logger << INFO << " + W -> en candidate reconstructed" << SLogger::endmsg;
+        if(MET.et() < m_RecPtCut) {m_logger << INFO << " - W -> en candidate met too small"  << SLogger::endmsg; throw SError( SError::SkipEvent ); }
     }
     // ----------- Z TO NEUTRINOS ---------------
     if(!isZtoMM && !isZtoEE && !isTtoEM && !isWtoEN && ! isWtoMN) {

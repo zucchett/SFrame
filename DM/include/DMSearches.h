@@ -156,6 +156,7 @@ class DMAnalysis : public SCycleBase {
         double m_AK8PtCut;
         double m_AK8EtaCut;
         double m_MEtPtCut;
+        double m_RecPtCut;
         double m_VPtCut;
         int m_nJetsCut;
 
