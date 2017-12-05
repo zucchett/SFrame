@@ -1349,6 +1349,14 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         mW = (kJet1 + kJet2).M();
         kTop = (kJet1 + kJet2 + JetsVectSorted[0].tlv()).M();
     }
+    else if(isWtoEN || isWtoMN){
+        TLorentzVector Neutrino;
+        float pz = recoverNeutrinoPz(Lepton1, MET_tlv);
+        Neutrino.SetPxPyPzE(MET_tlv.Px(), MET_tlv.Py(), pz, sqrt(MET_tlv.Px()*MET_tlv.Px() + MET_tlv.Py()*MET_tlv.Py() + pz*pz) );
+        mW = (Lepton1 + Neutrino).M();
+        mTop = (Lepton1 + Neutrino + JetsVectSorted[0].tlv()).M();
+    }
+    
     
     // b-tagging Scale Factors
     m_logger << INFO << " + Calculating b-tagging scale factors" << SLogger::endmsg;
