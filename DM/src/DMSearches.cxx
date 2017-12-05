@@ -500,6 +500,10 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "LheNj", ";number of gen partons;Events;log", 5, -0.5, 4.5), "Gen" );
     Book( TH1F( "GenX_mass", ";X mass (GeV);Events;log", 1000, 100, 1100), "Gen" );
 
+    // Kin
+    Book( TH1F( "Jet1_pulls", ";#frac{#Delta(p_{T})}{#sigma(p_{T})};Events;log", 60, -3, +3), "Kin" );
+    Book( TH1F( "Jet2_pulls", ";#frac{#Delta(p_{T})}{#sigma(p_{T})};Events;log", 60, -3, +3), "Kin" );
+
     // Trigger
     Book( TH1F( "HLT_PFMET170_vs_SingleElectron_NUM", ";MET (GeV);Efficiency", 100, 100, 600), "Trigger" );
     Book( TH1F( "HLT_PFMET170_vs_SingleElectron_DEN", ";MET (GeV);Efficiency", 100, 100, 600), "Trigger" );
@@ -523,8 +527,8 @@ void DMAnalysis::BeginInputData( const SInputData& id ) throw( SError ) {
     Book( TH1F( "HLT_PFMET_OR_DEN", ";min(MET, MHT) (GeV);Efficiency", 100, 100, 600), "Trigger" );
     
     // Event shape variables
-    Book( TH1F( "Sphericity", "S", 100, 0., 1.), "Trigger" );
-    Book( TH1F( "Aplanarity", "A", 100, 0., 1./2.), "Trigger" );
+    //Book( TH1F( "Sphericity", "S", 100, 0., 1.), "Trigger" );
+    //Book( TH1F( "Aplanarity", "A", 100, 0., 1./2.), "Trigger" );
     
     // // Angular variables
     // Book( TH1F( "CosThetaStar", "cos #vartheta *", 100, -1., 1.), "Trigger" );
@@ -1348,10 +1352,12 @@ void DMAnalysis::ExecuteEvent( const SInputData&, Double_t ) throw( SError ) {
         kJet2 = JetsVectSorted[ij2].tlv() * kF * w2;
         mW = (kJet1 + kJet2).M();
         kTop = (kJet1 + kJet2 + JetsVectSorted[0].tlv()).M();
+        Hist("Jet1_pulls", "Kin")->Fill((kF*w1-1.)/jec1);
+        Hist("Jet2_pulls", "Kin")->Fill((kF*w2-1.)/jec2);
     }
     else if(isWtoEN || isWtoMN){
         TLorentzVector Neutrino;
-        float pz = recoverNeutrinoPz(Lepton1, MET_tlv);
+        float pz = m_VariableTool.RecoverNeutrinoPz(Lepton1, MET_tlv);
         Neutrino.SetPxPyPzE(MET_tlv.Px(), MET_tlv.Py(), pz, sqrt(MET_tlv.Px()*MET_tlv.Px() + MET_tlv.Py()*MET_tlv.Py() + pz*pz) );
         mW = (Lepton1 + Neutrino).M();
         mTop = (Lepton1 + Neutrino + JetsVectSorted[0].tlv()).M();
