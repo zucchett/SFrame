@@ -1,5 +1,0 @@
-TTWJetsToQQ_TuneCUETP8M1_13TeV-amcatnloFXFX-madspin-pythia8_0000.xml
-TTZToQQ_TuneCUETP8M1_13TeV-amcatnlo-pythia8_0000.xml
-WZTo1L3Nu_13TeV_amcatnloFXFX_madspin_pythia8_0000.xml
-WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8_0000.xml
-WZTo3LNu_TuneCUETP8M1_13TeV-powheg-pythia8_ext_0000.xml
