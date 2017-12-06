@@ -33,10 +33,14 @@ ls SingleElectron_Run2016G-* > ../lists_$name/SingleElectron_Run2016G.txt
 ls SingleElectron_Run2016H-* > ../lists_$name/SingleElectron_Run2016H.txt
 
 ls TT_TuneCUETP8M2T4* > ../lists_$name/TT.txt
-ls TTToSemi* > ../lists_$name/TTToSemiLeptonic.txt
+ls TTToSemi* > ../lists_$name/TTToSemiLeptonicBug.txt
+ls TTToSemilepton*000* > ../lists_$name/TTToSemiLeptonic.txt
 ls TTTo2L2Nu* > ../lists_$name/TTTo2L2Nu.txt
 ls TTWJetsToLNu* > ../lists_$name/TTWJetsToLNu.txt
 ls TTZToLLNuNu* > ../lists_$name/TTZToLLNuNu.txt
+ls TTWJetsToQQ* > ../lists_$name/TTWJetsToQQ.txt
+ls TTZToQQ* > ../lists_$name/TTZToQQ.txt
+
 ls ST_s-channel* > ../lists_$name/ST_s-channel.txt
 ls ST_t-channel_antitop* > ../lists_$name/ST_t-channel_antitop.txt
 ls ST_t-channel_top* > ../lists_$name/ST_t-channel_top.txt
@@ -95,6 +99,8 @@ ls WWTo1L1Nu2Q* > ../lists_$name/WWTo1L1Nu2Q.txt
 ls WZTo1L1Nu2Q* > ../lists_$name/WZTo1L1Nu2Q.txt
 ls WZTo2L2Q* > ../lists_$name/WZTo2L2Q.txt
 ls WZTo2Q2Nu* > ../lists_$name/WZTo2Q2Nu.txt
+ls WZTo1L3Nu* > ../lists_$name/WZTo1L3Nu.txt
+ls WZTo3LNu* > ../lists_$name/WZTo3LNu.txt
 ls ZZTo2L2Q* > ../lists_$name/ZZTo2L2Q.txt
 ls ZZTo2L2Nu* > ../lists_$name/ZZTo2L2Nu.txt
 ls ZZTo2Q2Nu* > ../lists_$name/ZZTo2Q2Nu.txt
@@ -157,10 +163,9 @@ done
 
 for mass in 225 250 275 300 325 350 400 500 600 700 750 800 900 1000 1200 1400 1600 1800 2000; do
     ls GluGluToAToZhToLLBB_M-"$mass"_13TeV-madgraphMLM-pythia8* > ../lists_$name/GluGluToAToZhToLLBB_M$mass.txt
-done
-
-for mass in 225 250 275 300 325 350 400 500 600 700 750 800 900 1000 1200 1400 1600 1800 2000; do
     ls GluGluToAToZhToNuNuBB_M-"$mass"_13TeV-madgraphMLM-pythia8* > ../lists_$name/GluGluToAToZhToNuNuBB_M$mass.txt
+    ls BBAToZhToLLBB_M-"$mass"_13TeV-madgraph-pythia8* > ../lists_$name/BBAToZhToLLBB_M$mass.txt
+    ls BBAToZhToNuNuBB_M-"$mass"_13TeV-madgraph-pythia8* > ../lists_$name/BBAToZhToNuNuBB_M$mass.txt
 done
 
 for mZ in 600 800 1000 1200 1400 1700 2000 2500 2750 3000 3500 4000; do
@@ -170,6 +175,17 @@ for mZ in 600 800 1000 1200 1400 1700 2000 2500 2750 3000 3500 4000; do
             ls $fname* > ../lists_$name/$fname.txt
         else
             echo ZprimeToA0h $mZ $mA does not exist
+        fi
+    done
+done
+
+for mZ in 10 15 20 50 95 100 200 295 300 500 995 1000 10000; do
+    for mChi in 1 10 50 150 500 1000; do
+        fname="MonoHbb_ZpBaryonic_MZp-"$mZ"_MChi-"$mChi"_13TeV"
+        if [ -n "$(ls $fname*)" ]; then
+            ls $fname* > ../lists_$name/$fname.txt
+        else
+            echo MonoHbb_ZpBaryonic $mZ $mChi does not exist
         fi
     done
 done
