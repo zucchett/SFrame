@@ -47,10 +47,8 @@ LUMI        = 35867
 
 ########## SAMPLES ##########
 data = ["data_obs"]
-back = ["VV", "ST", "TTbarSL", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "QCD"]
-sign = ['tDM_MChi1_MPhi100', 'tDM_MChi1_MPhi300']
-#sign = []
-########## ######## ##########
+back = []
+sign = ['tDM_MChi1_MPhi100','ttDM_MChi1_MPhi100']
 
 ########## ######## ##########
 
@@ -76,6 +74,11 @@ def plot(var, cut, norm=False, nm1=False):
         if s in selection.keys():
             plotdir = s
             cut  = cut.replace(s, selection[s])
+            if 'SL' in s:
+                back = ["QCD","DYJetsToNuNu_HT", "DYJetsToLL_HT","VV","ST","WJetsToLNu_HT","TTbarV", "TTbar2L", "TTbar1L"]
+            if 'AH' in s:
+                back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarV", "TTbar2L", "TTbar1L","DYJetsToNuNu_HT"]
+
     #if treeRead and cut in selection: cut  = cut.replace(cut, selection[cut])
     
     # Determine Primary Dataset
@@ -122,7 +125,8 @@ def plot(var, cut, norm=False, nm1=False):
             if variable[var]['nbins']>0: hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), variable[var]['nbins'], variable[var]['min'], variable[var]['max'])
             else: hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), len(variable[var]['bins'])-1, array('f', variable[var]['bins']))
             hist[s].Sumw2()
-            cutstring = "("+weight+")" + ("*("+cut+")" if len(cut)>0 else "")
+            if not 'data' in s: cutstring = "("+weight+")" + ("*("+cut+")" if len(cut)>0 else "")
+            else: cutstring = ("("+cut+")" if len(cut)>0 else "")
             if '-' in s: cutstring = cutstring.replace(cut, cut + "&& nBQuarks==" + s.split('-')[1][0])
             if useformula == True:
                 tree[s].Project(s, variable[var]['formula'], cutstring)
@@ -197,16 +201,25 @@ def plot(var, cut, norm=False, nm1=False):
             for i, s in enumerate(data):
                 first, last = hist[s].FindBin(0), hist[s].FindBin(0.6)
                 for j in range(first, last): hist[s].SetBinContent(j, -1.e-4)
+
+    if SIGNAL>1:
+        if not var=="Events":
+            for i, s in enumerate(sign):
+                hist[s].Scale(SIGNAL)
+
     
     # Create stack
     bkg = THStack("Bkg", ";"+hist['BkgSum'].GetXaxis().GetTitle()+";Events")
     for i, s in enumerate(back): bkg.Add(hist[s])
     
     # Legend
-    leg = TLegend(0.65, 0.6, 0.95, 0.9)
+    leg = TLegend(0.45, 0.63, 0.93, 0.92)
+    #leg = TLegend(0.65, 0.6, 0.95, 0.9)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0) #1001
     leg.SetFillColor(0)
+    leg.SetNColumns(3)
+    leg.SetTextFont(42)
     if len(data) > 0:
         leg.AddEntry(hist[data[0]], sample[data[0]]['label'], "pe")
     for i, s in reversed(list(enumerate(['BkgSum']+back))):
@@ -214,8 +227,10 @@ def plot(var, cut, norm=False, nm1=False):
     if 'PreFit' in hist: leg.AddEntry(hist['PreFit'], sample['PreFit']['label'], "l")
     if showSignal:
         for i, s in enumerate(sign):
-            if sample[s]['plot']: leg.AddEntry(hist[s], sample[s]['label'], "fl")
-        
+            if SIGNAL>1:
+                if sample[s]['plot']: leg.AddEntry(hist[s], '%s (x%d)' %(sample[s]['label'],SIGNAL), "fl")
+            else:
+                if sample[s]['plot']: leg.AddEntry(hist[s], sample[s]['label'], "fl")
     leg.SetY1(0.9-leg.GetNRows()*0.05)
     
     
@@ -243,11 +258,11 @@ def plot(var, cut, norm=False, nm1=False):
         for i, s in enumerate(sign):
             if sample[s]['plot']: hist[s].Draw("SAME, HIST")
     bkg.GetYaxis().SetTitleOffset(bkg.GetYaxis().GetTitleOffset()*1.075)
-    bkg.SetMaximum((5. if log else 1.25)*max(bkg.GetMaximum(), hist[data[0]].GetBinContent(hist[data[0]].GetMaximumBin())+hist[data[0]].GetBinError(hist[data[0]].GetMaximumBin())))
-    if len(sign) > 0 and bkg.GetMaximum() < max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum()): bkg.SetMaximum(max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum())*1.25)
+    bkg.SetMaximum((60. if log else 1.25)*max(bkg.GetMaximum(), hist[data[0]].GetBinContent(hist[data[0]].GetMaximumBin())+hist[data[0]].GetBinError(hist[data[0]].GetMaximumBin())))
+    if len(sign) > 0 and bkg.GetMaximum() < max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum()): bkg.SetMaximum(max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum())*(60. if log else 1.25))
     bkg.SetMinimum(max(min(hist['BkgSum'].GetBinContent(hist['BkgSum'].GetMinimumBin()), hist[data[0]].GetMinimum()), 5.e-1)  if log else 0.)
     if log:
-        bkg.GetYaxis().SetNoExponent(bkg.GetMaximum() < 1.e4)
+        bkg.GetYaxis().SetNoExponent(bkg.GetMaximum() < 1.e2)
         bkg.GetYaxis().SetMoreLogLabels(True)
     
     leg.Draw()

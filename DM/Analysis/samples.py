@@ -311,7 +311,7 @@ sample = {
         'plot': True,
     },
     'TTbar' : {
-        'files' : ['TT', 'TTWJetsToLNu', 'TTZToLLNuNu'],
+        'files' : ['TT', 'TTWJetsToLNu', 'TTZToLLNuNu','TTZToQQ','TTWJetsToQQ'],
 #        'files' : ['TTTo2L2Nu', 'TTToSemiLeptonic', 'TTWJetsToLNu', 'TTZToLLNuNu'],
         'fillcolor' : 798,
         'fillstyle' : 1001,
@@ -321,9 +321,11 @@ sample = {
         'label' : "t#bar{t}",#, single t
         'weight': 1.,
         'plot': True,
-    },
+    }, 
     'TTbarSL' : {
-        'files' : ['TTTo2L2Nu', 'TTToSemiLeptonic', 'TTWJetsToLNu', 'TTZToLLNuNu'],
+      'files' : ['TTTo2L2Nu', 'TTToSemiLeptonic', 'TTWJetsToLNu', 'TTZToLLNuNu'],
+      #'files' : ['TT','TTTo2L2Nu', 'TTToSemiLeptonic', 'TTWJetsToLNu', 'TTZToLLNuNu'],
+      #  'files' : ['TT', 'TTWJetsToLNu', 'TTZToLLNuNu'],
         'fillcolor' : 798,
         'fillstyle' : 1001,
         'linecolor' : 798,
@@ -333,11 +335,50 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
-    'ST' : {
-        'files' : ['ST_s-channel', 'ST_t-channel_antitop', 'ST_t-channel_top', 'ST_tW_antitop', 'ST_tW_top'],
-        'fillcolor' : 801,
+    'TTbar2L' : {
+      'files' : ['TTTo2L2Nu'],
+        'fillcolor' : 798,
         'fillstyle' : 1001,
-        'linecolor' : 801,
+        'linecolor' : 798,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "t#bar{t}(2l)",#, single t
+        'weight': 1.,
+        'plot': True,
+    },
+    'TTbar1L' : {
+      'files' : ['TTToSemiLeptonic'],
+      #'files' : ['TT','TTTo2L2Nu', 'TTToSemiLeptonic', 'TTWJetsToLNu', 'TTZToLLNuNu'],
+      #  'files' : ['TT', 'TTWJetsToLNu', 'TTZToLLNuNu'],
+        'fillcolor' : 797,#805
+        'fillstyle' : 1001,
+        'linecolor' : 797,#805
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "t#bar{t}(1l)",#, single t
+        'weight': 1.,
+        'plot': True,
+    },
+    'TTbarV' : {
+      #'files' : ['TTWJetsToLNu'],
+      'files' : ['TTWJetsToLNu', 'TTZToLLNuNu','TTZToQQ','TTWJetsToQQ'],
+      #'files' : ['TT','TTTo2L2Nu', 'TTToSemiLeptonic', 'TTWJetsToLNu', 'TTZToLLNuNu'],
+      #  'files' : ['TT', 'TTWJetsToLNu', 'TTZToLLNuNu'],
+        'fillcolor' : 804,
+        'fillstyle' : 1001,
+        'linecolor' : 804,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "t#bar{t}+V",#, single t
+        'weight': 1.,
+        'plot': True,
+    },
+
+   'ST' : {
+        'files' : ['ST_s-channel', 'ST_t-channel_antitop', 'ST_t-channel_top', 'ST_tW_antitop', 'ST_tW_top'],
+        'fillcolor' : 807,#801
+        'fillstyle' : 1001,
+        'linecolor' : 807,
         'linewidth' : 2,
         'linestyle' : 1,
         'label' : "t+X",
@@ -345,7 +386,18 @@ sample = {
         'plot': True,
     },
     'VV' : {
-        'files' : ['WWTo1L1Nu2Q', 'WWTo2L2Nu', 'WWTo4Q', 'WZTo1L1Nu2Q', 'WZTo2L2Q', 'WZTo2Q2Nu', 'ZZTo2L2Q', 'ZZTo2Q2Nu', 'ZZTo2L2Nu', 'ZZTo4L', 'ZZTo4Q', 'GluGluHToBB', 'WHToLNuBB', 'ZHToLLBB', 'ZHToNuNuBB', 'ZHToQQBB'],
+        'files' : ['WWTo1L1Nu2Q', 'WWTo2L2Nu', 'WWTo4Q', 'WZTo1L1Nu2Q', 'WZTo2L2Q', 'WZTo2Q2Nu', 'ZZTo2L2Q', 'ZZTo2Q2Nu', 'ZZTo2L2Nu', 'ZZTo4L', 'ZZTo4Q', 'GluGluHToBB', 'WHToLNuBB', 'ZHToLLBB', 'ZHToNuNuBB', 'ZHToQQBB','WZTo1L3Nu','WZTo3LNu'],
+        'fillcolor' : 602,
+        'fillstyle' : 1001,
+        'linecolor' : 602,
+        'linewidth' : 2,
+        'linestyle' : 1,
+        'label' : "VV, VH",
+        'weight': 1.,
+        'plot': True,
+    },
+    'WZqqnunu' : {
+        'files' : ['WZTo2Q2Nu'],
         'fillcolor' : 602,
         'fillstyle' : 1001,
         'linecolor' : 602,
@@ -1622,14 +1674,14 @@ sample = {
     'tDM_MChi1_MPhi100' : {
         'order' : 1001,
         'files' : ['DMScalar_top_tChan_MChi1_MPhi100', 'DMScalar_top_tWChan_MChi1_MPhi100'],
-        'fillcolor' : 625,
+        'fillcolor' : 2,#625
         'fillstyle' : 3005,
-        'linecolor' : 625,
+        'linecolor' : 2,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "t+DM, m_{#phi}=100 GeV",
+        'label' : "#splitline{t+DM,}{m_{#phi}=100 GeV}",
         'weight': 1.,
-        'plot': False,
+        'plot': True,
     },
     'tDM_MChi1_MPhi300' : {
         'order' : 1001,
@@ -1639,9 +1691,9 @@ sample = {
         'linecolor' : 634,
         'linewidth' : 3,
         'linestyle' : 1,
-        'label' : "t+DM, m_{#phi}=300 GeV",
+        'label' : "#splitline{t+DM,}{m_{#phi}=300 GeV}",
         'weight': 1.,
-        'plot': False,
+        'plot': True,
     },
     
     'ttDM_MChi1_MPhi10' : {
@@ -1686,12 +1738,12 @@ sample = {
     'ttDM_MChi1_MPhi100' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-100'],
-        'fillcolor' : 625,
+        'fillcolor' : 2,
         'fillstyle' : 3005,
-        'linecolor' : 625,
+        'linecolor' : 2,
         'linewidth' : 3,
         'linestyle' : 2,
-        'label' : "tt+DM, m_{#phi}=100 GeV",
+        'label' : "#splitline{tt+DM,}{m_{#phi}=100 GeV}",
         'weight': 1.,
         'plot': True,
     },
@@ -1717,7 +1769,7 @@ sample = {
         'linecolor' : 634,
         'linewidth' : 3,
         'linestyle' : 2,
-        'label' : "tt+DM, m_{#phi}=300 GeV",
+        'label' : "#splitline{tt+DM,}{m_{#phi}=300 GeV}",
         'weight': 1.,
         'plot': True,
     },
