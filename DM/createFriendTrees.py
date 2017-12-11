@@ -2,13 +2,14 @@
 
 import os, multiprocessing, math
 from array import array
+import ROOT
 from ROOT import TFile, TH1, TF1, TLorentzVector, TTree, TObject
 
 from itertools import combinations
 import heapq
 
 from xsections import xsection
-
+ROOT.gROOT.ProcessLine(".L srcFT/EventShapeVariables.cc+")
 import optparse
 usage = 'usage: %prog [options]'
 parser = optparse.OptionParser(usage)
@@ -141,6 +142,40 @@ def Return_Top(jet,id_csv,metPhi):
 
 
 
+def getJet4Vectors(old_tree):
+    jets4vec = ROOT.vector('TLorentzVector')()
+    if old_tree.Jet1_pt >= 0:
+        jet1 = ROOT.TLorentzVector()
+        jet1.SetPtEtaPhiE(old_tree.Jet1_pt, old_tree.Jet1_eta, old_tree.Jet1_phi, old_tree.Jet1_E)
+        jets4vec.push_back(jet1)
+        del jet1
+    if old_tree.Jet2_pt >= 0:
+        jet2 = ROOT.TLorentzVector()
+        jet2.SetPtEtaPhiE(old_tree.Jet2_pt, old_tree.Jet2_eta, old_tree.Jet2_phi, old_tree.Jet2_E)
+        jets4vec.push_back(jet2)
+        del jet2
+    if old_tree.Jet3_pt >= 0:
+        jet3 = ROOT.TLorentzVector()
+        jet3.SetPtEtaPhiE(old_tree.Jet3_pt, old_tree.Jet3_eta, old_tree.Jet3_phi, old_tree.Jet3_E)
+        jets4vec.push_back(jet3)
+        del jet3
+    if old_tree.Jet4_pt >= 0:
+        jet4 = ROOT.TLorentzVector()
+        jet4.SetPtEtaPhiE(old_tree.Jet4_pt, old_tree.Jet4_eta, old_tree.Jet4_phi, old_tree.Jet4_E)
+        jets4vec.push_back(jet4)
+        del jet4
+    if old_tree.Jet5_pt >= 0:
+        jet5 = ROOT.TLorentzVector()
+        jet5.SetPtEtaPhiE(old_tree.Jet5_pt, old_tree.Jet5_eta, old_tree.Jet5_phi, old_tree.Jet5_E)
+        jets4vec.push_back(jet5)
+        del jet5
+    if old_tree.Jet6_pt >= 0:
+        jet6 = ROOT.TLorentzVector()
+        jet6.SetPtEtaPhiE(old_tree.Jet6_pt, old_tree.Jet6_eta, old_tree.Jet6_phi, old_tree.Jet6_E)
+        jets4vec.push_back(jet6)
+        del jet6
+        
+    return jets4vec
 
 
 def processFile(sample_name, verbose=False):
@@ -213,7 +248,6 @@ def processFile(sample_name, verbose=False):
     #dummy = array('f', [1.0]) #example variable
     mTb_massless = array('f', [1.0]) #example variable
     mTb_mass = array('f', [1.0]) #example variable
-
     min_DeltaR = array('f', [1.0]) 
     max_DeltaR = array('f', [1.0])
     minDphiJet1BJet = array('f', [1.0])
@@ -228,6 +262,13 @@ def processFile(sample_name, verbose=False):
     DeltaR_bb = array('f', [1.0])
     cosTheta_bb = array('f', [1.0])
     HT3 = array('f', [1.0])
+    sphericity = array('f', [1.0]) 
+    aplanarity = array('f', [1.0]) 
+    circularity = array('f', [1.0]) 
+    isotropy = array('f', [1.0]) 
+    C = array('f', [1.0]) 
+    D = array('f', [1.0]) 
+
 
     stitchWeight = array('f', [1.0])
     eventWeightLumi = array('f', [1.0])  # global event weight with lumi
@@ -263,6 +304,13 @@ def processFile(sample_name, verbose=False):
     cosTheta_bbBranch = new_tree.Branch('cosTheta_bb', cosTheta_bb, 'cosTheta_bb/F')
     HT3Branch = new_tree.Branch('HT3', HT3, 'HT3/F')
 
+    sphericityBranch = new_tree.Branch('sphericityFT', sphericity, 'sphericityFT/F')
+    aplanarityBranch = new_tree.Branch('aplanarityFT', aplanarity, 'aplanarityFT/F')
+    circularityBranch = new_tree.Branch('circularityFT', circularity, 'circularityFT/F')
+    isotropyBranch = new_tree.Branch('isotropyFT', isotropy, 'isotropyFT/F')
+    CBranch = new_tree.Branch('CFT', C, 'CFT/F')
+    DBranch = new_tree.Branch('DFT', D, 'DFT/F')
+
     if not (hasLumiWeights): #only do lumi branches if they don't exist already
         stitchWeightBranch = new_tree.Branch('stitchWeight', stitchWeight, 'stitchWeight/F')
         eventWeightLumiBranch = new_tree.Branch('eventWeightLumi', eventWeightLumi, 'eventWeightLumi/F')
@@ -273,10 +321,8 @@ def processFile(sample_name, verbose=False):
     for event in range(0, old_tree.GetEntries()):
         if verbose and (event%10000==0 or event==nev-1): print ' = TTree:', old_tree.GetName(), 'events:', nev, '\t', int(100*float(event+1)/float(nev)), '%\r',
         old_tree.GetEntry(event)
-
-        #calculate new variable and fill
-        #dummy[0] = 1
-        ##CS implemtentation, not very elegant but it should work
+        
+        #not necessarily elegant but should do the trick, if I have a lot of time fix to use 4-vector array
         csv = [old_tree.Jet1_csv, old_tree.Jet2_csv, old_tree.Jet3_csv, old_tree.Jet4_csv]
         id_csv = csv.index(max(csv))
         id2_csv = heapq.nlargest(2, xrange(len(csv)), key=csv.__getitem__)[1]
@@ -334,6 +380,30 @@ def processFile(sample_name, verbose=False):
 
         if not (hasLumiWeights):
             eventWeightLumi[0] = stitchWeight[0] = 1
+
+
+        #Event shape variables, need 4vectors
+        jets4vec =  getJet4Vectors(old_tree)
+        if len(jets4vec) > 0:
+            eventshape = ROOT.EventShapeVariables(jets4vec)
+            #actually (r) with r=2 for normal and r=1 infrared safe defintion
+            aplanarity[0]  = eventshape.aplanarity()
+            sphericity[0]  = eventshape.sphericity()
+            circularity[0] = eventshape.circularity()
+            isotropy[0]    = eventshape.isotropy()
+            C[0]           = eventshape.C()
+            D[0] = eventshape.D()
+        else :
+            sphericity[0]= -99
+            aplanarity[0]= -99
+            sphericity_AZ[0]= -99
+            aplanarity_AZ[0]= -99
+            circularity[0] = -99
+            isotropy[0]    = -99
+            C[0]           = -99
+            D[0] = -99
+
+
         if isMC:
             # MC stitching
             if sample=='DYJetsToLL' or sample=='WJetsToLNu' or sample=='W1JetsToLNu' or sample=='W2JetsToLNu' or sample=='W3JetsToLNu' or sample=='W4JetsToLNu':
@@ -343,10 +413,10 @@ def processFile(sample_name, verbose=False):
                 eventWeightLumi[0] *= LUMI*XS/totalEntries
 
             #fill the new branches of the tree
-            if not (hasLumiWeights):
-                if copytree:
-                    stitchWeightBranch.Fill()
-                    eventWeightLumiBranch.Fill()
+        if not (hasLumiWeights):
+            if copytree:
+                stitchWeightBranch.Fill()
+                eventWeightLumiBranch.Fill()
 
         if copytree:
             #dummyBranch.Fill()
@@ -367,6 +437,12 @@ def processFile(sample_name, verbose=False):
             DeltaR_bbBranch.Fill()
             cosTheta_bbBranch.Fill()
             HT3Branch.Fill()
+            sphericityBranch.Fill()
+            aplanarityBranch.Fill()
+            circularityBranch.Fill()
+            isotropyBranch.Fill()
+            CBranch.Fill()
+            DBranch.Fill()
 
         else:
             new_tree.Fill()
