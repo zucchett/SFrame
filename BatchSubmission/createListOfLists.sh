@@ -100,7 +100,7 @@ ls WZTo1L1Nu2Q* > ../lists_$name/WZTo1L1Nu2Q.txt
 ls WZTo2L2Q* > ../lists_$name/WZTo2L2Q.txt
 ls WZTo2Q2Nu* > ../lists_$name/WZTo2Q2Nu.txt
 ls WZTo1L3Nu* > ../lists_$name/WZTo1L3Nu.txt
-ls WZTo3LNu* > ../lists_$name/WZTo3LNu.txt
+ls WZTo3LNu*powheg* > ../lists_$name/WZTo3LNu.txt
 ls ZZTo2L2Q* > ../lists_$name/ZZTo2L2Q.txt
 ls ZZTo2L2Nu* > ../lists_$name/ZZTo2L2Nu.txt
 ls ZZTo2Q2Nu* > ../lists_$name/ZZTo2Q2Nu.txt
