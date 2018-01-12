@@ -5,7 +5,7 @@ import copy
 import math
 from array import array
 from ROOT import ROOT, gROOT, gStyle, gRandom, TSystemDirectory
-from ROOT import TFile, TChain, TTree, TCut, TH1F, TH2F, THStack, TGraph, TGraphErrors
+from ROOT import TFile, TChain, TTree, TCut, TH1F, TH2F, THStack, TGraph, TGraphErrors, TRandom3
 from ROOT import TStyle, TCanvas, TPad
 from ROOT import TLegend, TLatex, TText, TLine
 
@@ -38,6 +38,7 @@ gStyle.SetOptStat(0)
 gROOT.LoadMacro('functions.C')
 
 NTUPLEDIR   = "/scratch/zucchett/Ntuple/DM/"
+#NTUPLEDIR   = "/scratch/zucchett/Ntuple/DM_17Oct/"
 SIGNAL      = 1 # Signal magnification factor
 RATIO       = 4 # 0: No ratio plot; !=0: ratio between the top and bottom pads
 NORM        = options.norm
@@ -47,8 +48,11 @@ LUMI        = 35867
 
 ########## SAMPLES ##########
 data = ["data_obs"]
-back = []
-sign = ['tDM_MChi1_MPhi100','ttDM_MChi1_MPhi100']
+#back = ["DYJetsToLL"]
+back = ["VV", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "ST", "TTbarSL", "QCD"]
+sign = ['ttDM_MChi1_MPhi10', 'ttDM_MChi1_MPhi20', 'ttDM_MChi1_MPhi50', 'ttDM_MChi1_MPhi100', 'ttDM_MChi1_MPhi200', 'ttDM_MChi1_MPhi300', 'ttDM_MChi1_MPhi500', 'ttDM_MChi1_MPhi1000', 'tDM_MChi1_MPhi100', 'tDM_MChi1_MPhi300', 'tttDM_MChi1_MPhi100', 'tttDM_MChi1_MPhi300']
+#sign = []
+########## ######## ##########
 
 ########## ######## ##########
 
@@ -57,15 +61,10 @@ jobs = []
 def plot(var, cut, norm=False, nm1=False):
     ### Preliminary Operations ###
     fileRead = os.path.exists(options.file)
-    treeRead = not any(x==cut for x in ['0l', '1e', '1m', '2e', '2m', '1e1m', 'Gen', 'Trigger']) # Read from tree
+    treeRead = not any(x==cut for x in ['0l', '1e', '1m', '2e', '2m', '1e1m', 'Gen', 'Trigger'])#(var in variable.keys()) # Read from tree
     channel = cut
     plotdir = cut
     plotname = var
-
-    useformula = False
-    if 'formula' in variable[var]:
-        print variable[var]['formula']
-        useformula = True
     weight = "eventWeightLumi" #*(2.2/35.9)
     isBlind = BLIND and 'SR' in channel
     showSignal = True#('SR' in channel)
@@ -74,11 +73,6 @@ def plot(var, cut, norm=False, nm1=False):
         if s in selection.keys():
             plotdir = s
             cut  = cut.replace(s, selection[s])
-            if 'SL' in s:
-                back = ["QCD","DYJetsToNuNu_HT", "DYJetsToLL_HT","VV","ST","WJetsToLNu_HT","TTbarV", "TTbar2L", "TTbar1L"]
-            if 'AH' in s:
-                back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarV", "TTbar2L", "TTbar1L","DYJetsToNuNu_HT"]
-
     #if treeRead and cut in selection: cut  = cut.replace(cut, selection[cut])
     
     # Determine Primary Dataset
@@ -125,13 +119,9 @@ def plot(var, cut, norm=False, nm1=False):
             if variable[var]['nbins']>0: hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), variable[var]['nbins'], variable[var]['min'], variable[var]['max'])
             else: hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), len(variable[var]['bins'])-1, array('f', variable[var]['bins']))
             hist[s].Sumw2()
-            if not 'data' in s: cutstring = "("+weight+")" + ("*("+cut+")" if len(cut)>0 else "")
-            else: cutstring = ("("+cut+")" if len(cut)>0 else "")
+            cutstring = "("+weight+")" + ("*("+cut+")" if len(cut)>0 else "")
             if '-' in s: cutstring = cutstring.replace(cut, cut + "&& nBQuarks==" + s.split('-')[1][0])
-            if useformula == True:
-                tree[s].Project(s, variable[var]['formula'], cutstring)
-            else:
-                tree[s].Project(s, var, cutstring)
+            tree[s].Project(s, var, cutstring)
             if not tree[s].GetTree()==None: hist[s].SetOption("%s" % tree[s].GetTree().GetEntriesFast())
         else: # Histogram written to file
             for j, ss in enumerate(sample[s]['files']):
@@ -149,10 +139,9 @@ def plot(var, cut, norm=False, nm1=False):
         hist[s].SetFillStyle(sample[s]['fillstyle'])
         hist[s].SetLineColor(sample[s]['linecolor'])
         hist[s].SetLineStyle(sample[s]['linestyle'])
+        #if 'WJetsToLNu' in s and 'SL' in channel and 'WR' in channel: hist[s].Scale(1.30)
+        #if 'TTbar' in s and 'SL' in channel and 'TR' in channel: hist[s].Scale(0.91)
     
-#    if treeRead:
-#        for i, s in enumerate([x for x in back if 'DY' in x]):
-#            hist[s].Scale(0.903)
     
     hist['BkgSum'] = hist[back[0]].Clone("BkgSum")
     hist['BkgSum'].Reset("MICES")
@@ -184,42 +173,27 @@ def plot(var, cut, norm=False, nm1=False):
     
     
     if norm:
-        for i, s in enumerate(back):
-            hist[s].SetFillStyle(3005)
-            hist[s].SetLineWidth(2)
-        #for i, s in enumerate(sign):
-        #    hist[s].SetFillStyle(0)
-        if not var=="Events":
-            sfnorm = hist[data[0]].Integral()/hist['BkgSum'].Integral()
-            print "Applying SF:", sfnorm
-            for i, s in enumerate(back+['BkgSum']): hist[s].Scale(sfnorm)
-        if BLIND and var.endswith("Mass"):
-            for i, s in enumerate(data+back+['BkgSum']):
-                first, last = hist[s].FindBin(65), hist[s].FindBin(135)
-                for j in range(first, last): hist[s].SetBinContent(j, -1.e-4)
-        if BLIND and var.endswith("Tau21"):
-            for i, s in enumerate(data):
-                first, last = hist[s].FindBin(0), hist[s].FindBin(0.6)
-                for j in range(first, last): hist[s].SetBinContent(j, -1.e-4)
-
-    if SIGNAL>1:
-        if not var=="Events":
-            for i, s in enumerate(sign):
-                hist[s].Scale(SIGNAL)
-
+        for i, s in enumerate(sign):
+            hist[s].Scale(hist['BkgSum'].Integral()/hist[s].Integral())
+#        for i, s in enumerate(back):
+#            hist[s].SetFillStyle(3005)
+#            hist[s].SetLineWidth(2)
+#        #for i, s in enumerate(sign):
+#        #    hist[s].SetFillStyle(0)
+#        if not var=="Events":
+#            sfnorm = hist[data[0]].Integral()/hist['BkgSum'].Integral()
+#            print "Applying SF:", sfnorm
+#            for i, s in enumerate(back+['BkgSum']): hist[s].Scale(sfnorm)
     
     # Create stack
     bkg = THStack("Bkg", ";"+hist['BkgSum'].GetXaxis().GetTitle()+";Events")
     for i, s in enumerate(back): bkg.Add(hist[s])
     
     # Legend
-    leg = TLegend(0.45, 0.63, 0.93, 0.92)
-    #leg = TLegend(0.65, 0.6, 0.95, 0.9)
+    leg = TLegend(0.65, 0.6, 0.95, 0.9)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0) #1001
     leg.SetFillColor(0)
-    leg.SetNColumns(3)
-    leg.SetTextFont(42)
     if len(data) > 0:
         leg.AddEntry(hist[data[0]], sample[data[0]]['label'], "pe")
     for i, s in reversed(list(enumerate(['BkgSum']+back))):
@@ -227,10 +201,8 @@ def plot(var, cut, norm=False, nm1=False):
     if 'PreFit' in hist: leg.AddEntry(hist['PreFit'], sample['PreFit']['label'], "l")
     if showSignal:
         for i, s in enumerate(sign):
-            if SIGNAL>1:
-                if sample[s]['plot']: leg.AddEntry(hist[s], '%s (x%d)' %(sample[s]['label'],SIGNAL), "fl")
-            else:
-                if sample[s]['plot']: leg.AddEntry(hist[s], sample[s]['label'], "fl")
+            if sample[s]['plot']: leg.AddEntry(hist[s], sample[s]['label'], "fl")
+        
     leg.SetY1(0.9-leg.GetNRows()*0.05)
     
     
@@ -253,16 +225,17 @@ def plot(var, cut, norm=False, nm1=False):
     bkg.Draw("HIST") # stack
     hist['BkgSum'].Draw("SAME, E2") # sum of bkg
     if not isBlind and len(data) > 0: hist[data[0]].Draw("SAME, PE") # data
+    #data_graph.Draw("SAME, PE")
     if 'PreFit' in hist: hist['PreFit'].Draw("SAME, HIST")
     if showSignal:
         for i, s in enumerate(sign):
-            if sample[s]['plot']: hist[s].Draw("SAME, HIST")
+            if sample[s]['plot']: hist[s].Draw("SAME, HIST") # signals Normalized, hist[s].Integral()*sample[s]['weight']
     bkg.GetYaxis().SetTitleOffset(bkg.GetYaxis().GetTitleOffset()*1.075)
-    bkg.SetMaximum((60. if log else 1.25)*max(bkg.GetMaximum(), hist[data[0]].GetBinContent(hist[data[0]].GetMaximumBin())+hist[data[0]].GetBinError(hist[data[0]].GetMaximumBin())))
-    if len(sign) > 0 and bkg.GetMaximum() < max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum()): bkg.SetMaximum(max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum())*(60. if log else 1.25))
+    bkg.SetMaximum((5. if log else 1.25)*max(bkg.GetMaximum(), hist[data[0]].GetBinContent(hist[data[0]].GetMaximumBin())+hist[data[0]].GetBinError(hist[data[0]].GetMaximumBin())))
+    if len(sign) > 0 and bkg.GetMaximum() < max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum()): bkg.SetMaximum(max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum())*1.25)
     bkg.SetMinimum(max(min(hist['BkgSum'].GetBinContent(hist['BkgSum'].GetMinimumBin()), hist[data[0]].GetMinimum()), 5.e-1)  if log else 0.)
     if log:
-        bkg.GetYaxis().SetNoExponent(bkg.GetMaximum() < 1.e2)
+        bkg.GetYaxis().SetNoExponent(bkg.GetMaximum() < 1.e4)
         bkg.GetYaxis().SetMoreLogLabels(True)
     
     leg.Draw()
@@ -293,6 +266,8 @@ def plot(var, cut, norm=False, nm1=False):
                 res.SetBinContent(i, res.GetBinContent(i)/hist['BkgSum'].GetBinContent(i))
                 res.SetBinError(i, res.GetBinError(i)/hist['BkgSum'].GetBinContent(i))
         setBotStyle(res)
+        #err.GetXaxis().SetLabelOffset(err.GetXaxis().GetLabelOffset()*5)
+        #err.GetXaxis().SetTitleOffset(err.GetXaxis().GetTitleOffset()*2)
         err.Draw("E2")
         if 'PreFit' in hist:
             respre = hist['PreFit'].Clone("ResiduesPreFit")
@@ -301,13 +276,14 @@ def plot(var, cut, norm=False, nm1=False):
         errLine.Draw("SAME, HIST")
         if not isBlind and len(data) > 0:
             res.Draw("SAME, PE0")
+            #res_graph.Draw("SAME, PE0")
             if len(err.GetXaxis().GetBinLabel(1))==0: # Bin labels: not a ordinary plot
                 drawRatio(hist['data_obs'], hist['BkgSum'])
                 drawStat(hist['data_obs'], hist['BkgSum'])
     
     c1.Update()
         
-    if gROOT.IsBatch():
+    if gROOT.IsBatch(): # and (treeRead and channel in selection.keys()):
         if not os.path.exists("plots/"+plotdir): os.makedirs("plots/"+plotdir)
         c1.Print("plots/"+plotdir+"/"+plotname+".png")
         c1.Print("plots/"+plotdir+"/"+plotname+".pdf")
@@ -317,7 +293,236 @@ def plot(var, cut, norm=False, nm1=False):
     
     if not gROOT.IsBatch(): raw_input("Press Enter to continue...")
 
+    if gROOT.IsBatch() and not fileRead and (var == 'MET_pt' or (channel.startswith('SL') and var == 'MET_sign') or (channel.endswith('ZR') and var == 'FakeMET_pt')): saveHist(hist, channel)
 
+    
+########## ######## ##########
+
+def addSys(var, cut, sys):
+    channel = cut
+    weight = "eventWeightLumi" #+ ("*stitchWeight" if any([x for x in back if x.endswith('b')]) else "")
+    cut  = selection[cut]
+
+    weightUp = weightDown = weight
+    varUp = varDown = var
+    
+    # Systematics
+    if sys=='CMS_scale_j': weight = weight
+    # varUp = var.replace('pt', 'ptJesUp')
+    # varDown = var.replace('pt', 'ptJesDown')
+    elif sys=='CMS_eff_b': weightUp += "*bTagWeightUp/bTagWeight"; weightDown += "*bTagWeightDown/bTagWeight"
+    elif sys=='CMS_scale_pu': weightUp += "*puWeightUp/puWeight"; weightDown += "*puWeightDown/puWeight"
+    elif sys=='CMS_scale_top': weightUp += "/TopWeight"; weightDown += ""
+    elif sys=='CMS_eff_trigger': weightUp += "*triggerWeightUp/triggerWeight"; weightDown += "*triggerWeightDown/triggerWeight"
+    elif sys=='CMS_eff_e' and '2e' in cut or '1e' in cut: weightUp += "*leptonWeightUp/leptonWeight"; weightDown += "*leptonWeightDown/leptonWeight"
+    elif sys=='CMS_eff_m' and '2m' in cut or '1m' in cut: weightUp += "*leptonWeightUp/leptonWeight"; weightDown += "*leptonWeightDown/leptonWeight"
+    elif sys=='QCDscale_ren': weightUp += "*QCDRenWeightUp"; weightDown += "*QCDRenWeightDown"
+    elif sys=='QCDscale_fac': weightUp += "*QCDFacWeightUp"; weightDown += "*QCDFacWeightDown"
+    elif sys=='EWKscale_Z': weightDown += "/ZewkWeight"
+    elif sys=='EWKscale_W': weightDown += "/WewkWeight"
+    else: print "Systematic", sys, "not applicable or not recognized."
+    
+    ### Create and fill MC histograms ###
+    file = {}
+    tree = {}
+    hist = {}
+    histUp = {}
+    histDown = {}
+    
+    for i, s in enumerate(back+sign):
+        tree[s] = TChain("tree")
+        for j, ss in enumerate(sample[s]['files']): tree[s].Add(NTUPLEDIR + ss + ".root")
+        if variable[var]['nbins']>0: hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), variable[var]['nbins'], variable[var]['min'], variable[var]['max'])
+        else: hist[s] = TH1F(s, ";"+variable[var]['title'], len(variable[var]['bins'])-1, array('f', variable[var]['bins']))
+        hist[s].Sumw2()
+        histUp[s] = hist[s].Clone(s+'Up')
+        histDown[s] = hist[s].Clone(s+'Down')
+        cutstring = ("*("+cut+")" if len(cut)>0 else "")
+        if '-' in s: cutstring = cutstring.replace(cut, cut + "&& nBQuarks==" + s.split('-')[1][0])
+        tree[s].Project(s, var, "("+weight+")" + cutstring)
+        tree[s].Project(s+'Up', varUp, "("+weightUp+")" + cutstring)
+        tree[s].Project(s+'Down', varDown, "("+weightDown+")" + cutstring)
+        hist[s].Scale(sample[s]['weight'] if hist[s].Integral() >= 0 else 0)
+        hist[s].SetLineWidth(2)
+        histUp[s].SetLineWidth(2)
+        histDown[s].SetLineWidth(2)
+        hist[s].SetLineColor(1)
+        histUp[s].SetLineColor(629)
+        histDown[s].SetLineColor(602)
+    
+    # Rescale normalization for QCD scales FIXME
+    if 'QCDscale' in sys:
+        for s in back+sign:#['TTbar', 'TTbarSL', 'ST']:
+            if s in hist and histUp[s].Integral() > 0. and histDown[s].Integral() > 0.:
+                histUp[s].Scale(hist[s].Integral()/histUp[s].Integral())
+                histDown[s].Scale(hist[s].Integral()/histDown[s].Integral())
+
+    hist['BkgSum'] = hist[back[0]].Clone("BkgSum")
+    hist['BkgSum'].Reset()
+    histUp['BkgSum'] = hist['BkgSum'].Clone("BkgSumUp")
+    histUp['BkgSum'].SetLineColor(629)
+    histUp['BkgSum'].Reset()
+    histDown['BkgSum'] = hist['BkgSum'].Clone("BkgSumDown")
+    histDown['BkgSum'].SetLineColor(602)
+    histDown['BkgSum'].Reset()
+
+    for i, s in enumerate(back):
+        hist['BkgSum'].Add(hist[s], 1)
+        histUp['BkgSum'].Add(histUp[s], 1)
+        histDown['BkgSum'].Add(histDown[s], 1)
+    
+    for i, s in enumerate(back+sign+['BkgSum']):
+        addOverflow(hist[s], False)
+        addOverflow(histUp[s], False)
+        addOverflow(histDown[s], False)
+    
+    c1 = TCanvas("c1", "Signals", 800, 600)
+    c1.cd()
+    gStyle.SetOptStat(0)
+    gStyle.SetOptTitle(0)
+    c1.GetPad(0).SetTopMargin(0.06)
+    c1.GetPad(0).SetRightMargin(0.06)
+    c1.GetPad(0).SetTicky(2)
+    c1.GetPad(0).SetLogy()
+    histUp['BkgSum'].SetMaximum(histUp['BkgSum'].GetMaximum()*5)
+    histUp['BkgSum'].Draw("HIST")
+    histDown['BkgSum'].Draw("SAME, HIST")
+    hist['BkgSum'].Draw("SAME, HIST")
+    drawCMS(-1, "Simulation", False)
+
+    leg = TLegend(0.65, 0.80, 0.95, 0.80)
+    leg.SetBorderSize(0)
+    leg.SetFillStyle(0) #1001
+    leg.SetFillColor(0)
+    leg.SetHeader(sys.replace('CMS', '').replace('_', ' '))
+    leg.AddEntry(histUp['BkgSum'], "Up", "l")
+    leg.AddEntry(hist['BkgSum'], "Central", "l")
+    leg.AddEntry(histDown['BkgSum'], "Down", "l")
+    leg.SetY1(0.75-leg.GetNRows()*0.045)
+    leg.Draw()
+    
+    if not os.path.exists("plotsSys/"+channel): os.makedirs("plotsSys/"+channel)
+    c1.Print("plotsSys/"+channel+"/"+sys+".png")
+    c1.Print("plotsSys/"+channel+"/"+sys+".pdf")
+    
+    for i, s in enumerate(back+sign):
+        c2 = TCanvas("c2", "Signals", 800, 600)
+        c2.cd()
+        gStyle.SetOptStat(0)
+        gStyle.SetOptTitle(0)
+        c2.GetPad(0).SetTopMargin(0.06)
+        c2.GetPad(0).SetRightMargin(0.06)
+        c2.GetPad(0).SetTicky(2)
+        c2.GetPad(0).SetLogy()
+        histUp[s].SetMaximum(histUp[s].GetMaximum()*5)
+        histUp[s].Draw("HIST")
+        histDown[s].Draw("SAME, HIST")
+        hist[s].Draw("SAME, HIST")
+        drawCMS(-1, "Simulation", False)
+        c2.Print("plotsSys/"+channel+"/"+sys+"_"+s+".png")
+        c2.Print("plotsSys/"+channel+"/"+sys+"_"+s+".pdf")
+
+    saveHist(histUp, channel, sys+'Up')
+    saveHist(histDown, channel, sys+'Down')
+
+    print "Added systematic", sys, "to channel", channel
+
+
+########## ######## ##########
+
+def saveHist(hist, channel, directory='', addStat=False):
+    
+    # Blind
+    if BLIND and 'data_obs' in hist:
+        #hist['data_obs'] = hist['BkgSum'].Clone("data_obs")
+        rando = TRandom3()
+        hist['data_obs'].Reset()
+        hist['data_obs'].SetMarkerStyle(21)
+        for i in range(hist['data_obs'].GetNbinsX()): hist['data_obs'].SetBinContent(i+1, rando.Poisson( hist['BkgSum'].GetBinContent(i+1) ))
+
+    # Sanity check
+#    smax = max(hist, key=lambda x: hist[x].Integral())
+#    for s in hist.keys():
+#        for i in range(hist[s].GetNbinsX()):
+#            if not hist[s].GetBinContent(i+1)>0.: hist[s].SetBinContent(i+1, 1.e-4) # Sanity check
+#            if math.isnan(hist[s].GetBinContent(i+1)) or math.isinf(hist[s].GetBinContent(i+1)): print "WARNING: in channel", channel, "bkg", s, "bin", i+1, "is nan or inf"
+#            #print "checking", s, i, hist[s].GetBinContent(i+1)
+    
+    outFile = TFile("rootfiles/"+channel+".root", "RECREATE" if len(directory)==0 else "UPDATE")
+    outFile.cd()
+    if len(directory) > 0:
+        if not outFile.GetDirectory(directory): outFile.mkdir(directory)
+        outFile.cd(directory)
+
+    for s in sorted(hist.keys()):
+        hist[s].Write(hist[s].GetName().replace('Up', '').replace('Down', ''))
+
+    #outFile.cd("..")
+    # Statistical MC uncertainty
+    if addStat:
+        nbins = hist['data_obs'].GetNbinsX()
+        #CMS_stat_Z0b_bin57
+        for s in sorted(hist.keys()):
+            if 'data' in s: continue
+            dirname = channel+"/Sys_"+s
+            #if outFile.GetDirectory(dirname): outFile.rmdir(dirname)
+            outFile.mkdir(dirname)
+            outFile.cd(dirname)
+            for k in range(1, nbins+1):
+                sysname = "CMS_stat_%s_%s_bin%d" % (channel, s, k)
+                histUp = hist[s].Clone(sysname+"Up")
+                histUp.SetBinContent(k, histUp.GetBinContent(k) + histUp.GetBinError(k))
+                histUp.Write()
+                histDown = hist[s].Clone(sysname+"Down")
+                histDown.SetBinContent(k, max(histDown.GetBinContent(k) - histDown.GetBinError(k), 1.e-6))
+                histDown.Write()
+            outFile.cd("..")
+    
+    outFile.Close()
+    print "Histograms saved in file rootfiles/"+channel+".root"
+
+    
+
+
+########## ######## ##########
+
+def plotLimit():
+    gROOT.SetBatch(True)
+    os.system("rm rootfiles/*")
+    cat = ["AH0l0fSR", "AH0l1fSR", "AH0l2bSR", "AH0lCR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1m0fSR", "SL1e1fSR", "SL1m1fSR", "SL1e2bSR", "SL1m2bSR", "SL1eWR", "SL1mWR", "SL1e1mTR"]
+    sys = ['EWKscale_Z', 'EWKscale_W', 'CMS_eff_b', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'CMS_scale_pu', 'QCDscale_fac', 'QCDscale_ren', ]
+    
+    for r in cat:
+        var = 'MET_pt'
+        if r.startswith('SL'): var = 'MET_sign' # correct binnning
+        if r.endswith('ZR'): var = 'FakeMET_pt'
+#        plot(var, r)
+        p = multiprocessing.Process(target=plot, args=(var, r, ))
+        jobs.append(p)
+        p.start()
+    
+    for job in jobs:
+        job.join()
+    
+    print "\n\n@ Main jobs have finished, now running uncertainties\n\n"
+    
+    del jobs[:]
+    
+    for s in sys:
+        print "\n@ Running uncertainty", s, "\n"
+        for r in cat:
+            var = 'MET_pt'
+            if r.startswith('SL'): var = 'MET_sign' # correct binnning
+            if r.endswith('ZR'): var = 'FakeMET_pt'
+    #       addSys(var, r, s)
+            p = multiprocessing.Process(target=addSys, args=(var, r, s, ))
+            jobs.append(p)
+            p.start()
+        for job in jobs:
+            job.join()
+    
+    print "\n\n@ Uncertainties have finished.\n\n"
+    
 ########## ######## ##########
 
 def plotAll():
@@ -353,7 +558,7 @@ def plotAll():
 #        for h in l:
 #            plot(h, c)
     
-    for r in selection.keys():
+    for r in selections.keys():
         for v in ['Lepton1_pt', 'Lepton1_pfIso', 'Lepton2_pt', 'Lepton2_pfIso', 'Jet1_pt', 'Jet1_csv', 'Jet2_pt', 'Jet2_csv', 'Jet3_pt', 'Jet3_csv', 'Jet4_pt', 'Jet4_csv', 'JetF_pt', 'mZ', 'V_pt', 'mT', 'mT2', 'MinDPhi', 'MinDPhi12', 'MET_pt', 'MET_sign', 'FakeMET_pt', 'nPV', 'nJets', 'nForwardJets', 'nBTagJets', 'nElectrons', 'nMuons', 'nTaus', 'HT', 'ST']:
 #            plot(v, r)
             p = multiprocessing.Process(target=plot, args=(v,r,))
@@ -368,5 +573,5 @@ if options.all: plotAll()
 elif options.limit: plotLimit()
 elif options.signal: plotSignal(options.cut)
 elif options.efficiency: plotEfficiency()
-else: plot(options.variable, options.cut)
-
+else: plot(options.variable, options.cut, options.norm)
+#addSys('FakeMET_pt', 'AH2mZR', 'QCDscale_ren')
