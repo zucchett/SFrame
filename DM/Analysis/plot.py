@@ -37,8 +37,7 @@ if options.bash: gROOT.SetBatch(True)
 gStyle.SetOptStat(0)
 gROOT.LoadMacro('functions.C')
 
-NTUPLEDIR   = "/scratch/zucchett/Ntuple/DM/"
-#NTUPLEDIR   = "/scratch/zucchett/Ntuple/DM_17Oct/"
+NTUPLEDIR   = "/mnt/t3nfs01/data01/shome/dpinna/SFrame/CMSSW_8_0_26_patch1/src/SFrame/DM/Analysis_Ntuples_az/"
 SIGNAL      = 1 # Signal magnification factor
 RATIO       = 4 # 0: No ratio plot; !=0: ratio between the top and bottom pads
 NORM        = options.norm
@@ -49,8 +48,10 @@ LUMI        = 35867
 ########## SAMPLES ##########
 data = ["data_obs"]
 #back = ["DYJetsToLL"]
-back = ["VV", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "ST", "TTbarSL", "QCD"]
-sign = ['ttDM_MChi1_MPhi10', 'ttDM_MChi1_MPhi20', 'ttDM_MChi1_MPhi50', 'ttDM_MChi1_MPhi100', 'ttDM_MChi1_MPhi200', 'ttDM_MChi1_MPhi300', 'ttDM_MChi1_MPhi500', 'ttDM_MChi1_MPhi1000', 'tDM_MChi1_MPhi100', 'tDM_MChi1_MPhi300', 'tttDM_MChi1_MPhi100', 'tttDM_MChi1_MPhi300']
+back = ["VV", "ST", "TTbarSL", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "QCD"]
+sign = [
+'ttDM_MChi1_MPhi10', 'ttDM_MChi1_MPhi20', 'ttDM_MChi1_MPhi50', 'ttDM_MChi1_MPhi100', 'ttDM_MChi1_MPhi200', 'ttDM_MChi1_MPhi300', 'ttDM_MChi1_MPhi500', 'tDM_MChi1_MPhi10_OP', 'tDM_MChi1_MPhi20_OP', 'tDM_MChi1_MPhi50_OP', 'tDM_MChi1_MPhi100', 'tDM_MChi1_MPhi200_OP', 'tDM_MChi1_MPhi300', 'tDM_MChi1_MPhi500_OP', 'tttDM_MChi1_MPhi10', 'tttDM_MChi1_MPhi20', 'tttDM_MChi1_MPhi50', 'tttDM_MChi1_MPhi100', 'tttDM_MChi1_MPhi200', 'tttDM_MChi1_MPhi300', 'tttDM_MChi1_MPhi500']
+
 #sign = []
 ########## ######## ##########
 
@@ -489,8 +490,8 @@ def saveHist(hist, channel, directory='', addStat=False):
 def plotLimit():
     gROOT.SetBatch(True)
     os.system("rm rootfiles/*")
-    cat = ["AH0l0fSR", "AH0l1fSR", "AH0l2bSR", "AH0lCR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1m0fSR", "SL1e1fSR", "SL1m1fSR", "SL1e2bSR", "SL1m2bSR", "SL1eWR", "SL1mWR", "SL1e1mTR"]
-    sys = ['EWKscale_Z', 'EWKscale_W', 'CMS_eff_b', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'CMS_scale_pu', 'QCDscale_fac', 'QCDscale_ren', ]
+    cat = ["AH0l0fSR", "AH0l1fSR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1m1fSR", "SL1e0fSR", "SL1m1fSR", "SL1eWR", "SL1mWR", "SL1e1mTR"]
+    sys = ['CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'QCDscale_ren', 'QCDscale_fac']
     
     for r in cat:
         var = 'MET_pt'
