@@ -3,7 +3,6 @@
 sample = {
     'data_obs' : {
         'files' : ['SingleMuon_Run2016B', 'SingleMuon_Run2016C', 'SingleMuon_Run2016D', 'SingleMuon_Run2016E', 'SingleMuon_Run2016F', 'SingleMuon_Run2016G', 'SingleMuon_Run2016H', 'SingleElectron_Run2016B', 'SingleElectron_Run2016C', 'SingleElectron_Run2016D', 'SingleElectron_Run2016E', 'SingleElectron_Run2016F', 'SingleElectron_Run2016G', 'SingleElectron_Run2016H', 'MET_Run2016B', 'MET_Run2016C', 'MET_Run2016D', 'MET_Run2016E', 'MET_Run2016F', 'MET_Run2016G', 'MET_Run2016H', 'JetHT_Run2016B', 'JetHT_Run2016C', 'JetHT_Run2016D', 'JetHT_Run2016E', 'JetHT_Run2016F', 'JetHT_Run2016G', 'JetHT_Run2016H'],
-#        'files' : ['JetHT_Run2016B', 'JetHT_Run2016C', 'JetHT_Run2016D', 'JetHT_Run2016E', 'JetHT_Run2016F', 'JetHT_Run2016G', 'JetHT_Run2016H'],
         'fillcolor' : 0,
         'fillstyle' : 1,
         'linecolor' : 1,
@@ -35,39 +34,6 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
-    'DYJetsToLL-0b' : {
-        'files' : ['DYJetsToLL', 'DYJetsToLL_HT-100to200', 'DYJetsToLL_HT-200to400', 'DYJetsToLL_HT-400to600', 'DYJetsToLL_HT-600to800', 'DYJetsToLL_HT-800to1200', 'DYJetsToLL_HT-1200to2500', 'DYJetsToLL_HT-2500toInf', 'DY1JetsToLL', 'DY2JetsToLL', 'DY3JetsToLL', 'DY4JetsToLL'],
-        'fillcolor' : 410,
-        'fillstyle' : 1001,
-        'linecolor' : 418,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(ll) + jets",
-        'weight': 1.,
-        'plot': True,
-    },
-    'DYJetsToLL-1b' : {
-        'files' : ['DYJetsToLL', 'DYJetsToLL_HT-100to200', 'DYJetsToLL_HT-200to400', 'DYJetsToLL_HT-400to600', 'DYJetsToLL_HT-600to800', 'DYJetsToLL_HT-800to1200', 'DYJetsToLL_HT-1200to2500', 'DYJetsToLL_HT-2500toInf', 'DY1JetsToLL', 'DY2JetsToLL', 'DY3JetsToLL', 'DY4JetsToLL'],
-        'fillcolor' : 418,
-        'fillstyle' : 1001,
-        'linecolor' : 419,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(ll) + b",
-        'weight': 1.,
-        'plot': True,
-    },
-    'DYJetsToLL-2b' : {
-        'files' : ['DYJetsToLL', 'DYJetsToLL_HT-100to200', 'DYJetsToLL_HT-200to400', 'DYJetsToLL_HT-400to600', 'DYJetsToLL_HT-600to800', 'DYJetsToLL_HT-800to1200', 'DYJetsToLL_HT-1200to2500', 'DYJetsToLL_HT-2500toInf', 'DY1JetsToLL', 'DY2JetsToLL', 'DY3JetsToLL', 'DY4JetsToLL'],
-        'fillcolor' : 419,
-        'fillstyle' : 1001,
-        'linecolor' : 420,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(ll) + b#bar{b}",
-        'weight': 1.,
-        'plot': True,
-    },
     'DYJetsToLL_Pt' : {
         'files' : ['DYJetsToLL_Pt-100To250', 'DYJetsToLL_Pt-250To400', 'DYJetsToLL_Pt-400To650', 'DYJetsToLL_Pt-650ToInf'],
         'fillcolor' : 418,
@@ -76,39 +42,6 @@ sample = {
         'linewidth' : 2,
         'linestyle' : 1,
         'label' : "Z(ll) + jets",
-        'weight': 1.,
-        'plot': True,
-    },
-    'DYJetsToLL_Pt-0b' : {
-        'files' : ['DYJetsToLL', 'DYJetsToLL_Pt-100To250', 'DYJetsToLL_Pt-250To400', 'DYJetsToLL_Pt-400To650', 'DYJetsToLL_Pt-650ToInf'],
-        'fillcolor' : 410,
-        'fillstyle' : 1001,
-        'linecolor' : 418,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(ll) + jets",
-        'weight': 1.,
-        'plot': True,
-    },
-    'DYJetsToLL_Pt-1b' : {
-        'files' : ['DYJetsToLL', 'DYJetsToLL_Pt-100To250', 'DYJetsToLL_Pt-250To400', 'DYJetsToLL_Pt-400To650', 'DYJetsToLL_Pt-650ToInf'],
-        'fillcolor' : 418,
-        'fillstyle' : 1001,
-        'linecolor' : 419,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(ll) + b",
-        'weight': 1.,
-        'plot': True,
-    },
-    'DYJetsToLL_Pt-2b' : {
-        'files' : ['DYJetsToLL', 'DYJetsToLL_Pt-100To250', 'DYJetsToLL_Pt-250To400', 'DYJetsToLL_Pt-400To650', 'DYJetsToLL_Pt-650ToInf'],
-        'fillcolor' : 419,
-        'fillstyle' : 1001,
-        'linecolor' : 420,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(ll) + b#bar{b}",
         'weight': 1.,
         'plot': True,
     },
@@ -134,39 +67,6 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
-    'DYJetsToNuNu-0b' : {
-        'files' : ['ZJetsToNuNu_HT-100To200', 'ZJetsToNuNu_HT-200To400', 'ZJetsToNuNu_HT-400To600', 'ZJetsToNuNu_HT-600To800', 'ZJetsToNuNu_HT-800To1200', 'ZJetsToNuNu_HT-1200To2500', 'ZJetsToNuNu_HT-2500ToInf'],
-        'fillcolor' : 851,
-        'fillstyle' : 1001,
-        'linecolor' : 856,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(#nu#nu) + jets",
-        'weight': 1.,
-        'plot': True,
-    },
-    'DYJetsToNuNu-1b' : {
-        'files' : ['ZJetsToNuNu_HT-100To200', 'ZJetsToNuNu_HT-200To400', 'ZJetsToNuNu_HT-400To600', 'ZJetsToNuNu_HT-600To800', 'ZJetsToNuNu_HT-800To1200', 'ZJetsToNuNu_HT-1200To2500', 'ZJetsToNuNu_HT-2500ToInf'],
-        'fillcolor' : 856,
-        'fillstyle' : 1001,
-        'linecolor' : 855,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(#nu#nu) + b",
-        'weight': 1.,
-        'plot': True,
-    },
-    'DYJetsToNuNu-2b' : {
-        'files' : ['ZJetsToNuNu_HT-100To200', 'ZJetsToNuNu_HT-200To400', 'ZJetsToNuNu_HT-400To600', 'ZJetsToNuNu_HT-600To800', 'ZJetsToNuNu_HT-800To1200', 'ZJetsToNuNu_HT-1200To2500', 'ZJetsToNuNu_HT-2500ToInf'],
-        'fillcolor' : 855,
-        'fillstyle' : 1001,
-        'linecolor' : 854,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(#nu#nu) + b#bar{b}",
-        'weight': 1.,
-        'plot': True,
-    },
     'DYJetsToNuNu_Pt' : {
         'files' : ['DYJetsToNuNu_Pt-100To250', 'DYJetsToNuNu_Pt-250To400', 'DYJetsToNuNu_Pt-400To650', 'DYJetsToNuNu_Pt-650ToInf'],
         'fillcolor' : 856,
@@ -175,39 +75,6 @@ sample = {
         'linewidth' : 2,
         'linestyle' : 1,
         'label' : "Z(#nu#nu) + jets",
-        'weight': 1.,
-        'plot': True,
-    },
-    'DYJetsToNuNu_Pt-0b' : {
-        'files' : ['DYJetsToNuNu_Pt-100To250', 'DYJetsToNuNu_Pt-250To400', 'DYJetsToNuNu_Pt-400To650', 'DYJetsToNuNu_Pt-650ToInf'],
-        'fillcolor' : 856,
-        'fillstyle' : 1001,
-        'linecolor' : 856,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(#nu#nu) + jets",
-        'weight': 1.,
-        'plot': True,
-    },
-    'DYJetsToNuNu_Pt-1b' : {
-        'files' : ['DYJetsToNuNu_Pt-100To250', 'DYJetsToNuNu_Pt-250To400', 'DYJetsToNuNu_Pt-400To650', 'DYJetsToNuNu_Pt-650ToInf'],
-        'fillcolor' : 856,
-        'fillstyle' : 1001,
-        'linecolor' : 856,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(#nu#nu) + b",
-        'weight': 1.,
-        'plot': True,
-    },
-    'DYJetsToNuNu_Pt-2b' : {
-        'files' : ['DYJetsToNuNu_Pt-100To250', 'DYJetsToNuNu_Pt-250To400', 'DYJetsToNuNu_Pt-400To650', 'DYJetsToNuNu_Pt-650ToInf'],
-        'fillcolor' : 856,
-        'fillstyle' : 1001,
-        'linecolor' : 856,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "Z(#nu#nu) + b#bar{b}",
         'weight': 1.,
         'plot': True,
     },
@@ -230,72 +97,6 @@ sample = {
         'linewidth' : 2,
         'linestyle' : 1,
         'label' : "W(l#nu) + jets",
-        'weight': 1.,
-        'plot': True,
-    },
-    'WJetsToLNu-0b' : {
-        'files' : ['WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf', 'WJetsToQQ_HT-600ToInf'],
-        'fillcolor' : 886,
-        'fillstyle' : 1001,
-        'linecolor' : 881,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "W(l#nu) + jets",
-        'weight': 1.,
-        'plot': True,
-    },
-    'WJetsToLNu-1b' : {
-        'files' : ['WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf', 'WJetsToQQ_HT-600ToInf'],
-        'fillcolor' : 881,
-        'fillstyle' : 1001,
-        'linecolor' : 882,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "W(l#nu) + b",
-        'weight': 1.,
-        'plot': True,
-    },
-    'WJetsToLNu-2b' : {
-        'files' : ['WJetsToLNu_HT-100To200', 'WJetsToLNu_HT-200To400', 'WJetsToLNu_HT-400To600', 'WJetsToLNu_HT-600To800', 'WJetsToLNu_HT-800To1200', 'WJetsToLNu_HT-1200To2500', 'WJetsToLNu_HT-2500ToInf', 'WJetsToQQ_HT-600ToInf'],
-        'fillcolor' : 882,
-        'fillstyle' : 1001,
-        'linecolor' : 883,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "W(l#nu) + b#bar{b}",
-        'weight': 1.,
-        'plot': True,
-    },
-    'WJetsToLNu_Pt-0b' : {
-        'files' : ['WJetsToLNu_Pt-100To250', 'WJetsToLNu_Pt-250To400', 'WJetsToLNu_Pt-400To600', 'WJetsToLNu_Pt-600ToInf'],
-        'fillcolor' : 881,
-        'fillstyle' : 1001,
-        'linecolor' : 881,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "W(l#nu) + jets",
-        'weight': 1.,
-        'plot': True,
-    },
-    'WJetsToLNu_Pt-1b' : {
-        'files' : ['WJetsToLNu_Pt-100To250', 'WJetsToLNu_Pt-250To400', 'WJetsToLNu_Pt-400To600', 'WJetsToLNu_Pt-600ToInf'],
-        'fillcolor' : 881,
-        'fillstyle' : 1001,
-        'linecolor' : 881,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "W(l#nu) + b",
-        'weight': 1.,
-        'plot': True,
-    },
-    'WJetsToLNu_Pt-2b' : {
-        'files' : ['WJetsToLNu_Pt-100To250', 'WJetsToLNu_Pt-250To400', 'WJetsToLNu_Pt-400To600', 'WJetsToLNu_Pt-600ToInf'],
-        'fillcolor' : 881,
-        'fillstyle' : 1001,
-        'linecolor' : 881,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "W(l#nu) + b#bar{b}",
         'weight': 1.,
         'plot': True,
     },
@@ -365,7 +166,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
-   'ST' : {
+    'ST' : {
         'files' : ['ST_s-channel', 'ST_t-channel_antitop', 'ST_t-channel_top', 'ST_tW_antitop', 'ST_tW_top'],
         'fillcolor' : 807,#801
         'fillstyle' : 1001,
@@ -378,17 +179,6 @@ sample = {
     },
     'VV' : {
         'files' : ['WWTo1L1Nu2Q', 'WWTo2L2Nu', 'WWTo4Q', 'WZTo1L1Nu2Q', 'WZTo2L2Q', 'WZTo2Q2Nu', 'ZZTo2L2Q', 'ZZTo2Q2Nu', 'ZZTo2L2Nu', 'ZZTo4L', 'ZZTo4Q', 'GluGluHToBB', 'WHToLNuBB', 'ZHToLLBB', 'ZHToNuNuBB', 'ZHToQQBB','WZTo1L3Nu','WZTo3LNu'],
-        'fillcolor' : 602,
-        'fillstyle' : 1001,
-        'linecolor' : 602,
-        'linewidth' : 2,
-        'linestyle' : 1,
-        'label' : "VV, VH",
-        'weight': 1.,
-        'plot': True,
-    },
-    'WZqqnunu' : {
-        'files' : ['WZTo2Q2Nu'],
         'fillcolor' : 602,
         'fillstyle' : 1001,
         'linecolor' : 602,
@@ -420,15 +210,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
-    'QCD_HT100to200' : {'files' : ['QCD_HT100to200'], 'fillcolor' : 916, 'fillstyle' : 1001, 'linecolor' : 921, 'linewidth' : 2, 'linestyle' : 1, 'label' : "QCD HT 100to200", 'weight': 1., 'plot': True,},
-    'QCD_HT200to300' : {'files' : ['QCD_HT200to300'], 'fillcolor' : 917, 'fillstyle' : 1001, 'linecolor' : 921, 'linewidth' : 2, 'linestyle' : 1, 'label' : "QCD HT 200to300", 'weight': 1., 'plot': True,},
-    'QCD_HT300to500' : {'files' : ['QCD_HT300to500'], 'fillcolor' : 918, 'fillstyle' : 1001, 'linecolor' : 921, 'linewidth' : 2, 'linestyle' : 1, 'label' : "QCD HT 300to500", 'weight': 1., 'plot': True,},
-    'QCD_HT500to700' : {'files' : ['QCD_HT500to700'], 'fillcolor' : 919, 'fillstyle' : 1001, 'linecolor' : 921, 'linewidth' : 2, 'linestyle' : 1, 'label' : "QCD HT 500to700", 'weight': 1., 'plot': True,},
-    'QCD_HT700to1000' : {'files' : ['QCD_HT700to1000'], 'fillcolor' : 920, 'fillstyle' : 1001, 'linecolor' : 921, 'linewidth' : 2, 'linestyle' : 1, 'label' : "QCD HT 700to1000", 'weight': 0.891, 'plot': True,},
-    'QCD_HT1000to1500' : {'files' : ['QCD_HT1000to1500'], 'fillcolor' : 921, 'fillstyle' : 1001, 'linecolor' : 921, 'linewidth' : 2, 'linestyle' : 1, 'label' : "QCD HT 1000to1500", 'weight': 0.815, 'plot': True,},
-    'QCD_HT1500to2000' : {'files' : ['QCD_HT1500to2000'], 'fillcolor' : 922, 'fillstyle' : 1001, 'linecolor' : 921, 'linewidth' : 2, 'linestyle' : 1, 'label' : "QCD HT 1500to2000", 'weight': 0.823, 'plot': True,},
-    'QCD_HT2000toInf' : {'files' : ['QCD_HT2000toInf'], 'fillcolor' : 923, 'fillstyle' : 1001, 'linecolor' : 921, 'linewidth' : 2, 'linestyle' : 1, 'label' : "QCD HT 2000toInf", 'weight': 0.642, 'plot': True,},
-    
+
     'AllBkg' : {
         'files' : [],
         'fillcolor' : 856,
@@ -484,6 +266,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tDM_MChi1_MPhi20_OP' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-20', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-20'],
@@ -496,6 +279,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tDM_MChi1_MPhi50_OP' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-50', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-50'],
@@ -508,6 +292,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tDM_MChi1_MPhi100_OP' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-100', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-100'],
@@ -520,6 +305,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tDM_MChi1_MPhi200_OP' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-200', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-200'],
@@ -532,6 +318,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tDM_MChi1_MPhi300_OP' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-300', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-300'],
@@ -544,6 +331,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tDM_MChi1_MPhi500_OP' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-500', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-500'],
@@ -557,8 +345,6 @@ sample = {
         'plot': True,
     },
 
-#############
-
     'tDM_MChi1_MPhi100' : {
         'order' : 1001,
         'files' : ['DMScalar_top_tChan_MChi1_MPhi100', 'DMScalar_top_tWChan_MChi1_MPhi100'],
@@ -571,6 +357,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tDM_MChi1_MPhi300' : {
         'order' : 1001,
         'files' : ['DMScalar_top_tChan_MChi1_MPhi300', 'DMScalar_top_tWChan_MChi1_MPhi300'],
@@ -688,8 +475,6 @@ sample = {
         'plot': False,
     },
     
-######
-
     'tttDM_MChi1_MPhi10' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-10', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-10','TopDMJets_scalar_tWChan_Mchi-1_Mphi-10'],
@@ -702,6 +487,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tttDM_MChi1_MPhi20' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-20', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-20','TopDMJets_scalar_tWChan_Mchi-1_Mphi-20'],
@@ -714,6 +500,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tttDM_MChi1_MPhi50' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-50', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-50','TopDMJets_scalar_tWChan_Mchi-1_Mphi-50'],
@@ -726,6 +513,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tttDM_MChi1_MPhi100' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-100', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-100','TopDMJets_scalar_tWChan_Mchi-1_Mphi-100'],
@@ -738,6 +526,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tttDM_MChi1_MPhi200' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-200', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-200','TopDMJets_scalar_tWChan_Mchi-1_Mphi-200'],
@@ -750,6 +539,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tttDM_MChi1_MPhi300' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-300', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-300','TopDMJets_scalar_tWChan_Mchi-1_Mphi-300'],
@@ -762,6 +552,7 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
     'tttDM_MChi1_MPhi500' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-500', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-500','TopDMJets_scalar_tWChan_Mchi-1_Mphi-500'],
