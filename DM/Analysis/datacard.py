@@ -61,6 +61,7 @@ freenorm = {
 rateparam = {
     'rateTopAH' : 'TTbarSL',
     'rateZjetsAH' : 'DYJetsToNuNu_HT',
+    'rateZjetsAH_ZR' : 'DYJetsToLL_HT', #will effectively be called rateZjetsAH
     'rateWjetsAH' : 'WJetsToLNu_HT',
     'rateTopSL' : 'TTbarSL',
     'rateWjetsSL' : 'WJetsToLNu_HT',
@@ -191,8 +192,16 @@ def datacard(cat, sign):
 
     if verbose: print "  Rate params..."
     for p, m in rateparam.iteritems():
-        if ('AH' in cat and 'AH' in p) or ('SL' in cat and 'SL' in p):
+        print p, m, cat
+        if (('AH' in cat and 'AH' in p) or ('SL' in cat and 'SL' in p)):
+            if ("ZR" in cat and "ZR" in p):
+                p= p.replace("_ZR","")
+            elif ("ZR" in cat and "NuNu" in m): continue
+            elif ("ZR" in p): continue
             card += "%-25s%-20s%-20s\t%-20s          1.   [0.5,1.5]\n" % (p, 'rateParam', cat, m, )
+
+        
+
     
     if verbose: print "  MC statistics..."
     # MC statistics
