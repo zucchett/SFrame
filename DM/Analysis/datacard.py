@@ -198,6 +198,10 @@ def datacard(cat, sign):
                 p= p.replace("_ZR","")
             elif ("ZR" in cat and "NuNu" in m): continue
             elif ("ZR" in p): continue
+
+            if "bin" in cat:
+                p = p + cat[cat.find("bin")+3:]
+
             card += "%-25s%-20s%-20s\t%-20s          1.   [0.5,1.5]\n" % (p, 'rateParam', cat, m, )
 
         
