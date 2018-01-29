@@ -74,8 +74,6 @@ def plot(var, cut, norm=False, nm1=False):
         binName = "bin_"+binLow+"_"+binHigh
         cut = cut[:cut.find("binned")]
     
-    print "??cuts:",cut
-    print "??bins :", binLow, binHigh
     channel = cut
     plotdir = cut
     plotname = var
@@ -547,7 +545,6 @@ def plotLimit(doBinned = False):
                 bins = np.array(variable[var]['bins'] )
             else:
                 binsize = (variable[var]['max']-variable[var]['min'])/variable[var]['nbins']
-                print "!!!!!!",variable[var]['max'], variable[var]['min'], binsize
                 bins = np.arange(variable[var]['min'], variable[var]['max']+binsize, binsize)
                 
             bins = np.append(bins, 10000) #add essentially infinite upper bound for the last bin
@@ -574,7 +571,7 @@ def plotLimit(doBinned = False):
             del jobs[:]
     print "\n\n@ Main jobs have finished, now running uncertainties\n\n"
     
-    doSys = False
+    doSys = True
     
     if not doSys: return
     
@@ -591,7 +588,6 @@ def plotLimit(doBinned = False):
                     bins = np.array(variable[var]['bins'] )
                 else:
                     binsize = (variable[var]['max']-variable[var]['min'])/variable[var]['nbins']
-                    print "!!!!!!",variable[var]['max'], variable[var]['min'], binsize
                     bins = np.arange(variable[var]['min'], variable[var]['max']+binsize, binsize)
                 
                 bins = np.append(bins, 10000) #add essentially infinite upper bound for the last bin
