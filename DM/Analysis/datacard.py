@@ -14,6 +14,7 @@ parser.add_option("-r", "--remove", action="store", type="string", default="", d
 parser.add_option("-c", "--cutcount", action="store_true", default=False, dest="isCutAndCount")
 parser.add_option("-o", "--override", action="store_true", default=False, dest="override")
 parser.add_option("-v", "--verbose", action="store_true", default=False, dest="verbose")
+parser.add_option("-N", "--name", action="store", type="string", dest="name", default="test")
 (options, args) = parser.parse_args()
 
 fileName = options.fileName
@@ -60,6 +61,7 @@ freenorm = {
 rateparam = {
     'rateTopAH' : 'TTbarSL',
     'rateZjetsAH' : 'DYJetsToNuNu_HT',
+    'rateZjetsAH_ZR' : 'DYJetsToLL_HT', #will effectively be called rateZjetsAH
     'rateWjetsAH' : 'WJetsToLNu_HT',
     'rateTopSL' : 'TTbarSL',
     'rateWjetsSL' : 'WJetsToLNu_HT',
@@ -107,7 +109,7 @@ def datacard(cat, sign):
     card += "bin        " + space + ("%-25s" % cat) + "\n"
     card += "observation" + space + ("%-25.0f" % -1.) + "\n"
     card += hline
-    card += "shapes * * " + space + "rootfiles/$CHANNEL.root          $PROCESS          $SYSTEMATIC/$PROCESS\n"
+    card += "shapes * * " + space + "rootfiles_"+options.name+"/$CHANNEL.root          $PROCESS          $SYSTEMATIC/$PROCESS\n"
     card += hline
     card += "bin        " + space
     for i, s in enumerate([sign] + back):
@@ -190,8 +192,20 @@ def datacard(cat, sign):
 
     if verbose: print "  Rate params..."
     for p, m in rateparam.iteritems():
-        if ('AH' in cat and 'AH' in p) or ('SL' in cat and 'SL' in p):
+        print p, m, cat
+        if (('AH' in cat and 'AH' in p) or ('SL' in cat and 'SL' in p)):
+            if ("ZR" in cat and "ZR" in p):
+                p= p.replace("_ZR","")
+            elif ("ZR" in cat and "NuNu" in m): continue
+            elif ("ZR" in p): continue
+
+            if "bin" in cat:
+                p = p + cat[cat.find("bin")+3:]
+
             card += "%-25s%-20s%-20s\t%-20s          1.   [0.5,1.5]\n" % (p, 'rateParam', cat, m, )
+
+        
+
     
     if verbose: print "  MC statistics..."
     # MC statistics
@@ -202,11 +216,10 @@ def datacard(cat, sign):
     #inFile.Close()
     
     # Write to file
-    if not os.path.exists("datacards/"):
-        print "Error: directory", "datacards/ does not exist, aborting..."
-        exit()
+    try: os.stat("datacards_"+options.name) 
+    except: os.mkdir("datacards_"+options.name)
     
-    outname = "datacards/" + sign + '_' + cat + ".txt"
+    outname = "datacards_"+options.name+"/" + sign + '_' + cat + ".txt"
     cardfile = open(outname, 'w')
     cardfile.write(card)
     cardfile.close()
@@ -218,7 +231,7 @@ def datacard(cat, sign):
 
 
 def getNumber(cat, s, syst=''):
-    f = TFile("rootfiles/"+cat+".root", "READ")
+    f = TFile("rootfiles_"+options.name+"/"+cat+".root", "READ")
     h = f.Get((syst+'/' if len(syst)>0 else '')+s)
     if h==None: return -1
     n = h.Integral()
@@ -227,7 +240,7 @@ def getNumber(cat, s, syst=''):
     return n
 
 def checkShape(cat, s, syst=''):
-    f = TFile("rootfiles/"+cat+".root", "READ")
+    f = TFile("rootfiles_"+options.name+"/"+cat+".root", "READ")
     h = f.Get(s)
     hUp = f.Get(syst+'Up'+'/'+s)
     hDown = f.Get(syst+'Down'+'/'+s)
@@ -245,18 +258,22 @@ def checkShape(cat, s, syst=''):
 
 def fillLists():
     # List files and fill categories
-    for c in os.listdir('rootfiles/'):
+    for c in os.listdir('rootfiles_'+options.name+'/'):
         if c.endswith('root'):
             categories.append(c.replace('.root', ''))
     
     # Read file and histograms
-    inFile = TFile("rootfiles/"+categories[0]+".root", "READ")
+    inFile = TFile("rootfiles_"+options.name+"/"+categories[0]+".root", "READ")
     inFile.cd()
     for key in inFile.GetListOfKeys():
         obj = key.ReadObj()
         if obj.IsA().InheritsFrom("TH1"):
             name = obj.GetName()
-            if 'DM' in name: sign.append( name )
+            i = 0
+            if 'DM' in name:
+                sign.append( name )
+                i = i +1
+            if i > 0 : break
             elif not "data_obs" in name and not "BkgSum" in name: back.append(name)
         # Categories (directories)
         if obj.IsFolder():

@@ -8,7 +8,7 @@ from ROOT import ROOT, gROOT, gStyle, gRandom, TSystemDirectory
 from ROOT import TFile, TChain, TTree, TCut, TH1F, TH2F, THStack, TGraph, TGraphErrors, TRandom3
 from ROOT import TStyle, TCanvas, TPad
 from ROOT import TLegend, TLatex, TText, TLine
-
+import numpy as np
 from samples import sample
 from variables import variable
 from selections import selection
@@ -29,6 +29,8 @@ parser.add_option("-b", "--bash", action="store_true", default=False, dest="bash
 parser.add_option("-B", "--blind", action="store_true", default=False, dest="blind")
 parser.add_option("-f", "--file", action="store", type="string", dest="file", default="")
 parser.add_option("-l", "--limit", action="store_true", default=False, dest="limit")
+parser.add_option("-m", "--mode", action="store", type="string", dest="mode", default="shape")
+parser.add_option("-N", "--name", action="store", type="string", dest="name", default="test")
 (options, args) = parser.parse_args()
 if options.bash: gROOT.SetBatch(True)
 
@@ -37,8 +39,7 @@ if options.bash: gROOT.SetBatch(True)
 gStyle.SetOptStat(0)
 gROOT.LoadMacro('functions.C')
 
-NTUPLEDIR   = "/scratch/zucchett/Ntuple/DM/"
-#NTUPLEDIR   = "/scratch/zucchett/Ntuple/DM_17Oct/"
+NTUPLEDIR   = "/mnt/t3nfs01/data01/shome/dpinna/SFrame/CMSSW_8_0_26_patch1/src/SFrame/DM/Analysis_Ntuples_az/"
 SIGNAL      = 1 # Signal magnification factor
 RATIO       = 4 # 0: No ratio plot; !=0: ratio between the top and bottom pads
 NORM        = options.norm
@@ -49,8 +50,10 @@ LUMI        = 35867
 ########## SAMPLES ##########
 data = ["data_obs"]
 #back = ["DYJetsToLL"]
-back = ["VV", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "ST", "TTbarSL", "QCD"]
-sign = ['ttDM_MChi1_MPhi10', 'ttDM_MChi1_MPhi20', 'ttDM_MChi1_MPhi50', 'ttDM_MChi1_MPhi100', 'ttDM_MChi1_MPhi200', 'ttDM_MChi1_MPhi300', 'ttDM_MChi1_MPhi500', 'ttDM_MChi1_MPhi1000', 'tDM_MChi1_MPhi100', 'tDM_MChi1_MPhi300', 'tttDM_MChi1_MPhi100', 'tttDM_MChi1_MPhi300']
+back = ["VV", "ST", "TTbarSL", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "QCD"]
+sign = [
+'ttDM_MChi1_MPhi10', 'ttDM_MChi1_MPhi20', 'ttDM_MChi1_MPhi50', 'ttDM_MChi1_MPhi100', 'ttDM_MChi1_MPhi200', 'ttDM_MChi1_MPhi300', 'ttDM_MChi1_MPhi500', 'tDM_MChi1_MPhi10_OP', 'tDM_MChi1_MPhi20_OP', 'tDM_MChi1_MPhi50_OP', 'tDM_MChi1_MPhi100', 'tDM_MChi1_MPhi200_OP', 'tDM_MChi1_MPhi300', 'tDM_MChi1_MPhi500_OP', 'tttDM_MChi1_MPhi10', 'tttDM_MChi1_MPhi20', 'tttDM_MChi1_MPhi50', 'tttDM_MChi1_MPhi100', 'tttDM_MChi1_MPhi200', 'tttDM_MChi1_MPhi300', 'tttDM_MChi1_MPhi500']
+
 #sign = []
 ########## ######## ##########
 
@@ -62,6 +65,15 @@ def plot(var, cut, norm=False, nm1=False):
     ### Preliminary Operations ###
     fileRead = os.path.exists(options.file)
     treeRead = not any(x==cut for x in ['0l', '1e', '1m', '2e', '2m', '1e1m', 'Gen', 'Trigger'])#(var in variable.keys()) # Read from tree
+    binLow = ""
+    binHigh = ""
+    binName = ""
+    if "binned" in cut:
+        binLow = cut[cut.find("LowVal")+6:cut.find("HighVal")-1]
+        binHigh = cut[cut.find("HighVal")+7:]
+        binName = "bin_"+binLow+"_"+binHigh
+        cut = cut[:cut.find("binned")]
+    
     channel = cut
     plotdir = cut
     plotname = var
@@ -73,7 +85,9 @@ def plot(var, cut, norm=False, nm1=False):
         if s in selection.keys():
             plotdir = s
             cut  = cut.replace(s, selection[s])
-    #if treeRead and cut in selection: cut  = cut.replace(cut, selection[cut])
+            if not binLow == "":
+                cut = cut + " && " + var + " > " + binLow + " && " + var + " < " + binHigh
+   #if treeRead and cut in selection: cut  = cut.replace(cut, selection[cut])
     
     # Determine Primary Dataset
     pd = []
@@ -97,7 +111,7 @@ def plot(var, cut, norm=False, nm1=False):
     ### Create and fill MC histograms ###
     for i, s in enumerate(data+back+sign):
         if fileRead:
-            fileName = options.file if not s=='data_obs' else "rootfiles/"+channel+".root"
+            fileName = options.file if not s=='data_obs' else "rootfiles_"+options.name+"/"+channel+binName+".root"
             histName = "shapes_fit_b/"+channel+"/"+s if not s=='data_obs' else s
             file[s] = TFile(fileName, "READ")
             tmphist = file[s].Get(histName)
@@ -116,8 +130,12 @@ def plot(var, cut, norm=False, nm1=False):
             for j, ss in enumerate(sample[s]['files']):
                 if not 'data' in s or ('data' in s and ss in pd):
                     tree[s].Add(NTUPLEDIR + ss + ".root")
-            if variable[var]['nbins']>0: hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), variable[var]['nbins'], variable[var]['min'], variable[var]['max'])
-            else: hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), len(variable[var]['bins'])-1, array('f', variable[var]['bins']))
+            if not binLow == "":
+                hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), 1, float(binLow), float(binHigh))
+            elif binLow == "" and  variable[var]['nbins']>0: 
+                hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), variable[var]['nbins'], variable[var]['min'], variable[var]['max'])
+            else: 
+                hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), len(variable[var]['bins'])-1, array('f', variable[var]['bins']))
             hist[s].Sumw2()
             cutstring = "("+weight+")" + ("*("+cut+")" if len(cut)>0 else "")
             if '-' in s: cutstring = cutstring.replace(cut, cut + "&& nBQuarks==" + s.split('-')[1][0])
@@ -285,23 +303,35 @@ def plot(var, cut, norm=False, nm1=False):
         
     if gROOT.IsBatch(): # and (treeRead and channel in selection.keys()):
         if not os.path.exists("plots/"+plotdir): os.makedirs("plots/"+plotdir)
-        c1.Print("plots/"+plotdir+"/"+plotname+".png")
-        c1.Print("plots/"+plotdir+"/"+plotname+".pdf")
+        c1.Print("plots/"+plotdir+"/"+plotname+binName+".png")
+        c1.Print("plots/"+plotdir+"/"+plotname+binName+".pdf")
     
     # Print table
     printTable(hist, sign)
     
     if not gROOT.IsBatch(): raw_input("Press Enter to continue...")
 
-    if gROOT.IsBatch() and not fileRead and (var == 'MET_pt' or (channel.startswith('SL') and var == 'MET_sign') or (channel.endswith('ZR') and var == 'FakeMET_pt')): saveHist(hist, channel)
+    if gROOT.IsBatch() and not fileRead and (var == 'MET_pt' or (channel.startswith('SL') and var == 'MET_sign') or (channel.endswith('ZR') and var == 'FakeMET_pt')):
+        saveHist(hist, channel+binName)
 
     
 ########## ######## ##########
 
 def addSys(var, cut, sys):
+    binLow = ""
+    binHigh = ""
+    binName = ""
+    if "binned" in cut:
+        binLow = cut[cut.find("LowVal")+6:cut.find("HighVal")-1]
+        binHigh = cut[cut.find("HighVal")+7:]
+        binName = "bin_"+binLow+"_"+binHigh
+        cut = cut[:cut.find("binned")]
+
     channel = cut
     weight = "eventWeightLumi" #+ ("*stitchWeight" if any([x for x in back if x.endswith('b')]) else "")
     cut  = selection[cut]
+    if not binLow == "":
+        cut = cut + " && " + var + " > " + binLow + " && " + var + " < " + binHigh
 
     weightUp = weightDown = weight
     varUp = varDown = var
@@ -314,8 +344,8 @@ def addSys(var, cut, sys):
     elif sys=='CMS_scale_pu': weightUp += "*puWeightUp/puWeight"; weightDown += "*puWeightDown/puWeight"
     elif sys=='CMS_scale_top': weightUp += "/TopWeight"; weightDown += ""
     elif sys=='CMS_eff_trigger': weightUp += "*triggerWeightUp/triggerWeight"; weightDown += "*triggerWeightDown/triggerWeight"
-    elif sys=='CMS_eff_e' and '2e' in cut or '1e' in cut: weightUp += "*leptonWeightUp/leptonWeight"; weightDown += "*leptonWeightDown/leptonWeight"
-    elif sys=='CMS_eff_m' and '2m' in cut or '1m' in cut: weightUp += "*leptonWeightUp/leptonWeight"; weightDown += "*leptonWeightDown/leptonWeight"
+    elif sys=='CMS_eff_e' and '2e' in cut or '1e' in channel: weightUp += "*leptonWeightUp/leptonWeight"; weightDown += "*leptonWeightDown/leptonWeight"
+    elif sys=='CMS_eff_m' and '2m' in cut or '1m' in channel: weightUp += "*leptonWeightUp/leptonWeight"; weightDown += "*leptonWeightDown/leptonWeight"
     elif sys=='QCDscale_ren': weightUp += "*QCDRenWeightUp"; weightDown += "*QCDRenWeightDown"
     elif sys=='QCDscale_fac': weightUp += "*QCDFacWeightUp"; weightDown += "*QCDFacWeightDown"
     elif sys=='EWKscale_Z': weightDown += "/ZewkWeight"
@@ -332,8 +362,12 @@ def addSys(var, cut, sys):
     for i, s in enumerate(back+sign):
         tree[s] = TChain("tree")
         for j, ss in enumerate(sample[s]['files']): tree[s].Add(NTUPLEDIR + ss + ".root")
-        if variable[var]['nbins']>0: hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), variable[var]['nbins'], variable[var]['min'], variable[var]['max'])
-        else: hist[s] = TH1F(s, ";"+variable[var]['title'], len(variable[var]['bins'])-1, array('f', variable[var]['bins']))
+        if not binLow == "":
+            hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), 1, float(binLow), float(binHigh))
+        elif binLow == "" and variable[var]['nbins']>0:
+            hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), variable[var]['nbins'], variable[var]['min'], variable[var]['max'])
+        else:
+            hist[s] = TH1F(s, ";"+variable[var]['title'], len(variable[var]['bins'])-1, array('f', variable[var]['bins']))
         hist[s].Sumw2()
         histUp[s] = hist[s].Clone(s+'Up')
         histDown[s] = hist[s].Clone(s+'Down')
@@ -401,9 +435,9 @@ def addSys(var, cut, sys):
     leg.SetY1(0.75-leg.GetNRows()*0.045)
     leg.Draw()
     
-    if not os.path.exists("plotsSys/"+channel): os.makedirs("plotsSys/"+channel)
-    c1.Print("plotsSys/"+channel+"/"+sys+".png")
-    c1.Print("plotsSys/"+channel+"/"+sys+".pdf")
+    if not os.path.exists("plotsSys/"+channel+binName): os.makedirs("plotsSys/"+channel+binName)
+    c1.Print("plotsSys/"+channel+binName+"/"+sys+".png")
+    c1.Print("plotsSys/"+channel+binName+"/"+sys+".pdf")
     
     for i, s in enumerate(back+sign):
         c2 = TCanvas("c2", "Signals", 800, 600)
@@ -419,11 +453,11 @@ def addSys(var, cut, sys):
         histDown[s].Draw("SAME, HIST")
         hist[s].Draw("SAME, HIST")
         drawCMS(-1, "Simulation", False)
-        c2.Print("plotsSys/"+channel+"/"+sys+"_"+s+".png")
-        c2.Print("plotsSys/"+channel+"/"+sys+"_"+s+".pdf")
+        c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".png")
+        c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".pdf")
 
-    saveHist(histUp, channel, sys+'Up')
-    saveHist(histDown, channel, sys+'Down')
+    saveHist(histUp, channel+binName, sys+'Up')
+    saveHist(histDown, channel+binName, sys+'Down')
 
     print "Added systematic", sys, "to channel", channel
 
@@ -433,12 +467,16 @@ def addSys(var, cut, sys):
 def saveHist(hist, channel, directory='', addStat=False):
     
     # Blind
-    if BLIND and 'data_obs' in hist:
+    if BLIND and 'data_obs' in hist and 'SR' in channel:
         #hist['data_obs'] = hist['BkgSum'].Clone("data_obs")
         rando = TRandom3()
         hist['data_obs'].Reset()
         hist['data_obs'].SetMarkerStyle(21)
-        for i in range(hist['data_obs'].GetNbinsX()): hist['data_obs'].SetBinContent(i+1, rando.Poisson( hist['BkgSum'].GetBinContent(i+1) ))
+        for i in range(hist['data_obs'].GetNbinsX()):
+        #this wiggles the pseudodata with a Poison 
+        #-> different from Asimov dataset (-t -1 option), will give different obs/expected limits but thats ok
+            hist['data_obs'].SetBinContent(i+1, rando.Poisson( hist['BkgSum'].GetBinContent(i+1) ))
+
 
     # Sanity check
 #    smax = max(hist, key=lambda x: hist[x].Integral())
@@ -448,7 +486,7 @@ def saveHist(hist, channel, directory='', addStat=False):
 #            if math.isnan(hist[s].GetBinContent(i+1)) or math.isinf(hist[s].GetBinContent(i+1)): print "WARNING: in channel", channel, "bkg", s, "bin", i+1, "is nan or inf"
 #            #print "checking", s, i, hist[s].GetBinContent(i+1)
     
-    outFile = TFile("rootfiles/"+channel+".root", "RECREATE" if len(directory)==0 else "UPDATE")
+    outFile = TFile("rootfiles_"+options.name+"/"+channel+".root", "RECREATE" if len(directory)==0 else "UPDATE")
     outFile.cd()
     if len(directory) > 0:
         if not outFile.GetDirectory(directory): outFile.mkdir(directory)
@@ -479,34 +517,63 @@ def saveHist(hist, channel, directory='', addStat=False):
             outFile.cd("..")
     
     outFile.Close()
-    print "Histograms saved in file rootfiles/"+channel+".root"
+    print "Histograms saved in file rootfiles_"+options.name+"/"+channel+".root"
 
     
 
 
 ########## ######## ##########
 
-def plotLimit():
+def plotLimit(doBinned = False):
     gROOT.SetBatch(True)
-    os.system("rm rootfiles/*")
-    cat = ["AH0l0fSR", "AH0l1fSR", "AH0l2bSR", "AH0lCR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1m0fSR", "SL1e1fSR", "SL1m1fSR", "SL1e2bSR", "SL1m2bSR", "SL1eWR", "SL1mWR", "SL1e1mTR"]
-    sys = ['EWKscale_Z', 'EWKscale_W', 'CMS_eff_b', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'CMS_scale_pu', 'QCDscale_fac', 'QCDscale_ren', ]
+    try: os.stat("rootfiles_"+options.name) 
+    except: os.mkdir("rootfiles_"+options.name)
+
+    os.system("rm rootfiles_"+options.name+"/*")
+    cat = ["AH0l0fSR", "AH0l1fSR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1e1fSR", "SL1m0fSR", "SL1m1fSR", "SL1eWR", "SL1mWR", "SL1e1mTR"]
+    sys = ['CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'QCDscale_ren', 'QCDscale_fac']
     
     for r in cat:
+        #fix these variables at some points, its confusing to hack the met significance
         var = 'MET_pt'
         if r.startswith('SL'): var = 'MET_sign' # correct binnning
         if r.endswith('ZR'): var = 'FakeMET_pt'
-#        plot(var, r)
-        p = multiprocessing.Process(target=plot, args=(var, r, ))
-        jobs.append(p)
-        p.start()
+        
+        if doBinned:
+            bins = np.array([])
+            if 'bins' in variable[var].keys():
+                bins = np.array(variable[var]['bins'] )
+            else:
+                binsize = (variable[var]['max']-variable[var]['min'])/variable[var]['nbins']
+                bins = np.arange(variable[var]['min'], variable[var]['max']+binsize, binsize)
+                
+            bins = np.append(bins, 10000) #add essentially infinite upper bound for the last bin
+            
+            for i in range(0,len(bins)-1):
+                rbin =  r + "binned_LowVal" + str(bins[i]) + "_HighVal" + str(bins[i+1])
+                print "rbin:",rbin
+            
+                p = multiprocessing.Process(target=plot, args=(var, rbin, ))
+                jobs.append(p)
+                p.start()
     
-    for job in jobs:
-        job.join()
+            for job in jobs:
+                job.join()
+            del jobs[:]
+        else: #shouls dump these pieces in a separate function, but fine for now
+            #        plot(var, r)
+            p = multiprocessing.Process(target=plot, args=(var, r, ))
+            jobs.append(p)
+            p.start()
     
+            for job in jobs:
+                job.join()
+            del jobs[:]
     print "\n\n@ Main jobs have finished, now running uncertainties\n\n"
     
-    del jobs[:]
+    doSys = True
+    
+    if not doSys: return
     
     for s in sys:
         print "\n@ Running uncertainty", s, "\n"
@@ -514,13 +581,37 @@ def plotLimit():
             var = 'MET_pt'
             if r.startswith('SL'): var = 'MET_sign' # correct binnning
             if r.endswith('ZR'): var = 'FakeMET_pt'
+            
+            if doBinned:
+                bins = np.array([])
+                if 'bins' in variable[var].keys():
+                    bins = np.array(variable[var]['bins'] )
+                else:
+                    binsize = (variable[var]['max']-variable[var]['min'])/variable[var]['nbins']
+                    bins = np.arange(variable[var]['min'], variable[var]['max']+binsize, binsize)
+                
+                bins = np.append(bins, 10000) #add essentially infinite upper bound for the last bin
+            
+                for i in range(0,len(bins)-1):
+                    rbin =  r + "binned_LowVal" + str(bins[i]) + "_HighVal" + str(bins[i+1])
+                    print "rbin:",rbin
     #       addSys(var, r, s)
-            p = multiprocessing.Process(target=addSys, args=(var, r, s, ))
-            jobs.append(p)
-            p.start()
-        for job in jobs:
-            job.join()
-    
+                    p = multiprocessing.Process(target=addSys, args=(var, rbin, s, ))
+                    jobs.append(p)
+                    p.start()
+
+                for job in jobs:
+                    job.join()
+                del jobs[:]
+
+            else:
+                p = multiprocessing.Process(target=addSys, args=(var, r, s, ))
+                jobs.append(p)
+                p.start()
+                
+                for job in jobs:
+                    job.join()
+                del jobs[:]
     print "\n\n@ Uncertainties have finished.\n\n"
     
 ########## ######## ##########
@@ -570,7 +661,8 @@ def plotAll():
 jobs = []
 
 if options.all: plotAll()
-elif options.limit: plotLimit()
+elif options.limit and options.mode == "shape": plotLimit()
+elif options.limit and options.mode == "binned": plotLimit(True)
 elif options.signal: plotSignal(options.cut)
 elif options.efficiency: plotEfficiency()
 else: plot(options.variable, options.cut, options.norm)
