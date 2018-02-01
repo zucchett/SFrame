@@ -837,17 +837,48 @@ double ScaleFactorTool::GetTrigEle(double pt1, double eta1, double pt2, double e
     float TrigEle2EffMC = GetTrigSingleEleEffMC(pt2, eta2, sigma);
     
     float TrigEleEffData = TrigEle1EffData + TrigEle2EffData - TrigEle1EffData*TrigEle2EffData;
-    float TrigeleEffMC = TrigEle1EffMC + TrigEle2EffMC - TrigEle1EffMC*TrigEle2EffMC;
+    float TrigEleEffMC = TrigEle1EffMC + TrigEle2EffMC - TrigEle1EffMC*TrigEle2EffMC;
     
-    return TrigEleEffData/TrigeleEffMC;
+    return TrigEleEffData/TrigEleEffMC;
 }
 
 double ScaleFactorTool::GetTrigEle(double pt, double eta, int sigma) {
     float TrigEleEffData = GetTrigSingleEleEffData(pt, eta, sigma);
-    float TrigeleEffMC = GetTrigSingleEleEffMC(pt, eta, sigma);
+    float TrigEleEffMC = GetTrigSingleEleEffMC(pt, eta, sigma);
     
-    return TrigEleEffData/TrigeleEffMC;
+    return TrigEleEffData/TrigEleEffMC;
 }
+
+double ScaleFactorTool::GetTrigEleMET(double pt1, double eta1, double pt2, double eta2, double met, int sigma) {
+    float TrigEle1EffData = GetTrigSingleEleEffData(pt1, eta1, sigma);
+    float TrigEle2EffData = GetTrigSingleEleEffData(pt2, eta2, sigma);
+    float TrigEle1EffMC = GetTrigSingleEleEffMC(pt1, eta1, sigma);
+    float TrigEle2EffMC = GetTrigSingleEleEffMC(pt2, eta2, sigma);
+    float TrigEleEffData = TrigEle1EffData + TrigEle2EffData - TrigEle1EffData*TrigEle2EffData;
+    float TrigEleEffMC = TrigEle1EffMC + TrigEle2EffMC - TrigEle1EffMC*TrigEle2EffMC;
+    
+    float TrigMETEffData = GetTrigMET(met, sigma);
+    float TrigMETEffMC = 1.;
+    
+    float TrigEffData = TrigEleEffData + TrigMETEffData - TrigEleEffData*TrigMETEffData;
+    float TrigEffMC = TrigEleEffMC + TrigMETEffMC - TrigEleEffMC*TrigMETEffMC;
+    
+    return TrigEffData/TrigEffMC;
+}
+
+double ScaleFactorTool::GetTrigEleMET(double pt, double eta, double met, int sigma) {
+    float TrigEleEffData = GetTrigSingleEleEffData(pt, eta, sigma);
+    float TrigEleEffMC = GetTrigSingleEleEffMC(pt, eta, sigma);
+    
+    float TrigMETEffData = GetTrigMET(met, sigma);
+    float TrigMETEffMC = 1.;
+    
+    float TrigEffData = TrigEleEffData + TrigMETEffData - TrigEleEffData*TrigMETEffData;
+    float TrigEffMC = TrigEleEffMC + TrigMETEffMC - TrigEleEffMC*TrigMETEffMC;
+    
+    return TrigEffData/TrigEffMC;
+}
+
 
 
 double ScaleFactorTool::GetTrigMuonMET(double pt, double eta, double met, int sigma) {
