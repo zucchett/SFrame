@@ -29,6 +29,7 @@ parser.add_option("-b", "--bash", action="store_true", default=False, dest="bash
 parser.add_option("-B", "--blind", action="store_true", default=False, dest="blind")
 parser.add_option("-f", "--file", action="store", type="string", dest="file", default="")
 parser.add_option("-l", "--limit", action="store_true", default=False, dest="limit")
+parser.add_option("", "--saveplots", action="store_true", default=False, dest="saveplots")
 parser.add_option("-m", "--mode", action="store", type="string", dest="mode", default="shape")
 parser.add_option("-N", "--name", action="store", type="string", dest="name", default="test")
 (options, args) = parser.parse_args()
@@ -39,7 +40,7 @@ if options.bash: gROOT.SetBatch(True)
 gStyle.SetOptStat(0)
 gROOT.LoadMacro('functions.C')
 
-NTUPLEDIR   = "/mnt/t3nfs01/data01/shome/dpinna/SFrame/CMSSW_8_0_26_patch1/src/SFrame/DM/Analysis_Ntuples_az/"
+NTUPLEDIR   = "/mnt/t3nfs01/data01/shome/dpinna/SFrame/CMSSW_8_0_26_patch1/src/SFrame/DM/Analysis_Ntuples_sys/"
 SIGNAL      = 1 # Signal magnification factor
 RATIO       = 4 # 0: No ratio plot; !=0: ratio between the top and bottom pads
 NORM        = options.norm
@@ -52,9 +53,9 @@ data = ["data_obs"]
 #back = ["DYJetsToLL"]
 back = ["VV", "ST", "TTbarSL", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "QCD"]
 sign = [
-'ttDM_MChi1_MPhi10', 'ttDM_MChi1_MPhi20', 'ttDM_MChi1_MPhi50', 'ttDM_MChi1_MPhi100', 'ttDM_MChi1_MPhi200', 'ttDM_MChi1_MPhi300', 'ttDM_MChi1_MPhi500', 'tDM_MChi1_MPhi10_OP', 'tDM_MChi1_MPhi20_OP', 'tDM_MChi1_MPhi50_OP', 'tDM_MChi1_MPhi100', 'tDM_MChi1_MPhi200_OP', 'tDM_MChi1_MPhi300', 'tDM_MChi1_MPhi500_OP', 'tttDM_MChi1_MPhi10', 'tttDM_MChi1_MPhi20', 'tttDM_MChi1_MPhi50', 'tttDM_MChi1_MPhi100', 'tttDM_MChi1_MPhi200', 'tttDM_MChi1_MPhi300', 'tttDM_MChi1_MPhi500']
+'ttDM_MChi1_MPhi10_scalar', 'ttDM_MChi1_MPhi20_scalar', 'ttDM_MChi1_MPhi50_scalar', 'ttDM_MChi1_MPhi100_scalar', 'ttDM_MChi1_MPhi200_scalar', 'ttDM_MChi1_MPhi300_scalar', 'ttDM_MChi1_MPhi500_scalar', 'tDM_MChi1_MPhi10_scalar', 'tDM_MChi1_MPhi20_scalar', 'tDM_MChi1_MPhi50_scalar', 'tDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi300_scalar', 'tDM_MChi1_MPhi500_scalar', 'tttDM_MChi1_MPhi10_scalar', 'tttDM_MChi1_MPhi20_scalar', 'tttDM_MChi1_MPhi50_scalar', 'tttDM_MChi1_MPhi100_scalar', 'tttDM_MChi1_MPhi200_scalar', 'tttDM_MChi1_MPhi300_scalar', 'tttDM_MChi1_MPhi500_scalar','ttDM_MChi1_MPhi10_pseudo', 'ttDM_MChi1_MPhi20_pseudo', 'ttDM_MChi1_MPhi50_pseudo', 'ttDM_MChi1_MPhi100_pseudo', 'ttDM_MChi1_MPhi200_pseudo', 'ttDM_MChi1_MPhi300_pseudo', 'ttDM_MChi1_MPhi500_pseudo', 'tDM_MChi1_MPhi10_pseudo', 'tDM_MChi1_MPhi20_pseudo', 'tDM_MChi1_MPhi50_pseudo', 'tDM_MChi1_MPhi100_pseudo', 'tDM_MChi1_MPhi200_pseudo', 'tDM_MChi1_MPhi300_pseudo', 'tDM_MChi1_MPhi500_pseudo', 'tttDM_MChi1_MPhi10_pseudo', 'tttDM_MChi1_MPhi20_pseudo', 'tttDM_MChi1_MPhi50_pseudo', 'tttDM_MChi1_MPhi100_pseudo', 'tttDM_MChi1_MPhi200_pseudo', 'tttDM_MChi1_MPhi300_pseudo', 'tttDM_MChi1_MPhi500_pseudo']
 
-#sign = []
+
 ########## ######## ##########
 
 ########## ######## ##########
@@ -137,7 +138,13 @@ def plot(var, cut, norm=False, nm1=False):
             else: 
                 hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), len(variable[var]['bins'])-1, array('f', variable[var]['bins']))
             hist[s].Sumw2()
-            cutstring = "("+weight+")" + ("*("+cut+")" if len(cut)>0 else "")
+            redFactorString = ""
+            redFactorValue = ""
+            if isBlind and 'data' in s:
+                redFactorString = " && Entry$ % 15 == 0"
+            if isBlind and 'data' not in s:
+                redFactorValue = " / 15"
+            cutstring = "("+weight+redFactorValue+")" + ("*("+cut+redFactorString+")" if len(cut)>0 else "")
             if '-' in s: cutstring = cutstring.replace(cut, cut + "&& nBQuarks==" + s.split('-')[1][0])
             tree[s].Project(s, var, cutstring)
             if not tree[s].GetTree()==None: hist[s].SetOption("%s" % tree[s].GetTree().GetEntriesFast())
@@ -301,7 +308,7 @@ def plot(var, cut, norm=False, nm1=False):
     
     c1.Update()
         
-    if gROOT.IsBatch(): # and (treeRead and channel in selection.keys()):
+    if gROOT.IsBatch() and options.saveplots: # and (treeRead and channel in selection.keys()):
         if not os.path.exists("plots/"+plotdir): os.makedirs("plots/"+plotdir)
         c1.Print("plots/"+plotdir+"/"+plotname+binName+".png")
         c1.Print("plots/"+plotdir+"/"+plotname+binName+".pdf")
@@ -335,30 +342,74 @@ def addSys(var, cut, sys):
 
     weightUp = weightDown = weight
     varUp = varDown = var
-    
+    cutUp = cutDown = cut
+
     # Systematics
-    if sys=='CMS_scale_j': weight = weight
-    # varUp = var.replace('pt', 'ptJesUp')
-    # varDown = var.replace('pt', 'ptJesDown')
+    if sys=='CMS_scale_j':
+        if var!="MET_sign": varUp = var.replace('pt', 'ptScaleUp')
+        else: varUp = var.replace('sign', 'signScaleUp')
+        if var!="MET_sign": varDown = var.replace('pt', 'ptScaleDown')
+        else: varDown = var.replace('sign', 'signScaleDown')
+
+        cutUp = cut.replace('MET_pt', 'MET_ptScaleUp')
+        cutUp = cutUp.replace('Jets', 'JetsScaleUp')
+        cutUp = cutUp.replace('12', '12ScaleUp')
+        cutUp = cutUp.replace('mT>', 'mTScaleUp>')
+        cutUp = cutUp.replace('mT2', 'mT2ScaleUp')
+
+        cutDown = cut.replace('MET_pt', 'MET_ptScaleDown')
+        cutDown = cutDown.replace('Jets', 'JetsScaleDown')
+        cutDown = cutDown.replace('12', '12ScaleDown')
+        cutDown = cutDown.replace('mT>', 'mTScaleDown>')
+        cutDown = cutDown.replace('mT2', 'mT2ScaleDown')
+    elif sys=='CMS_res_j':
+        if var!="MET_sign": varUp = var.replace('pt', 'ptResUp')
+        else: varUp = var.replace('sign', 'signResUp')
+        if var!="MET_sign": varDown = var.replace('pt', 'ptResDown')
+        else: varDown = var.replace('sign', 'signResDown')
+
+        cutUp = cut.replace('MET_pt', 'MET_ptResUp')
+        cutUp = cutUp.replace('Jets', 'JetsResUp')
+        cutUp = cutUp.replace('12', '12ResUp')
+        cutUp = cutUp.replace('mT>', 'mTResUp>')
+        cutUp = cutUp.replace('mT2', 'mT2ResUp')
+        cutDown = cut.replace('MET_pt', 'MET_ptResDown')
+        cutDown = cutDown.replace('Jets', 'JetsResDown')
+        cutDown = cutDown.replace('12', '12ResDown')
+        cutDown = cutDown.replace('mT>', 'mTResDown>')
+        cutDown = cutDown.replace('mT2', 'mT2ResDown')
+
+    elif sys=='CMS_WqcdWeightRen': weightUp += "*WqcdWeightRenUp/WqcdWeight"; weightDown += "*WqcdWeightRenDown/WqcdWeight"
+    elif sys=='CMS_WqcdWeightFac': weightUp += "*WqcdWeightFacUp/WqcdWeight"; weightDown += "*WqcdWeightFacDown/WqcdWeight"
+    elif sys=='CMS_ZqcdWeightRen': weightUp += "*ZqcdWeightRenUp/ZqcdWeight"; weightDown += "*ZqcdWeightRenDown/ZqcdWeight"
+    elif sys=='CMS_ZqcdWeightFac': weightUp += "*ZqcdWeightFacUp/ZqcdWeight"; weightDown += "*ZqcdWeightFacDown/ZqcdWeight"
+    elif sys=='CMS_WewkWeight': weightUp += "/WewkWeight"; weightDown += ""
+    elif sys=='CMS_ZewkWeight': weightUp += "/ZewkWeight"; weightDown += ""
+
+    elif sys=='CMS_pdf': weightUp += "*PDFWeightUp/eventWeight"; weightDown += "*PDFWeightDown/eventWeight"
+    elif sys=='CMS_HF': weightUp += "*1.20"; weightDown += "*0.8"
+
     elif sys=='CMS_eff_b': weightUp += "*bTagWeightUp/bTagWeight"; weightDown += "*bTagWeightDown/bTagWeight"
     elif sys=='CMS_scale_pu': weightUp += "*puWeightUp/puWeight"; weightDown += "*puWeightDown/puWeight"
     elif sys=='CMS_scale_top': weightUp += "/TopWeight"; weightDown += ""
     elif sys=='CMS_eff_trigger': weightUp += "*triggerWeightUp/triggerWeight"; weightDown += "*triggerWeightDown/triggerWeight"
-    elif sys=='CMS_eff_e' and '2e' in cut or '1e' in channel: weightUp += "*leptonWeightUp/leptonWeight"; weightDown += "*leptonWeightDown/leptonWeight"
-    elif sys=='CMS_eff_m' and '2m' in cut or '1m' in channel: weightUp += "*leptonWeightUp/leptonWeight"; weightDown += "*leptonWeightDown/leptonWeight"
+    elif sys=='CMS_eff_e' and '2e' in cut or '1e' in channel: weightUp += "*leptonWeightUp/leptonWeight"; weightDown += "*leptonWeightDown/leptonW\
+eight"
+    elif sys=='CMS_eff_m' and '2m' in cut or '1m' in channel: weightUp += "*leptonWeightUp/leptonWeight"; weightDown += "*leptonWeightDown/leptonW\
+eight"
     elif sys=='QCDscale_ren': weightUp += "*QCDRenWeightUp"; weightDown += "*QCDRenWeightDown"
     elif sys=='QCDscale_fac': weightUp += "*QCDFacWeightUp"; weightDown += "*QCDFacWeightDown"
-    elif sys=='EWKscale_Z': weightDown += "/ZewkWeight"
-    elif sys=='EWKscale_W': weightDown += "/WewkWeight"
-    else: print "Systematic", sys, "not applicable or not recognized."
-    
+    # elif sys=='EWKscale_Z': weightDown += "/ZewkWeight"                                                                                          
+    # elif sys=='EWKscale_W': weightDown += "/WewkWeight"                                                                                          
+    else:
+        print "Systematic", sys, "not applicable or not recognized."
     ### Create and fill MC histograms ###
     file = {}
     tree = {}
     hist = {}
     histUp = {}
     histDown = {}
-    
+    isBlind = BLIND and 'SR' in channel
     for i, s in enumerate(back+sign):
         tree[s] = TChain("tree")
         for j, ss in enumerate(sample[s]['files']): tree[s].Add(NTUPLEDIR + ss + ".root")
@@ -371,11 +422,37 @@ def addSys(var, cut, sys):
         hist[s].Sumw2()
         histUp[s] = hist[s].Clone(s+'Up')
         histDown[s] = hist[s].Clone(s+'Down')
+        redFactorString = ""
+        redFactorValue = ""
+        if isBlind and 'data' not in s:
+            redFactorValue = " / 15"
         cutstring = ("*("+cut+")" if len(cut)>0 else "")
+        cutstringUp   = ("*("+cutUp+")" if len(cut)>0 else "")
+        cutstringDown = ("*("+cutDown+")" if len(cut)>0 else "")
         if '-' in s: cutstring = cutstring.replace(cut, cut + "&& nBQuarks==" + s.split('-')[1][0])
-        tree[s].Project(s, var, "("+weight+")" + cutstring)
-        tree[s].Project(s+'Up', varUp, "("+weightUp+")" + cutstring)
-        tree[s].Project(s+'Down', varDown, "("+weightDown+")" + cutstring)
+        tree[s].Project(s, var, "("+weight+redFactorValue+")" + cutstring)
+ 
+        if 'HF' not in sys or 'QCDscale' not in sys :
+            tree[s].Project(s+'Up', varUp, "("+weightUp+redFactorValue+")" + cutstring)
+            tree[s].Project(s+'Down', varDown, "("+weightDown+redFactorValue+")" + cutstring)
+
+        if 'HF' in sys:
+            if s.startswith('WJ') or s.startswith('ZJ') or s.startswith('DYJets'):
+                tree[s].Project(s+'Up', varUp, "("+weightUp+redFactorValue+")" + cutstringUp)
+                tree[s].Project(s+'Down', varDown, "("+weightDown+redFactorValue+")" + cutstringDown)
+            else:
+                tree[s].Project(s+'Up', varUp, "("+weight+redFactorValue+")" + cutstringUp)
+                tree[s].Project(s+'Down', varDown, "("+weight+redFactorValue+")" + cutstringDown)
+
+        if 'QCDscale' in sys:
+            if s.startswith('WJ') or s.startswith('ZJ') or s.startswith('DYJets'):
+                tree[s].Project(s+'Up', varUp, "("+weight+redFactorValue+")" + cutstringUp)
+                tree[s].Project(s+'Down', varDown, "("+weight+redFactorValue+")" + cutstringDown)
+            else:
+                tree[s].Project(s+'Up', varUp, "("+weightUp+redFactorValue+")" + cutstringUp)
+                tree[s].Project(s+'Down', varDown, "("+weightDown+redFactorValue+")" + cutstringDown)
+
+
         hist[s].Scale(sample[s]['weight'] if hist[s].Integral() >= 0 else 0)
         hist[s].SetLineWidth(2)
         histUp[s].SetLineWidth(2)
@@ -435,12 +512,13 @@ def addSys(var, cut, sys):
     leg.SetY1(0.75-leg.GetNRows()*0.045)
     leg.Draw()
     
-    if not os.path.exists("plotsSys/"+channel+binName): os.makedirs("plotsSys/"+channel+binName)
-    c1.Print("plotsSys/"+channel+binName+"/"+sys+".png")
-    c1.Print("plotsSys/"+channel+binName+"/"+sys+".pdf")
+    if options.saveplots:
+        if not os.path.exists("plotsSys/"+channel+binName): os.makedirs("plotsSys/"+channel+binName)
+        c1.Print("plotsSys/"+channel+binName+"/"+sys+".png")
+        c1.Print("plotsSys/"+channel+binName+"/"+sys+".pdf")
     
     for i, s in enumerate(back+sign):
-        c2 = TCanvas("c2", "Signals", 800, 600)
+        c2 = TCanvas(s+"canvas", "Signals", 800, 600)
         c2.cd()
         gStyle.SetOptStat(0)
         gStyle.SetOptTitle(0)
@@ -453,8 +531,9 @@ def addSys(var, cut, sys):
         histDown[s].Draw("SAME, HIST")
         hist[s].Draw("SAME, HIST")
         drawCMS(-1, "Simulation", False)
-        c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".png")
-        c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".pdf")
+        if options.saveplots:
+            c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".png")
+            c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".pdf")
 
     saveHist(histUp, channel+binName, sys+'Up')
     saveHist(histDown, channel+binName, sys+'Down')
@@ -467,16 +546,15 @@ def addSys(var, cut, sys):
 def saveHist(hist, channel, directory='', addStat=False):
     
     # Blind
-    if BLIND and 'data_obs' in hist and 'SR' in channel:
-        #hist['data_obs'] = hist['BkgSum'].Clone("data_obs")
-        rando = TRandom3()
-        hist['data_obs'].Reset()
-        hist['data_obs'].SetMarkerStyle(21)
-        for i in range(hist['data_obs'].GetNbinsX()):
+#    if BLIND and 'data_obs' in hist and 'SR' in channel:
+#        rando = TRandom3()
+#        hist['data_obs'].Reset()
+#        hist['data_obs'].SetMarkerStyle(21)
+#        for i in range(hist['data_obs'].GetNbinsX()):
         #this wiggles the pseudodata with a Poison 
         #-> different from Asimov dataset (-t -1 option), will give different obs/expected limits but thats ok
-            hist['data_obs'].SetBinContent(i+1, rando.Poisson( hist['BkgSum'].GetBinContent(i+1) ))
-
+#            hist['data_obs'].SetBinContent(i+1, rando.Poisson( hist['BkgSum'].GetBinContent(i+1) ))
+#            hist['data_obs'].SetBinContent(i+1, hist['BkgSum'].GetBinContent(i+1) )
 
     # Sanity check
 #    smax = max(hist, key=lambda x: hist[x].Integral())
@@ -531,8 +609,9 @@ def plotLimit(doBinned = False):
 
     os.system("rm rootfiles_"+options.name+"/*")
     cat = ["AH0l0fSR", "AH0l1fSR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1e1fSR", "SL1m0fSR", "SL1m1fSR", "SL1eWR", "SL1mWR", "SL1e1mTR"]
-    sys = ['CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'QCDscale_ren', 'QCDscale_fac']
-    
+    sys = ['CMS_scale_j','CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF'
+,'CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'QCDscale_ren', 'QCDscale_fac']
+
     for r in cat:
         #fix these variables at some points, its confusing to hack the met significance
         var = 'MET_pt'
@@ -561,14 +640,18 @@ def plotLimit(doBinned = False):
                 job.join()
             del jobs[:]
         else: #shouls dump these pieces in a separate function, but fine for now
+            print "running multithreaded"
             #        plot(var, r)
             p = multiprocessing.Process(target=plot, args=(var, r, ))
             jobs.append(p)
             p.start()
-    
-            for job in jobs:
-                job.join()
-            del jobs[:]
+
+    if not doBinned:
+        for job in jobs:
+            job.join()
+        del jobs[:]
+        
+
     print "\n\n@ Main jobs have finished, now running uncertainties\n\n"
     
     doSys = True
@@ -608,10 +691,11 @@ def plotLimit(doBinned = False):
                 p = multiprocessing.Process(target=addSys, args=(var, r, s, ))
                 jobs.append(p)
                 p.start()
-                
-                for job in jobs:
-                    job.join()
-                del jobs[:]
+            
+        if not doBinned:
+            for job in jobs:
+                job.join()
+            del jobs[:]
     print "\n\n@ Uncertainties have finished.\n\n"
     
 ########## ######## ##########

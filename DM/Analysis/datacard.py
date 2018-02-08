@@ -25,7 +25,9 @@ verbose = options.verbose
 
 jobs = []
 
-greenShape = ['QCDscale_fac', 'QCDscale_ren', 'EWKscale_Z', 'EWKscale_W', 'CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m']
+
+#greenShape = ['QCDscale_fac', 'QCDscale_ren', 'EWKscale_Z', 'EWKscale_W', 'CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m']
+greenShape = ['CMS_scale_j','CMS_jer_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRenUp','CMS_ZqcdWeightRen','CMS_ZqcdWeightFacDown','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_eff_b','CMS_scale_pu','CMS_scale_top','CMS_eff_trigger','CMS_eff_e','CMS_eff_m','QCDscale_ren','QCDscale_fac']
 
 categories = []
 back = []
@@ -34,8 +36,11 @@ sign = []
 #CMS_scale_j, CMS_res_j, CMS_eff_b, CMS_scale_q2, CMS_scale_met, CMS_scale_pu, CMS_eff_l, lumi_8TeV, pdf_gg, pdf_qg, pdf_qq, CMS_norm_ZJets
 
 #shape = ['CMS_eff_b', 'CMS_scale_pu' 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'QCDscale', 'EWKscale'] #, 'pdf', 'CMS_scale_met_jes', 'CMS_scale_met_jer', 'CMS_scale_met_m', 'CMS_scale_met_e', 'CMS_scale_met_t', 'CMS_scale_met_u', 'CMS_scale_met_g',
-shape = []
 
+
+
+#shape = ['QCDscale_fac', 'QCDscale_ren', 'EWKscale_Z', 'EWKscale_W', 'CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m']
+shape = []
 norm = {
 #    "QCDscale_Z_ACCEPT" : {"DYJets" : 1.03,},
 #    "QCDscale_W_ACCEPT" : {"WJets": 1.03,},
@@ -113,15 +118,15 @@ def datacard(cat, sign):
     card += hline
     card += "bin        " + space
     for i, s in enumerate([sign] + back):
-        card += "%-25s" % cat
+        card += "%-30s" % cat
     card += "\n"
     card += "process    " + space
     for i, s in enumerate([sign] + back):
-        card += "%-25s" % s
+        card += "%-30s" % s
     card += "\n"
     card += "process    " + space
     for i, s in enumerate([sign] + back):
-        card += "%-25d" % i
+        card += "%-30d" % i
     card += "\n"
     card += "rate       " + space
     for i, s in enumerate([sign] + back):
@@ -192,7 +197,6 @@ def datacard(cat, sign):
 
     if verbose: print "  Rate params..."
     for p, m in rateparam.iteritems():
-        print p, m, cat
         if (('AH' in cat and 'AH' in p) or ('SL' in cat and 'SL' in p)):
             if ("ZR" in cat and "ZR" in p):
                 p= p.replace("_ZR","")
@@ -269,16 +273,14 @@ def fillLists():
         obj = key.ReadObj()
         if obj.IsA().InheritsFrom("TH1"):
             name = obj.GetName()
-            i = 0
             if 'DM' in name:
                 sign.append( name )
-                i = i +1
-            if i > 0 : break
             elif not "data_obs" in name and not "BkgSum" in name: back.append(name)
         # Categories (directories)
         if obj.IsFolder():
             subdir = obj.GetName()
             subdir = subdir.replace('Up', '').replace('Down', '')
+            print subdir
             if not subdir in greenShape: continue
             if not subdir in shape: shape.append(subdir)
     inFile.Close()
