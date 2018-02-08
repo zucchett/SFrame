@@ -29,6 +29,7 @@ parser.add_option("-b", "--bash", action="store_true", default=False, dest="bash
 parser.add_option("-B", "--blind", action="store_true", default=False, dest="blind")
 parser.add_option("-f", "--file", action="store", type="string", dest="file", default="")
 parser.add_option("-l", "--limit", action="store_true", default=False, dest="limit")
+parser.add_option("", "--saveplots", action="store_true", default=False, dest="saveplots")
 parser.add_option("-m", "--mode", action="store", type="string", dest="mode", default="shape")
 parser.add_option("-N", "--name", action="store", type="string", dest="name", default="test")
 (options, args) = parser.parse_args()
@@ -52,7 +53,8 @@ data = ["data_obs"]
 #back = ["DYJetsToLL"]
 back = ["VV", "ST", "TTbarSL", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "QCD"]
 sign = [
-'ttDM_MChi1_MPhi10', 'ttDM_MChi1_MPhi20', 'ttDM_MChi1_MPhi50', 'ttDM_MChi1_MPhi100', 'ttDM_MChi1_MPhi200', 'ttDM_MChi1_MPhi300', 'ttDM_MChi1_MPhi500', 'tDM_MChi1_MPhi10_OP', 'tDM_MChi1_MPhi20_OP', 'tDM_MChi1_MPhi50_OP', 'tDM_MChi1_MPhi100_OP', 'tDM_MChi1_MPhi200_OP', 'tDM_MChi1_MPhi300_OP', 'tDM_MChi1_MPhi500_OP', 'tttDM_MChi1_MPhi10', 'tttDM_MChi1_MPhi20', 'tttDM_MChi1_MPhi50', 'tttDM_MChi1_MPhi100', 'tttDM_MChi1_MPhi200', 'tttDM_MChi1_MPhi300', 'tttDM_MChi1_MPhi500']
+'ttDM_MChi1_MPhi10_scalar', 'ttDM_MChi1_MPhi20_scalar', 'ttDM_MChi1_MPhi50_scalar', 'ttDM_MChi1_MPhi100_scalar', 'ttDM_MChi1_MPhi200_scalar', 'ttDM_MChi1_MPhi300_scalar', 'ttDM_MChi1_MPhi500_scalar', 'tDM_MChi1_MPhi10_scalar', 'tDM_MChi1_MPhi20_scalar', 'tDM_MChi1_MPhi50_scalar', 'tDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi300_scalar', 'tDM_MChi1_MPhi500_scalar', 'tttDM_MChi1_MPhi10_scalar', 'tttDM_MChi1_MPhi20_scalar', 'tttDM_MChi1_MPhi50_scalar', 'tttDM_MChi1_MPhi100_scalar', 'tttDM_MChi1_MPhi200_scalar', 'tttDM_MChi1_MPhi300_scalar', 'tttDM_MChi1_MPhi500_scalar','ttDM_MChi1_MPhi10_pseudo', 'ttDM_MChi1_MPhi20_pseudo', 'ttDM_MChi1_MPhi50_pseudo', 'ttDM_MChi1_MPhi100_pseudo', 'ttDM_MChi1_MPhi200_pseudo', 'ttDM_MChi1_MPhi300_pseudo', 'ttDM_MChi1_MPhi500_pseudo', 'tDM_MChi1_MPhi10_pseudo', 'tDM_MChi1_MPhi20_pseudo', 'tDM_MChi1_MPhi50_pseudo', 'tDM_MChi1_MPhi100_pseudo', 'tDM_MChi1_MPhi200_pseudo', 'tDM_MChi1_MPhi300_pseudo', 'tDM_MChi1_MPhi500_pseudo', 'tttDM_MChi1_MPhi10_pseudo', 'tttDM_MChi1_MPhi20_pseudo', 'tttDM_MChi1_MPhi50_pseudo', 'tttDM_MChi1_MPhi100_pseudo', 'tttDM_MChi1_MPhi200_pseudo', 'tttDM_MChi1_MPhi300_pseudo', 'tttDM_MChi1_MPhi500_pseudo']
+
 
 ########## ######## ##########
 
@@ -306,10 +308,10 @@ def plot(var, cut, norm=False, nm1=False):
     
     c1.Update()
         
-    if gROOT.IsBatch(): # and (treeRead and channel in selection.keys()):
+    if gROOT.IsBatch() and options.saveplots: # and (treeRead and channel in selection.keys()):
         if not os.path.exists("plots/"+plotdir): os.makedirs("plots/"+plotdir)
-#        c1.Print("plots/"+plotdir+"/"+plotname+binName+".png")
-#        c1.Print("plots/"+plotdir+"/"+plotname+binName+".pdf")
+        c1.Print("plots/"+plotdir+"/"+plotname+binName+".png")
+        c1.Print("plots/"+plotdir+"/"+plotname+binName+".pdf")
     
     # Print table
     printTable(hist, sign)
@@ -510,9 +512,10 @@ eight"
     leg.SetY1(0.75-leg.GetNRows()*0.045)
     leg.Draw()
     
-    if not os.path.exists("plotsSys/"+channel+binName): os.makedirs("plotsSys/"+channel+binName)
-#    c1.Print("plotsSys/"+channel+binName+"/"+sys+".png")
-#    c1.Print("plotsSys/"+channel+binName+"/"+sys+".pdf")
+    if options.saveplots:
+        if not os.path.exists("plotsSys/"+channel+binName): os.makedirs("plotsSys/"+channel+binName)
+        c1.Print("plotsSys/"+channel+binName+"/"+sys+".png")
+        c1.Print("plotsSys/"+channel+binName+"/"+sys+".pdf")
     
     for i, s in enumerate(back+sign):
         c2 = TCanvas(s+"canvas", "Signals", 800, 600)
@@ -528,8 +531,9 @@ eight"
         histDown[s].Draw("SAME, HIST")
         hist[s].Draw("SAME, HIST")
         drawCMS(-1, "Simulation", False)
-#        c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".png")
-#        c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".pdf")
+        if options.saveplots:
+            c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".png")
+            c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".pdf")
 
     saveHist(histUp, channel+binName, sys+'Up')
     saveHist(histDown, channel+binName, sys+'Down')
