@@ -254,7 +254,7 @@ sample = {
 
 ################# DM
 
-    'tDM_MChi1_MPhi10_OP' : {
+    'tDM_MChi1_MPhi10_scalar' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-10', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-10'],
         'fillcolor' : 2,
@@ -267,7 +267,7 @@ sample = {
         'plot': True,
     },
 
-    'tDM_MChi1_MPhi20_OP' : {
+    'tDM_MChi1_MPhi20_scalar' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-20', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-20'],
         'fillcolor' : 2,
@@ -280,7 +280,7 @@ sample = {
         'plot': True,
     },
 
-    'tDM_MChi1_MPhi50_OP' : {
+    'tDM_MChi1_MPhi50_scalar' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-50', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-50'],
         'fillcolor' : 2,
@@ -293,7 +293,7 @@ sample = {
         'plot': True,
     },
 
-    'tDM_MChi1_MPhi100_OP' : {
+    'tDM_MChi1_MPhi100_scalar' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-100', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-100'],
         'fillcolor' : 2,
@@ -306,7 +306,7 @@ sample = {
         'plot': True,
     },
 
-    'tDM_MChi1_MPhi200_OP' : {
+    'tDM_MChi1_MPhi200_scalar' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-200', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-200'],
         'fillcolor' : 2,
@@ -319,7 +319,7 @@ sample = {
         'plot': True,
     },
 
-    'tDM_MChi1_MPhi300_OP' : {
+    'tDM_MChi1_MPhi300_scalar' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-300', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-300'],
         'fillcolor' : 2,
@@ -332,7 +332,7 @@ sample = {
         'plot': True,
     },
 
-    'tDM_MChi1_MPhi500_OP' : {
+    'tDM_MChi1_MPhi500_scalar' : {
         'order' : 1001,
         'files' : ['TopDMJets_scalar_tChan_Mchi-1_Mphi-500', 'TopDMJets_scalar_tWChan_Mchi-1_Mphi-500'],
         'fillcolor' : 2,
@@ -345,33 +345,33 @@ sample = {
         'plot': True,
     },
 
-    'tDM_MChi1_MPhi100' : {
-        'order' : 1001,
-        'files' : ['DMScalar_top_tChan_MChi1_MPhi100', 'DMScalar_top_tWChan_MChi1_MPhi100'],
-        'fillcolor' : 2,#625
-        'fillstyle' : 3005,
-        'linecolor' : 2,
-        'linewidth' : 3,
-        'linestyle' : 1,
-        'label' : "#splitline{t+DM,}{m_{#phi}=100 GeV}",
-        'weight': 1.,
-        'plot': True,
-    },
+    # 'tDM_MChi1_MPhi100_scalar' : {
+    #     'order' : 1001,
+    #     'files' : ['DMScalar_top_tChan_MChi1_MPhi100', 'DMScalar_top_tWChan_MChi1_MPhi100'],
+    #     'fillcolor' : 2,#625
+    #     'fillstyle' : 3005,
+    #     'linecolor' : 2,
+    #     'linewidth' : 3,
+    #     'linestyle' : 1,
+    #     'label' : "#splitline{t+DM,}{m_{#phi}=100 GeV}",
+    #     'weight': 1.,
+    #     'plot': True,
+    # },
 
-    'tDM_MChi1_MPhi300' : {
-        'order' : 1001,
-        'files' : ['DMScalar_top_tChan_MChi1_MPhi300', 'DMScalar_top_tWChan_MChi1_MPhi300'],
-        'fillcolor' : 634,
-        'fillstyle' : 3005,
-        'linecolor' : 634,
-        'linewidth' : 3,
-        'linestyle' : 1,
-        'label' : "t+DM, m_{#phi}=300 GeV",
-        'weight': 1.,
-        'plot': True,
-    },
+    # 'tDM_MChi1_MPhi300_scalar' : {
+    #     'order' : 1001,
+    #     'files' : ['DMScalar_top_tChan_MChi1_MPhi300', 'DMScalar_top_tWChan_MChi1_MPhi300'],
+    #     'fillcolor' : 634,
+    #     'fillstyle' : 3005,
+    #     'linecolor' : 634,
+    #     'linewidth' : 3,
+    #     'linestyle' : 1,
+    #     'label' : "t+DM, m_{#phi}=300 GeV",
+    #     'weight': 1.,
+    #     'plot': True,
+    # },
     
-    'ttDM_MChi1_MPhi10' : {
+    'ttDM_MChi1_MPhi10_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-10'],
         'fillcolor' : 625,
@@ -384,7 +384,7 @@ sample = {
         'plot': False,
     },
     
-    'ttDM_MChi1_MPhi20' : {
+    'ttDM_MChi1_MPhi20_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-20'],
         'fillcolor' : 625,
@@ -397,7 +397,7 @@ sample = {
         'plot': False,
     },
     
-    'ttDM_MChi1_MPhi50' : {
+    'ttDM_MChi1_MPhi50_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-50'],
         'fillcolor' : 625,
@@ -410,7 +410,7 @@ sample = {
         'plot': False,
     },
     
-    'ttDM_MChi1_MPhi100' : {
+    'ttDM_MChi1_MPhi100_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-100'],
         'fillcolor' : 2,
@@ -423,7 +423,7 @@ sample = {
         'plot': True,
     },
     
-    'ttDM_MChi1_MPhi200' : {
+    'ttDM_MChi1_MPhi200_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-200'],
         'fillcolor' : 625,
@@ -436,7 +436,7 @@ sample = {
         'plot': False,
     },
 
-    'ttDM_MChi1_MPhi300' : {
+    'ttDM_MChi1_MPhi300_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-300'],
         'fillcolor' : 634,
@@ -449,7 +449,7 @@ sample = {
         'plot': True,
     },
     
-    'ttDM_MChi1_MPhi500' : {
+    'ttDM_MChi1_MPhi500_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-500'],
         'fillcolor' : 625,
@@ -462,7 +462,7 @@ sample = {
         'plot': False,
     },
     
-    'ttDM_MChi1_MPhi1000' : {
+    'ttDM_MChi1_MPhi1000_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-1000'],
         'fillcolor' : 625,
@@ -475,7 +475,7 @@ sample = {
         'plot': False,
     },
     
-    'tttDM_MChi1_MPhi10' : {
+    'tttDM_MChi1_MPhi10_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-10', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-10','TopDMJets_scalar_tWChan_Mchi-1_Mphi-10'],
         'fillcolor' : 625,
@@ -488,7 +488,7 @@ sample = {
         'plot': True,
     },
 
-    'tttDM_MChi1_MPhi20' : {
+    'tttDM_MChi1_MPhi20_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-20', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-20','TopDMJets_scalar_tWChan_Mchi-1_Mphi-20'],
         'fillcolor' : 625,
@@ -501,7 +501,7 @@ sample = {
         'plot': True,
     },
 
-    'tttDM_MChi1_MPhi50' : {
+    'tttDM_MChi1_MPhi50_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-50', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-50','TopDMJets_scalar_tWChan_Mchi-1_Mphi-50'],
         'fillcolor' : 625,
@@ -514,7 +514,7 @@ sample = {
         'plot': True,
     },
 
-    'tttDM_MChi1_MPhi100' : {
+    'tttDM_MChi1_MPhi100_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-100', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-100','TopDMJets_scalar_tWChan_Mchi-1_Mphi-100'],
         'fillcolor' : 625,
@@ -527,7 +527,7 @@ sample = {
         'plot': True,
     },
 
-    'tttDM_MChi1_MPhi200' : {
+    'tttDM_MChi1_MPhi200_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-200', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-200','TopDMJets_scalar_tWChan_Mchi-1_Mphi-200'],
         'fillcolor' : 625,
@@ -540,7 +540,7 @@ sample = {
         'plot': True,
     },
 
-    'tttDM_MChi1_MPhi300' : {
+    'tttDM_MChi1_MPhi300_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-300', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-300','TopDMJets_scalar_tWChan_Mchi-1_Mphi-300'],
         'fillcolor' : 625,
@@ -553,7 +553,7 @@ sample = {
         'plot': True,
     },
 
-    'tttDM_MChi1_MPhi500' : {
+    'tttDM_MChi1_MPhi500_scalar' : {
         'order' : 1001,
         'files' : ['TTbarDMJets_scalar_Mchi-1_Mphi-500', 'TopDMJets_scalar_tChan_Mchi-1_Mphi-500','TopDMJets_scalar_tWChan_Mchi-1_Mphi-500'],
         'fillcolor' : 625,
@@ -565,6 +565,294 @@ sample = {
         'weight': 1.,
         'plot': True,
     },
+
+    'tDM_MChi1_MPhi10_pseudo' : {
+        'order' : 1001,
+        'files' : ['TopDMJets_pseudo_tChan_Mchi-1_Mphi-10', 'TopDMJets_pseudo_tWChan_Mchi-1_Mphi-10'],
+        'fillcolor' : 2,
+        'fillstyle' : 3005,
+        'linecolor' : 2,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t+DM, m_{#phi}=10 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tDM_MChi1_MPhi20_pseudo' : {
+        'order' : 1001,
+        'files' : ['TopDMJets_pseudo_tChan_Mchi-1_Mphi-20', 'TopDMJets_pseudo_tWChan_Mchi-1_Mphi-20'],
+        'fillcolor' : 2,
+        'fillstyle' : 3005,
+        'linecolor' : 2,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t+DM, m_{#phi}=20 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tDM_MChi1_MPhi50_pseudo' : {
+        'order' : 1001,
+        'files' : ['TopDMJets_pseudo_tChan_Mchi-1_Mphi-50', 'TopDMJets_pseudo_tWChan_Mchi-1_Mphi-50'],
+        'fillcolor' : 2,
+        'fillstyle' : 3005,
+        'linecolor' : 2,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t+DM, m_{#phi}=50 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tDM_MChi1_MPhi100_pseudo' : {
+        'order' : 1001,
+        'files' : ['TopDMJets_pseudo_tChan_Mchi-1_Mphi-100', 'TopDMJets_pseudo_tWChan_Mchi-1_Mphi-100'],
+        'fillcolor' : 2,
+        'fillstyle' : 3005,
+        'linecolor' : 2,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t+DM, m_{#phi}=100 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tDM_MChi1_MPhi200_pseudo' : {
+        'order' : 1001,
+        'files' : ['TopDMJets_pseudo_tChan_Mchi-1_Mphi-200', 'TopDMJets_pseudo_tWChan_Mchi-1_Mphi-200'],
+        'fillcolor' : 2,
+        'fillstyle' : 3005,
+        'linecolor' : 2,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t+DM, m_{#phi}=200 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tDM_MChi1_MPhi300_pseudo' : {
+        'order' : 1001,
+        'files' : ['TopDMJets_pseudo_tChan_Mchi-1_Mphi-300', 'TopDMJets_pseudo_tWChan_Mchi-1_Mphi-300'],
+        'fillcolor' : 2,
+        'fillstyle' : 3005,
+        'linecolor' : 2,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t+DM, m_{#phi}=300 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tDM_MChi1_MPhi500_pseudo' : {
+        'order' : 1001,
+        'files' : ['TopDMJets_pseudo_tChan_Mchi-1_Mphi-500', 'TopDMJets_pseudo_tWChan_Mchi-1_Mphi-500'],
+        'fillcolor' : 2,
+        'fillstyle' : 3005,
+        'linecolor' : 2,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t+DM, m_{#phi}=500 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'ttDM_MChi1_MPhi10_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-10'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 2,
+        'label' : "tt+DM, m_{#phi}=10 GeV",
+        'weight': 1.,
+        'plot': False,
+    },
+    
+    'ttDM_MChi1_MPhi20_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-20'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 2,
+        'label' : "tt+DM, m_{#phi}=20 GeV",
+        'weight': 1.,
+        'plot': False,
+    },
+    
+    'ttDM_MChi1_MPhi50_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-50'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 2,
+        'label' : "tt+DM, m_{#phi}=50 GeV",
+        'weight': 1.,
+        'plot': False,
+    },
+    
+    'ttDM_MChi1_MPhi100_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100'],
+        'fillcolor' : 2,
+        'fillstyle' : 3005,
+        'linecolor' : 2,
+        'linewidth' : 3,
+        'linestyle' : 2,
+        'label' : "#splitline{tt+DM,}{m_{#phi}=100 GeV}",
+        'weight': 1.,
+        'plot': True,
+    },
+    
+    'ttDM_MChi1_MPhi200_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-200'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 2,
+        'label' : "tt+DM, m_{#phi}=200 GeV",
+        'weight': 1.,
+        'plot': False,
+    },
+
+    'ttDM_MChi1_MPhi300_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-300'],
+        'fillcolor' : 634,
+        'fillstyle' : 3005,
+        'linecolor' : 634,
+        'linewidth' : 3,
+        'linestyle' : 2,
+        'label' : "tt+DM, m_{#phi}=300 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+    
+    'ttDM_MChi1_MPhi500_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-500'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 2,
+        'label' : "tt+DM, m_{#phi}=500 GeV",
+        'weight': 1.,
+        'plot': False,
+    },
+    
+    'ttDM_MChi1_MPhi1000_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-1000'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 2,
+        'label' : "tt+DM, m_{#phi}=1000 GeV",
+        'weight': 1.,
+        'plot': False,
+    },
+    
+    'tttDM_MChi1_MPhi10_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-10', 'TopDMJets_pseudo_tChan_Mchi-1_Mphi-10','TopDMJets_pseudo_tWChan_Mchi-1_Mphi-10'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t, tt+DM, m_{#phi}=10 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tttDM_MChi1_MPhi20_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-20', 'TopDMJets_pseudo_tChan_Mchi-1_Mphi-20','TopDMJets_pseudo_tWChan_Mchi-1_Mphi-20'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t, tt+DM, m_{#phi}=20 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tttDM_MChi1_MPhi50_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-50', 'TopDMJets_pseudo_tChan_Mchi-1_Mphi-50','TopDMJets_pseudo_tWChan_Mchi-1_Mphi-50'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t, tt+DM, m_{#phi}=50 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tttDM_MChi1_MPhi100_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-100', 'TopDMJets_pseudo_tChan_Mchi-1_Mphi-100','TopDMJets_pseudo_tWChan_Mchi-1_Mphi-100'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t, tt+DM, m_{#phi}=100 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tttDM_MChi1_MPhi200_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-200', 'TopDMJets_pseudo_tChan_Mchi-1_Mphi-200','TopDMJets_pseudo_tWChan_Mchi-1_Mphi-200'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t, tt+DM, m_{#phi}=200 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tttDM_MChi1_MPhi300_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-300', 'TopDMJets_pseudo_tChan_Mchi-1_Mphi-300','TopDMJets_pseudo_tWChan_Mchi-1_Mphi-300'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t, tt+DM, m_{#phi}=300 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+    'tttDM_MChi1_MPhi500_pseudo' : {
+        'order' : 1001,
+        'files' : ['TTbarDMJets_pseudoscalar_Mchi-1_Mphi-500', 'TopDMJets_pseudo_tChan_Mchi-1_Mphi-500','TopDMJets_pseudo_tWChan_Mchi-1_Mphi-500'],
+        'fillcolor' : 625,
+        'fillstyle' : 3005,
+        'linecolor' : 625,
+        'linewidth' : 3,
+        'linestyle' : 1,
+        'label' : "t, tt+DM, m_{#phi}=500 GeV",
+        'weight': 1.,
+        'plot': True,
+    },
+
+
 }
 
 ################# Mono-H
