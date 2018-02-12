@@ -19,8 +19,8 @@ def runCards(f , s):
     return 1
 
 def createJobs(f , s, jobs):
-    outfile = f.replace("combinedCards","limitOutput").replace(".txt","_AsymptoticLimits_grepOutput.txt")
     signame = f[f.find("/t")+1:f.find(".txt")]
+    outfile = f.replace("combinedCards","limitOutput").replace(".txt","_AsymptoticLimits_grepOutput.txt")
     cmd =     "combine -M AsymptoticLimits --run blind --datacard " + f + " -m " + s +" -n " + signame + "  | grep -e Observed -e Expected | awk '{print $NF}' > " + outfile + " \n "
 
     print cmd
