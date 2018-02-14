@@ -19,9 +19,10 @@ float Tmass(float pt1, float phi1, float pt2, float phi2) {
     if(dPhi > 3.14159265) dPhi = 2*3.14159265-dPhi;
     return sqrt(2*pt1*pt2*(1-cos(dPhi)));
 }
-float ratio_jet1pt_HT(float jet1_pt, float HT){
+
+float ratio(float var1, float var2){
   float r = 0;
-  if(HT>0) r = jet1_pt/HT;
+  if(HT>0) r = var1/var2;
   return r;
 }
 
