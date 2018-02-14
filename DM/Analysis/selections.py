@@ -6,7 +6,10 @@
 selection = {
     
     # Hadronic category
-    #SRs
+    #SRs - 2b
+    "AH0l2bSR" : "isZtoNN && MET_pt>250. && nJets>=3 && nBTagJets>=2 && MinDPhi12>1 && mTb>180 && Jet1_pt/HT<0.5",
+
+    #SRs - 1b
     "AH0l0fSR" : "isZtoNN && MET_pt>250. && nJets>=3 && nBTagJets==1 && nForwardJets==0 && MinDPhi12>1 && mTb>180",
     "AH0l1fSR" : "isZtoNN && MET_pt>250. && nJets>=3 && nBTagJets==1 && nForwardJets>=1 && MinDPhi12>1 && mTb>180",
 
@@ -24,6 +27,10 @@ selection = {
     
 
     # Semileptonic category
+    #SR - 2b
+    "SL1m2bSR" : "isWtoMN && nElectrons==0 && nMuons==1 && MET_pt>160. && Lepton1_pt>30. && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets>=2 && mT>160 && mT2>200 && MinDPhi12>1.2 && mTb>180",
+    "SL1e2bSR" : "isWtoEN && nElectrons==1 && nMuons==0 && MET_pt>160. && Lepton1_pt>30. && abs(Lepton1_eta)<2.1 && Lepton1_id==4 && nJets>=2 && nBTagJets>=2 && mT>160 && mT2>200 && MinDPhi12>1.2 && mTb>180",
+
     #SR
     "SL1m0fSR" : "isWtoMN && nElectrons==0 && nMuons==1 && MET_pt>160. && Lepton1_pt>30. && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && nForwardJets==0 && mT>160 && mT2>200 && MinDPhi12>1.2 && mTb>180",
     "SL1m1fSR" : "isWtoMN && nElectrons==0 && nMuons==1 && MET_pt>160. && Lepton1_pt>30. && Lepton1_pfIso<0.15 && Lepton1_id==4 && nJets>=2 && nBTagJets==1 && nForwardJets>=1 && mT>160 && mT2>200 && MinDPhi12>1.2 && mTb>180",
