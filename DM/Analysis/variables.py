@@ -615,7 +615,7 @@ variable = {
     'ratio_jet1pt_HT': {
         'title' : "jet1 p_{T}/H_{T}",
         'nbins' : 50,
-        'min' : -1,
+        'min' : 0,
         'max' : 1,
         'log' : False,
         'formula': "Jet1_pt/HT",
