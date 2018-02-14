@@ -618,7 +618,7 @@ variable = {
         'min' : 0,
         'max' : 1,
         'log' : False,
-        'formula': "Jet1_pt/HT",
+        'formula': "ratio_func(Jet1_pt, HT)",
     },
 }
 
