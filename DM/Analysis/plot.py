@@ -45,7 +45,7 @@ SIGNAL      = 1 # Signal magnification factor
 RATIO       = 4 # 0: No ratio plot; !=0: ratio between the top and bottom pads
 NORM        = options.norm
 PARALLELIZE = False
-BLIND       = False
+BLIND       = True
 LUMI        = 35867
 
 ########## SAMPLES ##########
