@@ -206,7 +206,7 @@ def datacard(cat, sign):
             if "bin" in cat:
                 p = p + cat[cat.find("bin")+3:]
 
-            card += "%-25s%-20s%-20s\t%-20s          1.   [0.5,1.5]\n" % (p, 'rateParam', cat, m, )
+            card += "%-25s%-20s%-20s\t%-20s          1.   [0.1,2]\n" % (p, 'rateParam', cat, m, )
 
         
 
@@ -274,13 +274,12 @@ def fillLists():
         if obj.IsA().InheritsFrom("TH1"):
             name = obj.GetName()
             if 'DM' in name:
-                sign.append( name )
+                sign.append( name )                
             elif not "data_obs" in name and not "BkgSum" in name: back.append(name)
         # Categories (directories)
         if obj.IsFolder():
             subdir = obj.GetName()
             subdir = subdir.replace('Up', '').replace('Down', '')
-            print subdir
             if not subdir in greenShape: continue
             if not subdir in shape: shape.append(subdir)
     inFile.Close()
@@ -295,8 +294,7 @@ print "Shape unc   :", shape
 
 
 for cat in categories:
+#    for s in sign[:1]: #for testing to just run one signal
     for s in sign:
         datacard(cat, s)
-
-# python datacard.py -f rootfiles/DM.root -o
 

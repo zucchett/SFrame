@@ -33,31 +33,38 @@ def combineCards():
     signalPoints = []
     
     for card in cardList:
-        print card
         mChi = card[card.find("MChi")+4:card.find("MPhi")-1]
-        if "OP" in card:
-            endPhi = card.find("_OP")
-        elif "SL" in card:
-            endPhi = card.find("_SL")
+        if "SL" in card:
+            endMed = card.find("_SL")
         elif "AH" in card:
-            endPhi = card.find("_AH")
-
+            endMed = card.find("_AH")
+            
+        if "scalar" in card:
+            endPhi = card.find("_scalar")
+        elif "pseudo"  in card:
+            endPhi = card.find("_pseudo")
+            
         mPhi = card[card.find("MPhi")+4:endPhi]
         model = card[:card.find("MChi")-1]
-        signalPoints.append((model, mChi, mPhi))
+        mediator = card[endPhi+7:endMed]
+
+        signalPoints.append((model, mChi, mPhi, mediator))
 
     signalPoints = list(set(signalPoints))
 
     for s in signalPoints:
-        print s
-        cardsForSignal = glob.glob(s[0]+'_MChi'+s[1]+'_MPhi'+s[2]+'_*.txt')
+        cardsForSignal = glob.glob(s[0]+'_MChi'+s[1]+'_MPhi'+s[2]+'_'+s[3]+'*.txt')
         cmdSL = "combineCards.py "
         cmdAH = "combineCards.py "
         cmdALL = "combineCards.py "
         for card in cardsForSignal:
-
-            region = card[card.rfind('_')+1:card.find('.txt')]
-            print region
+            if 'bin' in card:
+                region = card[:card.find('bin')+3]
+                region = region[region.rfind('_')+1:]
+                bin = card[card.rfind('bin')+4:card.find('.txt')]
+                region = region + '_' + bin
+            else:
+                region = card[card.rfind('_')+1:card.find('.txt')]
             if 'SL' in region:
                 cmdSL = cmdSL + region + "=" + card + " "
                 cmdALL = cmdALL + region + "=" + card + " "
@@ -66,23 +73,28 @@ def combineCards():
                 cmdALL = cmdALL + region + "=" + card + " "
         
         
-        cardOut = ' > ' + '../combinedCards_'+options.name+'/'+s[0]+'_MChi'+s[1]+'_MPhi'+s[2]+'_'
+        cardOut = ' > ' + '../combinedCards_'+options.name+'/'+s[0]+'_MChi'+s[1]+'_MPhi'+s[2]+'_'+s[3]
         
         cmdSL = cmdSL + cardOut + "SL.txt"
         cmdAH = cmdAH + cardOut + "AH.txt"
         cmdALL = cmdALL + cardOut + "ALL.txt"
-
-        print 'Combining cards for '+s[0]+'_MChi'+s[1]+'_MPhi'+s[2] + ' SL ' 
-        print cmdSL
+        
+        print 'Combining cards for '+s[0]+'_MChi'+s[1]+'_MPhi'+s[2]
+        if verbose: 
+            print 'Combining cards for '+s[0]+'_MChi'+s[1]+'_MPhi'+s[2] + ' SL ' 
+            print cmdSL
         os.system(cmdSL)
-        print 'Combining cards for '+s[0]+'_MChi'+s[1]+'_MPhi'+s[2] + ' AH ' 
-        print cmdAH
+        if verbose: 
+            print 'Combining cards for '+s[0]+'_MChi'+s[1]+'_MPhi'+s[2] + ' AH ' 
+            print cmdAH
         os.system(cmdAH)
 
-        print 'Combining cards for '+s[0]+'_MChi'+s[1]+'_MPhi'+s[2] + ' ALL ' 
-        print cmdALL
+        if verbose:
+            print 'Combining cards for '+s[0]+'_MChi'+s[1]+'_MPhi'+s[2] + ' ALL ' 
+            print cmdALL
         os.system(cmdALL)
 
+        
     return
 
 
