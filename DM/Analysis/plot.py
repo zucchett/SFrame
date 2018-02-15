@@ -74,7 +74,7 @@ def plot(var, cut, norm=False, nm1=False):
         binHigh = cut[cut.find("HighVal")+7:]
         binName = "bin_"+binLow+"_"+binHigh
         cut = cut[:cut.find("binned")]
-    useformula = True
+    useformula = False
     if 'formula' in variable[var]:
         print variable[var]['formula']
         useformula = True
