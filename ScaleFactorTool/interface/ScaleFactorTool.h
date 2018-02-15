@@ -135,6 +135,8 @@ class ScaleFactorTool  : public SToolBase   {
         
         double GetTrigEle(double, double, int=0);
         double GetTrigEle(double, double, double, double, int=0);
+        double GetTrigEleMET(double, double, double, int=0);
+        double GetTrigEleMET(double, double, double, double, double, int=0);
         double GetTrigMuonMET(double, double, double, int=0);
         double GetTrigMuonMET(double, double, double, double, double, int=0);
         

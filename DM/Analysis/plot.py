@@ -4,10 +4,10 @@ import os, multiprocessing
 import copy
 import math
 from array import array
-from ROOT import ROOT, gROOT, gStyle, gRandom, TSystemDirectory
+from ROOT import ROOT, gROOT, gStyle, gRandom, TSystemDirectory, gErrorIgnoreLevel
 from ROOT import TFile, TChain, TTree, TCut, TH1F, TH2F, THStack, TGraph, TGraphErrors, TRandom3
 from ROOT import TStyle, TCanvas, TPad
-from ROOT import TLegend, TLatex, TText, TLine
+from ROOT import TLegend, TLatex, TText, TLine, TF1, TFormula
 import numpy as np
 from samples import sample
 from variables import variable
@@ -36,7 +36,7 @@ parser.add_option("-N", "--name", action="store", type="string", dest="name", de
 if options.bash: gROOT.SetBatch(True)
 
 ########## SETTINGS ##########
-
+gErrorIgnoreLevel = 2001
 gStyle.SetOptStat(0)
 gROOT.LoadMacro('functions.C')
 
@@ -74,7 +74,10 @@ def plot(var, cut, norm=False, nm1=False):
         binHigh = cut[cut.find("HighVal")+7:]
         binName = "bin_"+binLow+"_"+binHigh
         cut = cut[:cut.find("binned")]
-    
+    useformula = True
+    if 'formula' in variable[var]:
+        print variable[var]['formula']
+        useformula = True
     channel = cut
     plotdir = cut
     plotname = var
@@ -146,7 +149,10 @@ def plot(var, cut, norm=False, nm1=False):
                 redFactorValue = " / 15"
             cutstring = "("+weight+redFactorValue+")" + ("*("+cut+redFactorString+")" if len(cut)>0 else "")
             if '-' in s: cutstring = cutstring.replace(cut, cut + "&& nBQuarks==" + s.split('-')[1][0])
-            tree[s].Project(s, var, cutstring)
+            if useformula == True:
+                tree[s].Project(s, variable[var]['formula'], cutstring)
+            else:
+                tree[s].Project(s, var, cutstring)         
             if not tree[s].GetTree()==None: hist[s].SetOption("%s" % tree[s].GetTree().GetEntriesFast())
         else: # Histogram written to file
             for j, ss in enumerate(sample[s]['files']):
@@ -309,9 +315,9 @@ def plot(var, cut, norm=False, nm1=False):
     c1.Update()
         
     if gROOT.IsBatch() and options.saveplots: # and (treeRead and channel in selection.keys()):
-        if not os.path.exists("plots/"+plotdir): os.makedirs("plots/"+plotdir)
-        c1.Print("plots/"+plotdir+"/"+plotname+binName+".png")
-        c1.Print("plots/"+plotdir+"/"+plotname+binName+".pdf")
+        if not os.path.exists("plots_"+options.name+"/"+plotdir): os.makedirs("plots_"+options.name+"/"+plotdir)
+        c1.Print("plots_"+options.name+"/"+plotdir+"/"+plotname+binName+".png")
+        c1.Print("plots_"+options.name+"/"+plotdir+"/"+plotname+binName+".pdf")
     
     # Print table
     printTable(hist, sign)
@@ -491,31 +497,65 @@ eight"
     c1.cd()
     gStyle.SetOptStat(0)
     gStyle.SetOptTitle(0)
-    c1.GetPad(0).SetTopMargin(0.06)
-    c1.GetPad(0).SetRightMargin(0.06)
-    c1.GetPad(0).SetTicky(2)
-    c1.GetPad(0).SetLogy()
+
+    if RATIO:
+        c1.Divide(1, 2)
+        setTopPad(c1.GetPad(1), RATIO)
+        setBotPad(c1.GetPad(2), RATIO)
+
+    c1.cd(1)
+    c1.GetPad(bool(RATIO)).SetTopMargin(0.06)
+    c1.GetPad(bool(RATIO)).SetRightMargin(0.06)
+    c1.GetPad(bool(RATIO)).SetTicks(1, 1)
+    c1.GetPad(bool(RATIO)).SetLogy()
+
     histUp['BkgSum'].SetMaximum(histUp['BkgSum'].GetMaximum()*5)
     histUp['BkgSum'].Draw("HIST")
     histDown['BkgSum'].Draw("SAME, HIST")
     hist['BkgSum'].Draw("SAME, HIST")
     drawCMS(-1, "Simulation", False)
 
+    setHistStyle(histUp['BkgSum'], 1.2 if RATIO else 1.1)
+
+    if RATIO:
+        c1.cd(2)
+        errUp = histUp['BkgSum'].Clone("BkgUp;")
+        errUp.Add(hist['BkgSum'],-1)
+        errUp.Divide(hist['BkgSum'])
+        errUp.SetTitle("")
+        errUp.GetYaxis().SetTitle("#frac{shifted-central}{central}")
+        errUp.GetYaxis().SetNdivisions(503)
+        setBotStyle(errUp)
+        errUp.GetYaxis().SetRangeUser(-0.3,0.3)
+        errUp.Draw("HIST")
+
+        errDown = histDown['BkgSum'].Clone("BkgDown;")
+        errDown.Add(hist['BkgSum'],-1)
+        errDown.Divide(hist['BkgSum'])
+        errDown.Draw("SAME, HIST")
+
+        f1 = TF1("myfunc","[0]",-100000,10000);
+        f1.SetLineColor(1)
+        f1.SetLineStyle(7)
+        f1.SetLineWidth(1)
+        f1.SetParameter(0,0);
+        f1.Draw("same")
+
     leg = TLegend(0.65, 0.80, 0.95, 0.80)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0) #1001
-    leg.SetFillColor(0)
     leg.SetHeader(sys.replace('CMS', '').replace('_', ' '))
     leg.AddEntry(histUp['BkgSum'], "Up", "l")
     leg.AddEntry(hist['BkgSum'], "Central", "l")
     leg.AddEntry(histDown['BkgSum'], "Down", "l")
     leg.SetY1(0.75-leg.GetNRows()*0.045)
+    c1.cd(1)
     leg.Draw()
-    
+
     if options.saveplots:
-        if not os.path.exists("plotsSys/"+channel+binName): os.makedirs("plotsSys/"+channel+binName)
-        c1.Print("plotsSys/"+channel+binName+"/"+sys+".png")
-        c1.Print("plotsSys/"+channel+binName+"/"+sys+".pdf")
+        if not os.path.exists("plotsSys_"+options.name+"/"+channel+binName): os.makedirs("plotsSys_"+options.name+"/"+channel+binName)
+        c1.Print("plotsSys_"+options.name+"/"+channel+binName+"/"+sys+".png")
+        c1.Print("plotsSys_"+options.name+"/"+channel+binName+"/"+sys+".pdf")
     
     for i, s in enumerate(back+sign):
         c2 = TCanvas(s+"canvas", "Signals", 800, 600)
@@ -532,8 +572,8 @@ eight"
         hist[s].Draw("SAME, HIST")
         drawCMS(-1, "Simulation", False)
         if options.saveplots:
-            c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".png")
-            c2.Print("plotsSys/"+channel+binName+"/"+sys+"_"+s+".pdf")
+            c2.Print("plotsSys_"+options.name+"/"+channel+binName+"/"+sys+"_"+s+".png")
+            c2.Print("plotsSys_"+options.name+"/"+channel+binName+"/"+sys+"_"+s+".pdf")
 
     saveHist(histUp, channel+binName, sys+'Up')
     saveHist(histDown, channel+binName, sys+'Down')
@@ -606,11 +646,12 @@ def plotLimit(doBinned = False):
     gROOT.SetBatch(True)
     try: os.stat("rootfiles_"+options.name) 
     except: os.mkdir("rootfiles_"+options.name)
-
     os.system("rm rootfiles_"+options.name+"/*")
-    cat = ["AH0l0fSR", "AH0l1fSR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1e1fSR", "SL1m0fSR", "SL1m1fSR", "SL1eWR", "SL1mWR", "SL1e1mTR"]
-    sys = ['CMS_scale_j','CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF'
-,'CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'QCDscale_ren', 'QCDscale_fac']
+
+    cat = ["AH0l0fSR", "AH0l1fSR", "AH0l2bSR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1e1fSR", "SL1m0fSR", "SL1m1fSR", "SL1e2bSR", "SL1m2bSR", "SL1eWR", "SL1mWR", "SL1e1mTR", "SL2eTR", "SL2mTR"]
+    #cat = ["AH0l0fSR", "AH0l1fSR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1e1fSR", "SL1m0fSR", "SL1m1fSR", "SL1eWR", "SL1mWR", "SL1e1mTR"]
+
+    sys = ['CMS_scale_j','CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'QCDscale_ren', 'QCDscale_fac']
 
     for r in cat:
         #fix these variables at some points, its confusing to hack the met significance

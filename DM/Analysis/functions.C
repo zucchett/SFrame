@@ -20,4 +20,9 @@ float Tmass(float pt1, float phi1, float pt2, float phi2) {
     return sqrt(2*pt1*pt2*(1-cos(dPhi)));
 }
 
+float ratio_func(float var1, float var2){
+  float r = 0;
+  if(var2>0) r = var1/var2;
+  return r;
+}
 
