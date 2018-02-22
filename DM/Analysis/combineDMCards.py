@@ -15,6 +15,7 @@ parser.add_option("-c", "--cutcount", action="store_true", default=False, dest="
 parser.add_option("-o", "--override", action="store_true", default=False, dest="override")
 parser.add_option("-v", "--verbose", action="store_true", default=False, dest="verbose")
 parser.add_option("-N", "--name", action="store", type="string", dest="name", default="test")
+parser.add_option("-b", "--bjet", action="store", type="string", dest="bjet", default="1b")
 (options, args) = parser.parse_args()
 
 fileName = options.fileName
@@ -22,6 +23,7 @@ catList = options.catList
 isShape = not options.isCutAndCount
 isOverride = options.override
 verbose = options.verbose
+bjet = options.bjet
 
 
 def combineCards():
@@ -46,7 +48,7 @@ def combineCards():
             
         mPhi = card[card.find("MPhi")+4:endPhi]
         model = card[:card.find("MChi")-1]
-        mediator = card[endPhi+7:endMed]
+        mediator = card[endPhi+1:endMed]
 
         signalPoints.append((model, mChi, mPhi, mediator))
 
@@ -58,6 +60,8 @@ def combineCards():
         cmdAH = "combineCards.py "
         cmdALL = "combineCards.py "
         for card in cardsForSignal:
+            if bjet=='1b' and '2b' in card: continue
+            if bjet=='2b' and ('SR' in card and '2b' not in card): continue
             if 'bin' in card:
                 region = card[:card.find('bin')+3]
                 region = region[region.rfind('_')+1:]
@@ -73,11 +77,11 @@ def combineCards():
                 cmdALL = cmdALL + region + "=" + card + " "
         
         
-        cardOut = ' > ' + '../combinedCards_'+options.name+'/'+s[0]+'_MChi'+s[1]+'_MPhi'+s[2]+'_'+s[3]
+        cardOut = ' > ' + '../combinedCards_'+options.name+'/'+s[0]+'_MChi'+s[1]+'_MPhi'+s[2]+'_'+s[3]+bjet
         
-        cmdSL = cmdSL + cardOut + "SL.txt"
-        cmdAH = cmdAH + cardOut + "AH.txt"
-        cmdALL = cmdALL + cardOut + "ALL.txt"
+        cmdSL = cmdSL + cardOut + "_SL.txt"
+        cmdAH = cmdAH + cardOut + "_AH.txt"
+        cmdALL = cmdALL + cardOut + "_ALL.txt"
         
         print 'Combining cards for '+s[0]+'_MChi'+s[1]+'_MPhi'+s[2]
         if verbose: 
