@@ -654,11 +654,9 @@ def plotLimit():
 #    os.system("rm rootfiles_"+options.name+"/*")
 
     cat = ["AH0l0fSR", "AH0l1fSR", "AH0l2bSR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1e1fSR", "SL1m0fSR", "SL1m1fSR", "SL1e2bSR", "SL1m2bSR", "SL1eWR", "SL1mWR", "SL1e1mTR", "SL2eTR", "SL2mTR"]
-    cat = ["AH0l0fSR"]
     
  
     sys = ['CMS_scale_j','CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'QCDscale_ren', 'QCDscale_fac']
-    sys = ['CMS_scale_j']
 
 
     for thread,r in enumerate(cat):
