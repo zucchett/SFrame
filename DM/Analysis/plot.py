@@ -837,7 +837,7 @@ except: os.mkdir("rootfiles_"+options.name)
 
 if options.all: plotAll()
 elif options.limit and options.batch: plotLimitBatch(options.sys)
-elif options.limit: plotLimit()
+elif options.limit and not options.batch: plotLimit()
 elif options.signal: plotSignal(options.cut)
 elif options.efficiency: plotEfficiency()
 else: plot(options.variable, options.cut, options.norm)
