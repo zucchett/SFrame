@@ -10,7 +10,7 @@
 ## the maximum memory usage of this job
 #$ -l h_vmem=5900M
 ## Job Name
-#$ -N LIMITS
+#$ -N Jobs
 ## stderr and stdout are merged together to stdout
 #$ -j y
 ## transfer env var from submission host
