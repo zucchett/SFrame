@@ -29,8 +29,10 @@ parser.add_option("-b", "--bash", action="store_true", default=False, dest="bash
 parser.add_option("-B", "--blind", action="store_true", default=False, dest="blind")
 parser.add_option("-f", "--file", action="store", type="string", dest="file", default="")
 parser.add_option("-l", "--limit", action="store_true", default=False, dest="limit")
+parser.add_option("", "--batch", action="store_true", default=False, dest="batch")
 parser.add_option("", "--saveplots", action="store_true", default=False, dest="saveplots")
 parser.add_option("-m", "--mode", action="store", type="string", dest="mode", default="shape")
+parser.add_option("", "--sys", action="store", type="string", dest="sys", default="")
 parser.add_option("-N", "--name", action="store", type="string", dest="name", default="test")
 (options, args) = parser.parse_args()
 if options.bash: gROOT.SetBatch(True)
@@ -62,7 +64,7 @@ sign = [
 
 jobs = []
 
-def plot(var, cut, norm=False, nm1=False):
+def plot(var, cut,norm=False, nm1=False):
     ### Preliminary Operations ###
     fileRead = os.path.exists(options.file)
     treeRead = not any(x==cut for x in ['0l', '1e', '1m', '2e', '2m', '1e1m', 'Gen', 'Trigger'])#(var in variable.keys()) # Read from tree
@@ -76,7 +78,6 @@ def plot(var, cut, norm=False, nm1=False):
         cut = cut[:cut.find("binned")]
     useformula = False
     if 'formula' in variable[var]:
-        print variable[var]['formula']
         useformula = True
     channel = cut
     plotdir = cut
@@ -604,7 +605,8 @@ def saveHist(hist, channel, directory='', addStat=False):
 #            if math.isnan(hist[s].GetBinContent(i+1)) or math.isinf(hist[s].GetBinContent(i+1)): print "WARNING: in channel", channel, "bkg", s, "bin", i+1, "is nan or inf"
 #            #print "checking", s, i, hist[s].GetBinContent(i+1)
     
-    outFile = TFile("rootfiles_"+options.name+"/"+channel+".root", "RECREATE" if len(directory)==0 else "UPDATE")
+    directorySys = directory.replace("Up","").replace("Down","")
+    outFile = TFile("rootfiles_"+options.name+"/"+channel+directorySys+".root", "RECREATE" if len(directory)==0 else "UPDATE")
     outFile.cd()
     if len(directory) > 0:
         if not outFile.GetDirectory(directory): outFile.mkdir(directory)
@@ -635,25 +637,29 @@ def saveHist(hist, channel, directory='', addStat=False):
             outFile.cd("..")
     
     outFile.Close()
-    print "Histograms saved in file rootfiles_"+options.name+"/"+channel+".root"
+    print "Histograms saved in file rootfiles_"+options.name+"/"+channel+directorySys+".root"
 
     
 
 
 ########## ######## ##########
 
-def plotLimit(doBinned = False):
+def plotLimit():
+
+    doBinned = False
+    if options.mode == "binned": doBinned = True
     gROOT.SetBatch(True)
     try: os.stat("rootfiles_"+options.name) 
     except: os.mkdir("rootfiles_"+options.name)
-    os.system("rm rootfiles_"+options.name+"/*")
+#    os.system("rm rootfiles_"+options.name+"/*")
 
     cat = ["AH0l0fSR", "AH0l1fSR", "AH0l2bSR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1e1fSR", "SL1m0fSR", "SL1m1fSR", "SL1e2bSR", "SL1m2bSR", "SL1eWR", "SL1mWR", "SL1e1mTR", "SL2eTR", "SL2mTR"]
-    #cat = ["AH0l0fSR", "AH0l1fSR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1e1fSR", "SL1m0fSR", "SL1m1fSR", "SL1eWR", "SL1mWR", "SL1e1mTR"]
-
+    
+ 
     sys = ['CMS_scale_j','CMS_res_j','CMS_WqcdWeightRen','CMS_WqcdWeightFac','CMS_ZqcdWeightRen','CMS_ZqcdWeightFac','CMS_WewkWeight','CMS_pdf','CMS_HF','CMS_eff_b', 'CMS_scale_pu', 'CMS_scale_top', 'CMS_eff_trigger', 'CMS_eff_e', 'CMS_eff_m', 'QCDscale_ren', 'QCDscale_fac']
 
-    for r in cat:
+
+    for thread,r in enumerate(cat):
         #fix these variables at some points, its confusing to hack the met significance
         var = 'MET_pt'
         if r.startswith('SL'): var = 'MET_sign' # correct binnning
@@ -672,32 +678,22 @@ def plotLimit(doBinned = False):
             for i in range(0,len(bins)-1):
                 rbin =  r + "binned_LowVal" + str(bins[i]) + "_HighVal" + str(bins[i+1])
                 print "rbin:",rbin
-            
+                
                 p = multiprocessing.Process(target=plot, args=(var, rbin, ))
-                jobs.append(p)
                 p.start()
-    
-            for job in jobs:
-                job.join()
-            del jobs[:]
+                p.join()
         else: #shouls dump these pieces in a separate function, but fine for now
-            print "running multithreaded"
+            print "Not really multi-threaded"
             #        plot(var, r)
+            print var, r
             p = multiprocessing.Process(target=plot, args=(var, r, ))
-            jobs.append(p)
             p.start()
+            p.join()
 
-    if not doBinned:
-        for job in jobs:
-            job.join()
-        del jobs[:]
-        
-
-    print "\n\n@ Main jobs have finished, now running uncertainties\n\n"
-    
     doSys = True
-    
     if not doSys: return
+
+    print "\n\n@ Main jobs have finished, now running uncertainties\n\n"    
     
     for s in sys:
         print "\n@ Running uncertainty", s, "\n"
@@ -719,25 +715,76 @@ def plotLimit(doBinned = False):
                 for i in range(0,len(bins)-1):
                     rbin =  r + "binned_LowVal" + str(bins[i]) + "_HighVal" + str(bins[i+1])
                     print "rbin:",rbin
-    #       addSys(var, r, s)
+                    #       addSys(var, r, s)
                     p = multiprocessing.Process(target=addSys, args=(var, rbin, s, ))
-                    jobs.append(p)
                     p.start()
-
-                for job in jobs:
-                    job.join()
-                del jobs[:]
+                    p.join()
 
             else:
                 p = multiprocessing.Process(target=addSys, args=(var, r, s, ))
-                jobs.append(p)
                 p.start()
+                p.join()
             
-        if not doBinned:
-            for job in jobs:
-                job.join()
-            del jobs[:]
     print "\n\n@ Uncertainties have finished.\n\n"
+
+
+
+
+def plotLimitBatch(sys=""):
+    doBinned = False
+    if options.mode == "binned": doBinned = True
+
+    cat = ["AH0l0fSR", "AH0l1fSR", "AH0l2bSR", "AH1eWR", "AH1mWR", "AH2eZR", "AH2mZR", "AH1eTR", "AH1mTR", "SL1e0fSR", "SL1e1fSR", "SL1m0fSR", "SL1m1fSR", "SL1e2bSR", "SL1m2bSR", "SL1eWR", "SL1mWR", "SL1e1mTR", "SL2eTR", "SL2mTR"]
+
+    for r in cat:
+        #fix these variables at some points, its confusing to hack the met significance
+        var = 'MET_pt'
+        if r.startswith('SL'): var = 'MET_sign' # correct binnning
+        if r.endswith('ZR'): var = 'FakeMET_pt'
+        
+        if doBinned:
+            bins = np.array([])
+            if 'bins' in variable[var].keys():
+                bins = np.array(variable[var]['bins'] )
+            else:
+                binsize = (variable[var]['max']-variable[var]['min'])/variable[var]['nbins']
+                bins = np.arange(variable[var]['min'], variable[var]['max']+binsize, binsize)
+                
+            bins = np.append(bins, 10000) #add essentially infinite upper bound for the last bin
+            
+            for i in range(0,len(bins)-1):
+                rbin =  r + "binned_LowVal" + str(bins[i]) + "_HighVal" + str(bins[i+1])
+                print "rbin:",rbin
+                #multiprocessing doesn't actually work this way, but avoids a few memory issues with TH1 and canvases
+                #                plot(var,rbin,)
+                if sys=="":
+                    print "running plotting"
+                    p = multiprocessing.Process(target=plot, args=(var, rbin, ))
+                    p.start()
+                    p.join()
+                    # plot(var,r,)
+                else:
+                    print "running systematic", sys
+                    p = multiprocessing.Process(target=addSys, args=(var, rbin,sys, ))
+                    p.start()
+                    p.join()
+
+        else: 
+            #multiprocessing doesn't actually work this way, but avoids a few memory issues with TH1 and canvases
+            if sys == "":
+                print "running plotting"
+                p = multiprocessing.Process(target=plot, args=(var, r, ))
+                p.start()
+                p.join()
+#                plot(var,r,)
+            else:
+                print "running systematic", sys
+                p = multiprocessing.Process(target=addSys, args=(var, r,sys, ))
+                p.start()
+                p.join()
+#                addSys(var, r, sys, )
+    return
+
     
 ########## ######## ##########
 
@@ -784,10 +831,13 @@ def plotAll():
 
 
 jobs = []
+gROOT.SetBatch(True)
+try: os.stat("rootfiles_"+options.name) 
+except: os.mkdir("rootfiles_"+options.name)
 
 if options.all: plotAll()
-elif options.limit and options.mode == "shape": plotLimit()
-elif options.limit and options.mode == "binned": plotLimit(True)
+elif options.limit and options.batch: plotLimitBatch(options.sys)
+elif options.limit and not options.batch: plotLimit()
 elif options.signal: plotSignal(options.cut)
 elif options.efficiency: plotEfficiency()
 else: plot(options.variable, options.cut, options.norm)
