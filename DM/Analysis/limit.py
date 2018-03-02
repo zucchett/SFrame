@@ -30,9 +30,12 @@ usage = "usage: %prog [options]"
 parser = optparse.OptionParser(usage)
 parser.add_option("-c", "--category", action="store", type="string", dest="category", default="")
 parser.add_option("-s", "--signal", action="store", type="string", dest="signal", default="")
+parser.add_option("-m", "--mediator", action="store", type="string", dest="mediator", default="SC")
+parser.add_option("-j", "--bjets", action="store", type="string", dest="bjets", default="1b")
 parser.add_option("-a", "--all", action="store_true", default=False, dest="all")
 parser.add_option("-b", "--bash", action="store_true", default=False, dest="bash")
-parser.add_option("-B", "--blind", action="store_true", default=False, dest="blind")
+parser.add_option("-B", "--blind", action="store_true", default=True, dest="blind")
+parser.add_option("-N", "--name", action="store", type="string", default="", dest="name")
 (options, args) = parser.parse_args()
 if options.bash: gROOT.SetBatch(True)
 gStyle.SetOptStat(0)
@@ -48,8 +51,10 @@ if options.signal=="":
     sys.exit(2)
 
 
-signals = [10, 20, 50, 100, 200, 300, 500, 1000]
+signals = [10, 20, 50, 100, 200, 300, 500]
 
+try: os.stat('plotsLimit_'+options.name)
+except: os.mkdir('plotsLimit_'+options.name)
 
 def fillValues(filename):
     val = {}
@@ -78,7 +83,13 @@ def fillValues(filename):
 
 def limit(channel, signal):
     multF = 1. # in fb
-    filename = "./combine/" + signal + "_MChi1_MPhi%d_" + channel + ".txt"
+    filename = "./limitOutput_"+options.name + "/" + signal + "_MChi1_MPhi%d_scalar"+options.bjets+"_"+ channel + "_AsymptoticLimits_grepOutput.txt"
+    if(options.mediator=='SC'):
+        filename = "./limitOutput_"+options.name + "/" + signal + "_MChi1_MPhi%d_scalar"+options.bjets+"_"+ channel + "_AsymptoticLimits_grepOutput.txt"
+    elif(options.mediator=='PS'):
+        filename = "./limitOutput_"+options.name + "/" + signal + "_MChi1_MPhi%d_pseudo"+options.bjets+"_"+ channel + "_AsymptoticLimits_grepOutput.txt"
+    else:
+        print 'WRONG mediator type'
     mass, val = fillValues(filename)
     
     Obs0s = TGraph()
@@ -89,6 +100,8 @@ def limit(channel, signal):
     pVal = TGraph()
     Best = TGraphAsymmErrors()
     
+    if(options.blind): nAdd=0
+    else: nAdd=1
     
     for i, m in enumerate(mass):
         if not m in val:
@@ -97,11 +110,11 @@ def limit(channel, signal):
         
         n = Exp0s.GetN()
         Obs0s.SetPoint(n, m, val[m][0]*multF)
-        Exp0s.SetPoint(n, m, val[m][3]*multF)
-        Exp1s.SetPoint(n, m, val[m][3]*multF)
-        Exp1s.SetPointError(n, 0., 0., val[m][3]*multF-val[m][2]*multF, val[m][4]*multF-val[m][3]*multF)
-        Exp2s.SetPoint(n, m, val[m][3]*multF)
-        Exp2s.SetPointError(n, 0., 0., val[m][3]*multF-val[m][1]*multF, val[m][5]*multF-val[m][3]*multF)
+        Exp0s.SetPoint(n, m, val[m][2+nAdd]*multF)
+        Exp1s.SetPoint(n, m, val[m][2+nAdd]*multF)
+        Exp1s.SetPointError(n, 0., 0., val[m][2+nAdd]*multF-val[m][1+nAdd]*multF, val[m][3+nAdd]*multF-val[m][2+nAdd]*multF)
+        Exp2s.SetPoint(n, m, val[m][2]*multF)
+        Exp2s.SetPointError(n, 0., 0., val[m][2+nAdd]*multF-val[m][0+nAdd]*multF, val[m][4+nAdd]*multF-val[m][2+nAdd]*multF)
         #Sign.SetPoint(n, m, val[m][6])
         #pVal.SetPoint(n, m, val[m][7])
         #Best.SetPoint(n, m, val[m][8])
@@ -183,11 +196,14 @@ def limit(channel, signal):
     drawCMS(LUMI, "Preliminary")
     
     if True:
-        massT, valT = fillValues("./combine/" + signal.replace('ttDM', 'tDM') + "_MChi1_MPhi%d_" + channel + ".txt")
+        if(options.mediator=='SC'):
+            massT, valT = fillValues("./limitOutput_"+options.name + "/" + signal.replace('tttDM', 'tDM') + "_MChi1_MPhi%d_scalar"+options.bjets+"_"+ channel + "_AsymptoticLimits_grepOutput.txt")
+        elif(options.mediator=='PS'):
+            massT, valT = fillValues("./limitOutput_"+options.name + "/" + signal.replace('tttDM', 'tDM') + "_MChi1_MPhi%d_pseudo"+options.bjets+"_"+ channel + "_AsymptoticLimits_grepOutput.txt")
         ExpT, ObsT = TGraphAsymmErrors(), TGraphAsymmErrors()
         for i, m in enumerate(massT):
             if not m in val: continue
-            ExpT.SetPoint(ExpT.GetN(), m, valT[m][3]*multF)
+            ExpT.SetPoint(ExpT.GetN(), m, valT[m][2+nAdd]*multF)
             ObsT.SetPoint(ObsT.GetN(), m, valT[m][0]*multF)
         ExpT.SetLineWidth(3)
         ExpT.SetLineColor(602) #602
@@ -198,25 +214,29 @@ def limit(channel, signal):
         ObsT.SetMarkerStyle(22)
         ExpT.SetMarkerColor(602)
         ObsT.SetMarkerColor(602)
-        ExpT.Draw("SAME, P")
+        ExpT.Draw("SAME, PC")
         #if not options.blind: ObsT.Draw("SAME, P")
         
-        massTTT, valTTT = fillValues("./combine/" + signal.replace('ttDM', 'tttDM') + "_MChi1_MPhi%d_" + channel + ".txt")
+        if(options.mediator=='SC'):
+            massTTT, valTTT = fillValues("./limitOutput_"+options.name + "/" + signal.replace('tttDM', 'ttDM') + "_MChi1_MPhi%d_scalar"+options.bjets+"_"+ channel + "_AsymptoticLimits_grepOutput.txt")
+        elif(options.mediator=='PS'):
+            massTTT, valTTT = fillValues("./limitOutput_"+options.name + "/" + signal.replace('tttDM', 'ttDM') + "_MChi1_MPhi%d_pseudo"+options.bjets+"_" + channel + "_AsymptoticLimits_grepOutput.txt")
+
         ExpTTT, ObsTTT = TGraphAsymmErrors(), TGraphAsymmErrors()
         for i, m in enumerate(massTTT):
             if not m in val: continue
-            ExpTTT.SetPoint(ExpTTT.GetN(), m, valTTT[m][3]*multF)
+            ExpTTT.SetPoint(ExpTTT.GetN(), m, valTTT[m][2+nAdd]*multF)
             ObsTTT.SetPoint(ObsTTT.GetN(), m, valTTT[m][0]*multF)
         ExpTTT.SetLineWidth(3)
-        ExpTTT.SetLineColor(602) #602
+        ExpTTT.SetLineColor(634) #602
         ExpTTT.SetLineStyle(5)
         ObsTTT.SetLineWidth(3)
-        ObsTTT.SetLineColor(602)
+        ObsTTT.SetLineColor(634)
         ExpTTT.SetMarkerStyle(21)
         ObsTTT.SetMarkerStyle(22)
         ExpTTT.SetMarkerColor(634)
         ObsTTT.SetMarkerColor(634)
-        ExpTTT.Draw("SAME, P")
+        ExpTTT.Draw("SAME, PC")
         #if not options.blind: ObsTTT.Draw("SAME, P")
     
     # legend
@@ -229,20 +249,20 @@ def limit(channel, signal):
     leg.SetFillColor(0)
     leg.SetHeader("95% CL limits")
     leg.AddEntry(Obs0s,  "Observed", "l")
-    leg.AddEntry(Exp0s,  "Expected", "l")
+    leg.AddEntry(Exp0s,  "Expected (t+DM, tt+DM)", "l")
     leg.AddEntry(Exp1s, "#pm 1 s. d.", "f")
     leg.AddEntry(Exp2s, "#pm 2 s. d.", "f")
     if True:
         leg.AddEntry(ExpT,  "Expected (t+DM)", "p")
-        leg.AddEntry(ExpTTT,  "Expected (tt+DM, t+DM)", "p")
+        leg.AddEntry(ExpTTT,  "Expected (tt+DM)", "p")
         
     leg.Draw()
     c1.GetPad(0).RedrawAxis()
     c1.GetPad(0).Update()
     if gROOT.IsBatch():
-        c1.Print("plotsLimit/Exclusion_"+channel+".png")
-        c1.Print("plotsLimit/Exclusion_"+channel+".pdf")
-    
+        c1.Print("plotsLimit_"+options.name+"/Exclusion_"+channel+"_"+options.mediator+"_"+options.bjets+".png")
+        c1.Print("plotsLimit_"+options.name+"/Exclusion_"+channel+"_"+options.mediator+"_"+options.bjets+".pdf")
+
     if not gROOT.IsBatch(): raw_input("Press Enter to continue...")
     
 #    print "p1s[",
@@ -273,8 +293,8 @@ def limit(channel, signal):
     drawCMS(LUMI, "Preliminary")
     drawAnalysis(channel[1:3])
     if gROOT.IsBatch():
-        c2.Print("plotsLimit/Significance/"+channel+".png")
-        c2.Print("plotsLimit/Significance/"+channel+".pdf")
+        c2.Print("plotsLimit_"+options.name+"/Significance/"+channel+"_"+options.mediator+"_"+options.bjets+".png")
+        c2.Print("plotsLimit_"+options.name+"/Significance/"+channel+"_"+options.mediator+"_"+options.bjets+".pdf")
 #    c2.Print("plotsLimit/Significance/"+channel+suffix+".root")
 #    c2.Print("plotsLimit/Significance/"+channel+suffix+".C")
 
@@ -305,8 +325,8 @@ def limit(channel, signal):
     drawCMS(LUMI, "Preliminary")
     drawAnalysis(channel[1:3])
     if gROOT.IsBatch():
-        c3.Print("plotsLimit/pValue/"+channel+suffix+".png")
-        c3.Print("plotsLimit/pValue/"+channel+suffix+".pdf")
+        c3.Print("plotsLimit_"+options.name+"/pValue/"+channel+suffix+"_"+options.mediator+"_"+options.bjets+".png")
+        c3.Print("plotsLimit_"+options.name+"/pValue/"+channel+suffix+"_"+options.mediator+"_"+options.bjets+".pdf")
 #    c3.Print("plotsLimit/pValue/"+channel+suffix+".root")
 #    c3.Print("plotsLimit/pValue/"+channel+suffix+".C")
 
@@ -322,8 +342,8 @@ def limit(channel, signal):
     drawCMS(LUMI, "Preliminary")
     drawAnalysis(channel[1:3])
     if gROOT.IsBatch():
-        c4.Print("plotsLimit/BestFit/"+channel+suffix+".png")
-        c4.Print("plotsLimit/BestFit/"+channel+suffix+".pdf")
+        c4.Print("plotsLimit_"+options.name+"/BestFit/"+channel+suffix+"_"+options.mediator+"_"+options.bjets+".png")
+        c4.Print("plotsLimit_"+options.name+"/BestFit/"+channel+suffix+"_"+options.mediator+"_"+options.bjets+".pdf")
 #    c4.Print("plotsLimit/BestFit/"+channel+suffix+".root")
 #    c4.Print("plotsLimit/BestFit/"+channel+suffix+".C")
     
@@ -332,6 +352,6 @@ def limit(channel, signal):
 
 
 if options.all:
-    limit("ttDM")
+    limit("tttDM")
 else:
     limit(options.category, options.signal)
