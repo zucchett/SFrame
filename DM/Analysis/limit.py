@@ -100,9 +100,6 @@ def limit(channel, signal):
     pVal = TGraph()
     Best = TGraphAsymmErrors()
     
-    if(options.blind): nAdd=0
-    else: nAdd=1
-    
     for i, m in enumerate(mass):
         if not m in val:
             print "Key Error:", m, "not in value map"
@@ -110,11 +107,11 @@ def limit(channel, signal):
         
         n = Exp0s.GetN()
         Obs0s.SetPoint(n, m, val[m][0]*multF)
-        Exp0s.SetPoint(n, m, val[m][2+nAdd]*multF)
-        Exp1s.SetPoint(n, m, val[m][2+nAdd]*multF)
-        Exp1s.SetPointError(n, 0., 0., val[m][2+nAdd]*multF-val[m][1+nAdd]*multF, val[m][3+nAdd]*multF-val[m][2+nAdd]*multF)
-        Exp2s.SetPoint(n, m, val[m][2]*multF)
-        Exp2s.SetPointError(n, 0., 0., val[m][2+nAdd]*multF-val[m][0+nAdd]*multF, val[m][4+nAdd]*multF-val[m][2+nAdd]*multF)
+        Exp0s.SetPoint(n, m, val[m][3]*multF)
+        Exp1s.SetPoint(n, m, val[m][3]*multF)
+        Exp1s.SetPointError(n, 0., 0., val[m][3]*multF-val[m][2]*multF, val[m][4]*multF-val[m][3]*multF)
+        Exp2s.SetPoint(n, m, val[m][3]*multF)
+        Exp2s.SetPointError(n, 0., 0., val[m][3]*multF-val[m][1]*multF, val[m][5]*multF-val[m][3]*multF)
         #Sign.SetPoint(n, m, val[m][6])
         #pVal.SetPoint(n, m, val[m][7])
         #Best.SetPoint(n, m, val[m][8])
@@ -203,7 +200,7 @@ def limit(channel, signal):
         ExpT, ObsT = TGraphAsymmErrors(), TGraphAsymmErrors()
         for i, m in enumerate(massT):
             if not m in val: continue
-            ExpT.SetPoint(ExpT.GetN(), m, valT[m][2+nAdd]*multF)
+            ExpT.SetPoint(ExpT.GetN(), m, valT[m][3]*multF)
             ObsT.SetPoint(ObsT.GetN(), m, valT[m][0]*multF)
         ExpT.SetLineWidth(3)
         ExpT.SetLineColor(602) #602
@@ -225,7 +222,7 @@ def limit(channel, signal):
         ExpTTT, ObsTTT = TGraphAsymmErrors(), TGraphAsymmErrors()
         for i, m in enumerate(massTTT):
             if not m in val: continue
-            ExpTTT.SetPoint(ExpTTT.GetN(), m, valTTT[m][2+nAdd]*multF)
+            ExpTTT.SetPoint(ExpTTT.GetN(), m, valTTT[m][3]*multF)
             ObsTTT.SetPoint(ObsTTT.GetN(), m, valTTT[m][0]*multF)
         ExpTTT.SetLineWidth(3)
         ExpTTT.SetLineColor(634) #602

@@ -9,6 +9,7 @@ usage = "usage: %prog [options]"
 parser = optparse.OptionParser(usage)
 parser.add_option("-N", "--name", action="store", type="string", dest="name", default="test")
 parser.add_option("-S", "--sr", action="store", type="string", dest="sr", default="ALL")
+parser.add_option("-B", "--blind", action="store_true", default=True, dest="blind")
 (options, args) = parser.parse_args()
 
 
@@ -21,7 +22,10 @@ def runCards(f , s):
 def createJobs(f , s, jobs):
     signame = f[f.find("/t")+1:f.find(".txt")]
     outfile = f.replace("combinedCards","limitOutput").replace(".txt","_AsymptoticLimits_grepOutput.txt")
-    cmd =     "combine -M AsymptoticLimits --run blind --datacard " + f + " -m " + s +" -n " + signame + "  | grep -e Observed -e Expected | awk '{print $NF}' > " + outfile + " \n "
+    if(options.blind):
+        cmd =     "combine -M AsymptoticLimits --run blind --datacard " + f + " -m " + s +" -n " + signame + "  | grep -e Observed -e Expected | awk 'BEGIN{print 0.0}{print $NF}' > " + outfile + " \n "
+    else:
+        cmd =     "combine -M AsymptoticLimits --datacard " + f + " -m " + s +" -n " + signame + "  | grep -e Observed -e Expected | awk '{print $NF}' > " + outfile + " \n "
 
     print cmd
     jobs.write(cmd)
