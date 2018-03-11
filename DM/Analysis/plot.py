@@ -30,10 +30,11 @@ parser.add_option("-B", "--blind", action="store_true", default=False, dest="bli
 parser.add_option("-f", "--file", action="store", type="string", dest="file", default="")
 parser.add_option("-l", "--limit", action="store_true", default=False, dest="limit")
 parser.add_option("", "--batch", action="store_true", default=False, dest="batch")
-parser.add_option("", "--saveplots", action="store_true", default=False, dest="saveplots")
+parser.add_option("", "--saveplots", action="store_true", default=True, dest="saveplots")
 parser.add_option("-m", "--mode", action="store", type="string", dest="mode", default="shape")
 parser.add_option("", "--sys", action="store", type="string", dest="sys", default="")
 parser.add_option("-N", "--name", action="store", type="string", dest="name", default="test")
+
 (options, args) = parser.parse_args()
 if options.bash: gROOT.SetBatch(True)
 
@@ -49,13 +50,18 @@ NORM        = options.norm
 PARALLELIZE = False
 BLIND       = True
 LUMI        = 35867
+RESIDUAL    = False
 
 ########## SAMPLES ##########
 data = ["data_obs"]
-#back = ["DYJetsToLL"]
-back = ["VV", "ST", "TTbarSL", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "QCD"]
-sign = [
-'ttDM_MChi1_MPhi10_scalar', 'ttDM_MChi1_MPhi20_scalar', 'ttDM_MChi1_MPhi50_scalar', 'ttDM_MChi1_MPhi100_scalar', 'ttDM_MChi1_MPhi200_scalar', 'ttDM_MChi1_MPhi300_scalar', 'ttDM_MChi1_MPhi500_scalar', 'tDM_MChi1_MPhi10_scalar', 'tDM_MChi1_MPhi20_scalar', 'tDM_MChi1_MPhi50_scalar', 'tDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi300_scalar', 'tDM_MChi1_MPhi500_scalar', 'tttDM_MChi1_MPhi10_scalar', 'tttDM_MChi1_MPhi20_scalar', 'tttDM_MChi1_MPhi50_scalar', 'tttDM_MChi1_MPhi100_scalar', 'tttDM_MChi1_MPhi200_scalar', 'tttDM_MChi1_MPhi300_scalar', 'tttDM_MChi1_MPhi500_scalar','ttDM_MChi1_MPhi10_pseudo', 'ttDM_MChi1_MPhi20_pseudo', 'ttDM_MChi1_MPhi50_pseudo', 'ttDM_MChi1_MPhi100_pseudo', 'ttDM_MChi1_MPhi200_pseudo', 'ttDM_MChi1_MPhi300_pseudo', 'ttDM_MChi1_MPhi500_pseudo', 'tDM_MChi1_MPhi10_pseudo', 'tDM_MChi1_MPhi20_pseudo', 'tDM_MChi1_MPhi50_pseudo', 'tDM_MChi1_MPhi100_pseudo', 'tDM_MChi1_MPhi200_pseudo', 'tDM_MChi1_MPhi300_pseudo', 'tDM_MChi1_MPhi500_pseudo', 'tttDM_MChi1_MPhi10_pseudo', 'tttDM_MChi1_MPhi20_pseudo', 'tttDM_MChi1_MPhi50_pseudo', 'tttDM_MChi1_MPhi100_pseudo', 'tttDM_MChi1_MPhi200_pseudo', 'tttDM_MChi1_MPhi300_pseudo', 'tttDM_MChi1_MPhi500_pseudo']
+#back = ["VV", "ST", "TTbarSL", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "QCD"]
+back = []
+if (options.cut).find('>160') or (options.cut).startswith('SL'):
+    back = ["QCD","DYJetsToNuNu_HT", "DYJetsToLL_HT","VV","ST","WJetsToLNu_HT","TTbarSL"]
+elif (options.cut).find('>250') or (options.cut).startswith('AH'):
+    back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarSL","DYJetsToNuNu_HT"]
+#sign = ['ttDM_MChi1_MPhi10_scalar', 'ttDM_MChi1_MPhi20_scalar', 'ttDM_MChi1_MPhi50_scalar', 'ttDM_MChi1_MPhi100_scalar', 'ttDM_MChi1_MPhi200_scalar', 'ttDM_MChi1_MPhi300_scalar', 'ttDM_MChi1_MPhi500_scalar', 'tDM_MChi1_MPhi10_scalar', 'tDM_MChi1_MPhi20_scalar', 'tDM_MChi1_MPhi50_scalar', 'tDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi300_scalar', 'tDM_MChi1_MPhi500_scalar', 'tttDM_MChi1_MPhi10_scalar', 'tttDM_MChi1_MPhi20_scalar', 'tttDM_MChi1_MPhi50_scalar', 'tttDM_MChi1_MPhi100_scalar', 'tttDM_MChi1_MPhi200_scalar', 'tttDM_MChi1_MPhi300_scalar', 'tttDM_MChi1_MPhi500_scalar','ttDM_MChi1_MPhi10_pseudo', 'ttDM_MChi1_MPhi20_pseudo', 'ttDM_MChi1_MPhi50_pseudo', 'ttDM_MChi1_MPhi100_pseudo', 'ttDM_MChi1_MPhi200_pseudo', 'ttDM_MChi1_MPhi300_pseudo', 'ttDM_MChi1_MPhi500_pseudo', 'tDM_MChi1_MPhi10_pseudo', 'tDM_MChi1_MPhi20_pseudo', 'tDM_MChi1_MPhi50_pseudo', 'tDM_MChi1_MPhi100_pseudo', 'tDM_MChi1_MPhi200_pseudo', 'tDM_MChi1_MPhi300_pseudo', 'tDM_MChi1_MPhi500_pseudo', 'tttDM_MChi1_MPhi10_pseudo', 'tttDM_MChi1_MPhi20_pseudo', 'tttDM_MChi1_MPhi50_pseudo', 'tttDM_MChi1_MPhi100_pseudo', 'tttDM_MChi1_MPhi200_pseudo', 'tttDM_MChi1_MPhi300_pseudo', 'tttDM_MChi1_MPhi500_pseudo']
+sign = ['ttDM_MChi1_MPhi10_scalar', 'tDM_MChi1_MPhi10_scalar']
 
 
 ########## ######## ##########
@@ -66,7 +72,10 @@ jobs = []
 
 def plot(var, cut,norm=False, nm1=False):
     ### Preliminary Operations ###
-    fileRead = os.path.exists(options.file)
+    doBinned = False
+    if options.mode == "binned": doBinned = True
+
+    fileRead = os.path.exists("combinedCards_"+options.name+"/fitDiagnostics_"+options.file+".root")
     treeRead = not any(x==cut for x in ['0l', '1e', '1m', '2e', '2m', '1e1m', 'Gen', 'Trigger'])#(var in variable.keys()) # Read from tree
     binLow = ""
     binHigh = ""
@@ -84,6 +93,9 @@ def plot(var, cut,norm=False, nm1=False):
     plotname = var
     weight = "eventWeightLumi" #*(2.2/35.9)
     isBlind = BLIND and 'SR' in channel
+    if fileRead:
+        isBlind = False
+        options.saveplots = True
     showSignal = True#('SR' in channel)
     cutSplit = cut.split()
     for s in cutSplit:
@@ -116,20 +128,48 @@ def plot(var, cut,norm=False, nm1=False):
     ### Create and fill MC histograms ###
     for i, s in enumerate(data+back+sign):
         if fileRead:
-            fileName = options.file if not s=='data_obs' else "rootfiles_"+options.name+"/"+channel+binName+".root"
-            histName = "shapes_fit_b/"+channel+"/"+s if not s=='data_obs' else s
-            file[s] = TFile(fileName, "READ")
-            tmphist = file[s].Get(histName)
-            if tmphist==None:
-                tmphist = hist[back[0]].Clone(s)
-                tmphist.Reset("MICES")
-                print "Histogram", histName, "not found in file", fileName
-            if s=='data_obs': hist[s] = tmphist
+            var = 'MET_pt'
+            if channel.startswith('SL'): var = 'MET_sign'
+            if channel.endswith('ZR'): var = 'FakeMET_pt'
+
+            hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), variable[var]['nbins'], variable[var]['min'],variable[var]['max'])
+
+            if doBinned:
+                bins = np.array([])
+                if 'bins' in variable[var].keys():
+                    bins = np.array(variable[var]['bins'] )
+                else:
+                    binsize = (variable[var]['max']-variable[var]['min'])/variable[var]['nbins']
+                    bins = np.arange(variable[var]['min'], variable[var]['max']+binsize, binsize)
+                bins = np.append(bins, 10000)
+
+                for i in range(0,len(bins)-1):
+                    rbin =  str(bins[i]) + "_" + str(bins[i+1])
+                    fileName = "combinedCards_"+options.name+"/fitDiagnostics_"+options.file+".root" if not any(t in s for t in ['data','tDM']) else "rootfiles_"+options.name+"/"+channel+"bin_"+rbin+".root"
+                    histName = "shapes_fit_b/"+channel+"bin_"+rbin+"/"+s if not any(t in s for t in ['data','tDM']) else s
+                    file[s] = TFile(fileName, "READ")
+                    tmphist = file[s].Get(histName)
+
+                    if 'data' not in s: hist[s].SetMarkerSize(0)
+                    if tmphist: hist[s].SetBinContent(i+1, tmphist.GetBinContent(1))
+                    else: hist[s].SetBinContent(i+1, 0.)
             else:
-                hist[s] = hist['data_obs'].Clone(s)
-                #hist[s].Reset("MICES")
-                hist[s].SetMarkerSize(0)
-                for i in range(tmphist.GetNbinsX()+1): hist[s].SetBinContent(i+1, tmphist.GetBinContent(i+1))
+                fileName = "combinedCards_"+options.name+"/fitDiagnostics_"+options.file+".root" if not s=='data_obs' else "rootfiles_"+options.name+"/"+channel+binName+".root"
+                histName = "shapes_fit_b/"+channel+"/"+s if not s=='data_obs' else s
+                file[s] = TFile(fileName, "READ")
+                tmphist = file[s].Get(histName)
+
+                if tmphist==None:
+                    tmphist = hist[back[0]].Clone(s)
+                    tmphist.Reset("MICES")
+                    print "Histogram", histName, "not found in file", fileName
+
+                if s=='data_obs': hist[s] = tmphist
+                else:
+                    hist[s] = hist['data_obs'].Clone(s)
+                    hist[s].SetMarkerSize(0)
+                    for i in range(tmphist.GetNbinsX()+1): hist[s].SetBinContent(i+1, tmphist.GetBinContent(i+1))
+
         elif treeRead: # Project from tree
             tree[s] = TChain("tree")
             for j, ss in enumerate(sample[s]['files']):
@@ -179,12 +219,20 @@ def plot(var, cut,norm=False, nm1=False):
     hist['BkgSum'].Reset("MICES")
     for i, s in enumerate(back): hist['BkgSum'].Add(hist[s], 1)
     if fileRead:
-        #hist['BkgSum'] = file[back[0]].Get("shapes_fit_b/"+channel+"/"+"total_background")
-        tmphist = file[back[0]].Get("shapes_prefit/"+channel+"/"+"total_background")
         hist['PreFit'] = hist['BkgSum'].Clone("PreFit")
-        for i in range(tmphist.GetNbinsX()+1): hist['PreFit'].SetBinContent(i+1, tmphist.GetBinContent(i+1))
+        if doBinned:
+            for i in range(0,len(bins)-1):
+                rbin =  str(bins[i]) + "_" + str(bins[i+1])
+                tmphist = file[back[0]].Get("shapes_prefit/"+channel+"bin_"+rbin+"/"+"total_background")
+
+                if tmphist: hist['PreFit'].SetBinContent(i+1, tmphist.GetBinContent(1))
+                else: hist['PreFit'].SetBinContent(i+1, 0.)
+        else:
+            tmphist = file[back[0]].Get("shapes_prefit/"+channel+"/"+"total_background")
+            for i in range(tmphist.GetNbinsX()+1): hist['PreFit'].SetBinContent(i+1, tmphist.GetBinContent(i+1))
+        addOverflow(hist['PreFit'], False)
         hist['PreFit'].SetLineStyle(2)
-        hist['PreFit'].SetLineColor(923)
+        hist['PreFit'].SetLineColor(617)#923
         hist['PreFit'].SetLineWidth(3)
         hist['PreFit'].SetFillStyle(0)
     hist['BkgSum'].SetFillStyle(3003)
@@ -222,10 +270,13 @@ def plot(var, cut,norm=False, nm1=False):
     for i, s in enumerate(back): bkg.Add(hist[s])
     
     # Legend
-    leg = TLegend(0.65, 0.6, 0.95, 0.9)
+    #leg = TLegend(0.65, 0.6, 0.95, 0.9)
+    leg = TLegend(0.45, 0.63, 0.93, 0.92)
     leg.SetBorderSize(0)
     leg.SetFillStyle(0) #1001
     leg.SetFillColor(0)
+    leg.SetNColumns(3)
+    leg.SetTextFont(42)
     if len(data) > 0:
         leg.AddEntry(hist[data[0]], sample[data[0]]['label'], "pe")
     for i, s in reversed(list(enumerate(['BkgSum']+back))):
@@ -242,9 +293,15 @@ def plot(var, cut,norm=False, nm1=False):
     c1 = TCanvas("c1", hist.values()[0].GetXaxis().GetTitle(), 800, 800 if RATIO else 600)
     
     if RATIO:
-        c1.Divide(1, 2)
-        setTopPad(c1.GetPad(1), RATIO)
-        setBotPad(c1.GetPad(2), RATIO)
+        if RESIDUAL:
+            c1.Divide(1, 3)
+            setFitTopPad(c1.GetPad(1), RATIO)
+            setFitBotPad(c1.GetPad(2), RATIO)
+            setFitResPad(c1.GetPad(3), RATIO)
+        else:
+            c1.Divide(1, 2)
+            setTopPad(c1.GetPad(1), RATIO)
+            setBotPad(c1.GetPad(2), RATIO)
     c1.cd(1)
     c1.GetPad(bool(RATIO)).SetTopMargin(0.06)
     c1.GetPad(bool(RATIO)).SetRightMargin(0.05)
@@ -256,7 +313,8 @@ def plot(var, cut,norm=False, nm1=False):
     # Draw
     bkg.Draw("HIST") # stack
     hist['BkgSum'].Draw("SAME, E2") # sum of bkg
-    if not isBlind and len(data) > 0: hist[data[0]].Draw("SAME, PE") # data
+    #if not isBlind and len(data) > 0: hist[data[0]].Draw("SAME, PE") # data
+    if len(data) > 0: hist[data[0]].Draw("SAME, PE") # data
     #data_graph.Draw("SAME, PE")
     if 'PreFit' in hist: hist['PreFit'].Draw("SAME, HIST")
     if showSignal:
@@ -288,7 +346,8 @@ def plot(var, cut,norm=False, nm1=False):
             err.SetBinContent(i, 1)
             if hist['BkgSum'].GetBinContent(i) > 0:
                 err.SetBinError(i, hist['BkgSum'].GetBinError(i)/hist['BkgSum'].GetBinContent(i))
-        setBotStyle(err)
+        if RESIDUAL: setFitBotStyle(err)
+        else: setBotStyle(err)
         errLine = err.Clone("errLine")
         errLine.SetLineWidth(1)
         errLine.SetFillStyle(0)
@@ -297,7 +356,8 @@ def plot(var, cut,norm=False, nm1=False):
             if hist['BkgSum'].GetBinContent(i) > 0: 
                 res.SetBinContent(i, res.GetBinContent(i)/hist['BkgSum'].GetBinContent(i))
                 res.SetBinError(i, res.GetBinError(i)/hist['BkgSum'].GetBinContent(i))
-        setBotStyle(res)
+        if RESIDUAL: setFitBotStyle(res)
+        else: setBotStyle(res)
         #err.GetXaxis().SetLabelOffset(err.GetXaxis().GetLabelOffset()*5)
         #err.GetXaxis().SetTitleOffset(err.GetXaxis().GetTitleOffset()*2)
         err.Draw("E2")
@@ -314,7 +374,34 @@ def plot(var, cut,norm=False, nm1=False):
                 drawStat(hist['data_obs'], hist['BkgSum'])
     
     c1.Update()
-        
+
+    if RESIDUAL:
+        c1.cd(3)
+        c1.SetGrid(1,0)
+        resFit = hist[data[0]].Clone("Residues")
+        resFit.Reset("MICES")
+        resFit.SetTitle("")
+        resFit.GetYaxis().SetTitle("Residuals")
+        for i in range(0, res.GetNbinsX()+1):
+            if hist['BkgSum'].GetBinContent(i) > 0:
+                print 'bin',i
+                print 'data', hist[data[0]].GetBinContent(i), 'bkg',hist['BkgSum'].GetBinContent(i), 'err',hist['BkgSum'].GetBinError(i)
+                print 'result',(hist[data[0]].GetBinContent(i)-hist['BkgSum'].GetBinContent(i))/hist['BkgSum'].GetBinError(i)
+                resFit.SetBinContent(i, (hist[data[0]].GetBinContent(i)-hist['BkgSum'].GetBinContent(i))/hist['BkgSum'].GetBinError(i))
+                print 'check',resFit.GetBinContent(i)
+        setFitResStyle(resFit)
+        resFit.SetLineColor(15)
+        resFit.SetFillColor(15)
+        resFit.SetFillStyle(1001)
+        resFit.Draw("HIST")
+
+        resFitLine = resFit.Clone("resFitLine")
+        resFitLine.SetLineWidth(1)
+        resFitLine.SetFillStyle(0)
+        resFitLine.Draw("SAME, HIST")
+
+    c1.Update()
+
     if gROOT.IsBatch() and options.saveplots: # and (treeRead and channel in selection.keys()):
         if not os.path.exists("plots_"+options.name+"/"+plotdir): os.makedirs("plots_"+options.name+"/"+plotdir)
         c1.Print("plots_"+options.name+"/"+plotdir+"/"+plotname+binName+".png")
