@@ -674,10 +674,58 @@ def setBotStyle(h, r=4, fixRange=True):
     h.GetYaxis().SetTitleSize(h.GetYaxis().GetTitleSize()*(r-1));
     h.GetYaxis().SetTitleOffset(h.GetYaxis().GetTitleOffset()/(r-1));
     if fixRange:
-        h.GetYaxis().SetRangeUser(0., 2.)
+        h.GetYaxis().SetRangeUser(-0.3, 2.3)
         for i in range(1, h.GetNbinsX()+1):
             if h.GetBinContent(i)<1.e-6:
                 h.SetBinContent(i, -1.e-6)
+
+def setFitTopPad(TopPad, r=4):
+    TopPad.SetPad("TopPad", "", 0., (1./r)*1.4, 1.0, 1.0, 0, -1, 0)
+    TopPad.SetTopMargin(0.24/r)
+    TopPad.SetBottomMargin(2*0.04/r)
+    TopPad.SetRightMargin(0.05)
+    TopPad.SetTicks(1, 1)
+
+def setFitBotPad(BotPad, r=4):
+    BotPad.SetPad("BotPad", "", 0., 1./(1.25*r), 1.0, (1./r)*1.4, 0, -1, 0)
+    BotPad.SetTopMargin(0.4*r/100.)
+    BotPad.SetBottomMargin(0.15)
+    BotPad.SetRightMargin(0.05)
+    BotPad.SetTicks(1, 1)
+
+def setFitResPad(BotPad, r=4):
+    BotPad.SetPad("BotPad", "", 0., 0., 1.0, 1./(1.2*r), 0, -1, 0)
+    BotPad.SetTopMargin(0.8*r/100.)
+    BotPad.SetBottomMargin(r/10.)
+    BotPad.SetRightMargin(0.05)
+    BotPad.SetTicks(1, 1)
+    BotPad.SetGrid(0,1)
+
+def setFitBotStyle(h, r=5.5, fixRange=True):
+    h.GetXaxis().SetLabelSize(h.GetXaxis().GetLabelSize()*(r-1));
+    h.GetXaxis().SetLabelOffset(h.GetXaxis().GetLabelOffset()*(2.*r));
+    h.GetXaxis().SetTitleSize(h.GetXaxis().GetTitleSize()*(r-1));
+    h.GetYaxis().SetLabelSize(h.GetYaxis().GetLabelSize()*(r-1));
+    h.GetYaxis().SetNdivisions(505);
+    h.GetYaxis().SetTitleSize(h.GetYaxis().GetTitleSize()*(r-1.8));
+    h.GetYaxis().SetTitleOffset(h.GetYaxis().GetTitleOffset()/(r-1.8));
+    if fixRange:
+        h.GetYaxis().SetRangeUser(-0.3, 2.3)
+        for i in range(1, h.GetNbinsX()+1):
+            if h.GetBinContent(i)<1.e-6:
+                h.SetBinContent(i, -1.e-6)
+
+def setFitResStyle(h, r=5., fixRange=True):
+    h.GetXaxis().SetLabelSize(h.GetXaxis().GetLabelSize()*(r-1));
+    h.GetXaxis().SetLabelOffset(h.GetXaxis().GetLabelOffset()*(r-1));
+    h.GetXaxis().SetTitleSize(h.GetXaxis().GetTitleSize()*(r-1));
+    h.GetYaxis().SetLabelSize(h.GetYaxis().GetLabelSize()*(r-1));
+    h.GetYaxis().SetNdivisions(205);
+    h.GetYaxis().SetTitleSize(h.GetYaxis().GetTitleSize()*(r-1));
+    h.GetYaxis().SetTitleOffset(h.GetYaxis().GetTitleOffset()/(r/1.9));
+    if fixRange:
+        h.GetYaxis().SetRangeUser(-2.5, 2.5)
+
     
 def drawCut(hist):
     #drawCut(80, 140, 0., hist['BkgSum'].GetMaximum())
@@ -704,5 +752,4 @@ def drawCut(hist):
     line1.SetLineStyle(7)
     line1.SetLineColor(1)
     line1.Draw()
-
 
