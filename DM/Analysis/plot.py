@@ -50,7 +50,7 @@ NORM        = options.norm
 PARALLELIZE = False
 BLIND       = True
 LUMI        = 35867
-RESIDUAL    = False
+RESIDUAL    = True
 
 ########## SAMPLES ##########
 data = ["data_obs"]
@@ -61,7 +61,7 @@ if (options.cut).find('>160') or (options.cut).startswith('SL'):
 elif (options.cut).find('>250') or (options.cut).startswith('AH'):
     back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarSL","DYJetsToNuNu_HT"]
 #sign = ['ttDM_MChi1_MPhi10_scalar', 'ttDM_MChi1_MPhi20_scalar', 'ttDM_MChi1_MPhi50_scalar', 'ttDM_MChi1_MPhi100_scalar', 'ttDM_MChi1_MPhi200_scalar', 'ttDM_MChi1_MPhi300_scalar', 'ttDM_MChi1_MPhi500_scalar', 'tDM_MChi1_MPhi10_scalar', 'tDM_MChi1_MPhi20_scalar', 'tDM_MChi1_MPhi50_scalar', 'tDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi300_scalar', 'tDM_MChi1_MPhi500_scalar', 'tttDM_MChi1_MPhi10_scalar', 'tttDM_MChi1_MPhi20_scalar', 'tttDM_MChi1_MPhi50_scalar', 'tttDM_MChi1_MPhi100_scalar', 'tttDM_MChi1_MPhi200_scalar', 'tttDM_MChi1_MPhi300_scalar', 'tttDM_MChi1_MPhi500_scalar','ttDM_MChi1_MPhi10_pseudo', 'ttDM_MChi1_MPhi20_pseudo', 'ttDM_MChi1_MPhi50_pseudo', 'ttDM_MChi1_MPhi100_pseudo', 'ttDM_MChi1_MPhi200_pseudo', 'ttDM_MChi1_MPhi300_pseudo', 'ttDM_MChi1_MPhi500_pseudo', 'tDM_MChi1_MPhi10_pseudo', 'tDM_MChi1_MPhi20_pseudo', 'tDM_MChi1_MPhi50_pseudo', 'tDM_MChi1_MPhi100_pseudo', 'tDM_MChi1_MPhi200_pseudo', 'tDM_MChi1_MPhi300_pseudo', 'tDM_MChi1_MPhi500_pseudo', 'tttDM_MChi1_MPhi10_pseudo', 'tttDM_MChi1_MPhi20_pseudo', 'tttDM_MChi1_MPhi50_pseudo', 'tttDM_MChi1_MPhi100_pseudo', 'tttDM_MChi1_MPhi200_pseudo', 'tttDM_MChi1_MPhi300_pseudo', 'tttDM_MChi1_MPhi500_pseudo']
-sign = ['ttDM_MChi1_MPhi10_scalar', 'tDM_MChi1_MPhi10_scalar']
+sign = ['ttDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi100_scalar']
 
 
 ########## ######## ##########
@@ -108,7 +108,6 @@ def plot(var, cut,norm=False, nm1=False):
     
     # Determine Primary Dataset
     pd = []
-    print cut
     if any(w in cut for w in ['1l', '1m', '2m', 'isWtoMN', 'isZtoMM', 'isTtoEM']): pd += [x for x in sample['data_obs']['files'] if 'SingleMuon' in x]
     if any(w in cut for w in ['1l', '1e', '2e', 'isWtoEN', 'isZtoEE']): pd += [x for x in sample['data_obs']['files'] if 'SingleElectron' in x]
     if any(w in cut for w in ['0l', 'isZtoNN']): pd += [x for x in sample['data_obs']['files'] if 'MET' in x]
@@ -131,6 +130,7 @@ def plot(var, cut,norm=False, nm1=False):
             var = 'MET_pt'
             if channel.startswith('SL'): var = 'MET_sign'
             if channel.endswith('ZR'): var = 'FakeMET_pt'
+            plotname = var
 
             hist[s] = TH1F(s, ";"+variable[var]['title']+";Events;"+('log' if variable[var]['log'] else ''), variable[var]['nbins'], variable[var]['min'],variable[var]['max'])
 
@@ -329,7 +329,11 @@ def plot(var, cut,norm=False, nm1=False):
         bkg.GetYaxis().SetMoreLogLabels(True)
     
     leg.Draw()
-    drawCMS(LUMI, "Preliminary")
+    print 'fileread ', fileRead
+    if fileRead:
+        drawCMS(LUMI/15., "Preliminary")
+    else:
+        drawCMS(LUMI, "Preliminary")
     drawRegion(channel, True)
     drawAnalysis("DM"+channel[:2])
     drawOverflow()
@@ -384,11 +388,7 @@ def plot(var, cut,norm=False, nm1=False):
         resFit.GetYaxis().SetTitle("Residuals")
         for i in range(0, res.GetNbinsX()+1):
             if hist['BkgSum'].GetBinContent(i) > 0:
-                print 'bin',i
-                print 'data', hist[data[0]].GetBinContent(i), 'bkg',hist['BkgSum'].GetBinContent(i), 'err',hist['BkgSum'].GetBinError(i)
-                print 'result',(hist[data[0]].GetBinContent(i)-hist['BkgSum'].GetBinContent(i))/hist['BkgSum'].GetBinError(i)
                 resFit.SetBinContent(i, (hist[data[0]].GetBinContent(i)-hist['BkgSum'].GetBinContent(i))/hist['BkgSum'].GetBinError(i))
-                print 'check',resFit.GetBinContent(i)
         setFitResStyle(resFit)
         resFit.SetLineColor(15)
         resFit.SetFillColor(15)
@@ -401,11 +401,15 @@ def plot(var, cut,norm=False, nm1=False):
         resFitLine.Draw("SAME, HIST")
 
     c1.Update()
-
+    
     if gROOT.IsBatch() and options.saveplots: # and (treeRead and channel in selection.keys()):
+        AddString = ""
         if not os.path.exists("plots_"+options.name+"/"+plotdir): os.makedirs("plots_"+options.name+"/"+plotdir)
-        c1.Print("plots_"+options.name+"/"+plotdir+"/"+plotname+binName+".png")
-        c1.Print("plots_"+options.name+"/"+plotdir+"/"+plotname+binName+".pdf")
+        if fileRead:
+            if RESIDUAL: AddString = "_PostFit_Residual"
+            else:  AddString = "_PostFit"
+        #c1.Print("plots_"+options.name+"/"+plotdir+"/"+plotname+binName+AddString+".png")
+        c1.Print("plots_"+options.name+"/"+plotdir+"/"+plotname+binName+AddString+".pdf")
     
     # Print table
     printTable(hist, sign)
@@ -908,8 +912,10 @@ def plotAll():
 #        for h in l:
 #            plot(h, c)
     
-    for r in selections.keys():
-        for v in ['Lepton1_pt', 'Lepton1_pfIso', 'Lepton2_pt', 'Lepton2_pfIso', 'Jet1_pt', 'Jet1_csv', 'Jet2_pt', 'Jet2_csv', 'Jet3_pt', 'Jet3_csv', 'Jet4_pt', 'Jet4_csv', 'JetF_pt', 'mZ', 'V_pt', 'mT', 'mT2', 'MinDPhi', 'MinDPhi12', 'MET_pt', 'MET_sign', 'FakeMET_pt', 'nPV', 'nJets', 'nForwardJets', 'nBTagJets', 'nElectrons', 'nMuons', 'nTaus', 'HT', 'ST']:
+    for r in selection.keys():
+        print 'sel ',r
+        #for v in ['Lepton1_pt', 'Lepton1_pfIso', 'Lepton2_pt', 'Lepton2_pfIso', 'Jet1_pt', 'Jet1_csv', 'Jet2_pt', 'Jet2_csv', 'Jet3_pt', 'Jet3_csv', 'Jet4_pt', 'Jet4_csv', 'JetF_pt', 'mZ', 'V_pt', 'mT', 'mT2', 'MinDPhi', 'MinDPhi12', 'MET_pt', 'MET_sign', 'FakeMET_pt', 'nPV', 'nJets', 'nForwardJets', 'nBTagJets', 'nElectrons', 'nMuons', 'nTaus', 'HT', 'ST']:
+        for v in ['MET_pt']:
 #            plot(v, r)
             p = multiprocessing.Process(target=plot, args=(v,r,))
             jobs.append(p)

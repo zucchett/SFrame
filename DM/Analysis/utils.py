@@ -406,6 +406,7 @@ def getChannel(channel):
     if 'sum' in channel: return "Total"
     # leptons
     if 'nn' in channel or '0l' in channel: text += "0l"
+    elif '1e1m' in channel: text += "1e, 1#mu"
     elif 'ee' in channel or '2e' in channel: text += "2e"
     elif 'e' in channel or '1e' in channel: text += "1e"
     elif 'mm' in channel or '2m' in channel: text += "2#mu"
