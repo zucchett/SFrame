@@ -199,14 +199,6 @@ variable = {
         'max' : 0.5,
         'log' : False,
     },
-
-    'HTratio': {
-        'title' : "HTratio (GeV)",
-        'nbins' : 10,
-        'min' : 0,
-        'max' : 1.,
-        'log' : True,
-    },
     'ST': {
         'title' : "HT (GeV)",
         'nbins' : 20,
@@ -275,7 +267,8 @@ variable = {
     },
     'MinDPhi12': {
         'title' : "min #Delta #varphi (jet_{1,2}-#slash{E}_{T})",
-        'nbins' : 15,
+        'nbins' : 10,
+        #'nbins' : 15,
         'min' : 0,
         'max' : 3.,
         'log' : False,
@@ -381,12 +374,10 @@ variable = {
     },
     'mT': {
         'title' : "m_{T}^{W} (GeV)",
-        #'nbins' : 22,
-        # 'min' : 0,
-        # 'max' : 550,
         'nbins' : 16,
         'min' : 160,
         'max' : 560,
+        # 'nbins' : 10,
         # 'min' : 0,
         # 'max' : 400,
         'log' : False,
@@ -401,7 +392,7 @@ variable = {
 
     'mTb': {
         'title' : "m_{T}^{b} (GeV)",
-        'nbins' : 50,
+        'nbins' : 20,
         'min' : 0,
         'max' : 1000,
         'log' : True,
@@ -614,7 +605,7 @@ variable = {
     },
     'ratio_jet1pt_HT': {
         'title' : "jet1 p_{T}/H_{T}",
-        'nbins' : 50,
+        'nbins' : 20,
         'min' : 0,
         'max' : 1,
         'log' : False,

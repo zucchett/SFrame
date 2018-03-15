@@ -435,7 +435,10 @@ def getChannel(channel):
     elif 'ZR' in channel: text += ", Z control region"
     elif 'MC' in channel: text += ", simulation"
     elif 'Inc' in channel: text += ", inclusive region"
-    
+
+    if '0f' in channel: text += ", 0 FJ"
+    elif '1f' in channel: text += ", 1FJ"
+
     return text
 
 def drawAnalysis(s, center=False):
@@ -722,7 +725,7 @@ def setFitResStyle(h, r=5., fixRange=True):
     h.GetXaxis().SetTitleSize(h.GetXaxis().GetTitleSize()*(r-1));
     h.GetYaxis().SetLabelSize(h.GetYaxis().GetLabelSize()*(r-1));
     h.GetYaxis().SetNdivisions(205);
-    h.GetYaxis().SetTitleSize(h.GetYaxis().GetTitleSize()*(r-1));
+    h.GetYaxis().SetTitleSize(h.GetYaxis().GetTitleSize()*(r-2));
     h.GetYaxis().SetTitleOffset(h.GetYaxis().GetTitleOffset()/(r/1.9));
     if fixRange:
         h.GetYaxis().SetRangeUser(-2.5, 2.5)
