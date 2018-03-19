@@ -54,15 +54,11 @@ RESIDUAL    = True
 
 ########## SAMPLES ##########
 data = ["data_obs"]
-#back = ["VV", "ST", "TTbarSL", "WJetsToLNu_HT", "DYJetsToNuNu_HT", "DYJetsToLL_HT", "QCD"]
-back = []
-if (options.cut).find('>160') or (options.cut).startswith('SL'):
-    back = ["QCD","DYJetsToNuNu_HT", "DYJetsToLL_HT","VV","ST","WJetsToLNu_HT","TTbarSL"]
-elif (options.cut).find('>250') or (options.cut).startswith('AH'):
-    back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarSL","DYJetsToNuNu_HT"]
+back = ["QCD","DYJetsToNuNu_HT", "DYJetsToLL_HT","VV","ST","WJetsToLNu_HT","TTbarSL"]
+#back = ["QCD","DYJetsToNuNu_HT", "DYJetsToLL_HT","VV","ST","WJetsToLNu_HT","TTbarV", "TTbar2L", "TTbar1L"]
 #sign = ['ttDM_MChi1_MPhi10_scalar', 'ttDM_MChi1_MPhi20_scalar', 'ttDM_MChi1_MPhi50_scalar', 'ttDM_MChi1_MPhi100_scalar', 'ttDM_MChi1_MPhi200_scalar', 'ttDM_MChi1_MPhi300_scalar', 'ttDM_MChi1_MPhi500_scalar', 'tDM_MChi1_MPhi10_scalar', 'tDM_MChi1_MPhi20_scalar', 'tDM_MChi1_MPhi50_scalar', 'tDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi300_scalar', 'tDM_MChi1_MPhi500_scalar', 'tttDM_MChi1_MPhi10_scalar', 'tttDM_MChi1_MPhi20_scalar', 'tttDM_MChi1_MPhi50_scalar', 'tttDM_MChi1_MPhi100_scalar', 'tttDM_MChi1_MPhi200_scalar', 'tttDM_MChi1_MPhi300_scalar', 'tttDM_MChi1_MPhi500_scalar','ttDM_MChi1_MPhi10_pseudo', 'ttDM_MChi1_MPhi20_pseudo', 'ttDM_MChi1_MPhi50_pseudo', 'ttDM_MChi1_MPhi100_pseudo', 'ttDM_MChi1_MPhi200_pseudo', 'ttDM_MChi1_MPhi300_pseudo', 'ttDM_MChi1_MPhi500_pseudo', 'tDM_MChi1_MPhi10_pseudo', 'tDM_MChi1_MPhi20_pseudo', 'tDM_MChi1_MPhi50_pseudo', 'tDM_MChi1_MPhi100_pseudo', 'tDM_MChi1_MPhi200_pseudo', 'tDM_MChi1_MPhi300_pseudo', 'tDM_MChi1_MPhi500_pseudo', 'tttDM_MChi1_MPhi10_pseudo', 'tttDM_MChi1_MPhi20_pseudo', 'tttDM_MChi1_MPhi50_pseudo', 'tttDM_MChi1_MPhi100_pseudo', 'tttDM_MChi1_MPhi200_pseudo', 'tttDM_MChi1_MPhi300_pseudo', 'tttDM_MChi1_MPhi500_pseudo']
+#sign = ['tttDM_MChi1_MPhi200_scalar', 'ttDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi200_scalar']
 sign = ['ttDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi100_scalar']
-
 
 ########## ######## ##########
 
@@ -71,11 +67,16 @@ sign = ['ttDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi100_scalar']
 jobs = []
 
 def plot(var, cut,norm=False, nm1=False):
+    if (options.cut).find('>250') or (options.cut).startswith('AH'):
+        #back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarSL","DYJetsToNuNu_HT"]
+        back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarV", "TTbar2L", "TTbar1L","DYJetsToNuNu_HT"]
     ### Preliminary Operations ###
     doBinned = False
     if options.mode == "binned": doBinned = True
 
     fileRead = os.path.exists("combinedCards_"+options.name+"/fitDiagnostics_"+options.file+".root")
+    print 'file',options.file
+    print 'fileread ', fileRead
     treeRead = not any(x==cut for x in ['0l', '1e', '1m', '2e', '2m', '1e1m', 'Gen', 'Trigger'])#(var in variable.keys()) # Read from tree
     binLow = ""
     binHigh = ""
@@ -92,7 +93,7 @@ def plot(var, cut,norm=False, nm1=False):
     plotdir = cut
     plotname = var
     weight = "eventWeightLumi" #*(2.2/35.9)
-    isBlind = BLIND and 'SR' in channel
+    isBlind = BLIND and ('SR' in channel or 'ps' in channel)
     if fileRead:
         isBlind = False
         options.saveplots = True
@@ -151,8 +152,12 @@ def plot(var, cut,norm=False, nm1=False):
                     tmphist = file[s].Get(histName)
 
                     if 'data' not in s: hist[s].SetMarkerSize(0)
-                    if tmphist: hist[s].SetBinContent(i+1, tmphist.GetBinContent(1))
-                    else: hist[s].SetBinContent(i+1, 0.)
+                    if tmphist: 
+                        hist[s].SetBinContent(i+1, tmphist.GetBinContent(1))
+                        hist[s].SetBinError(i+1, tmphist.GetBinError(1))
+                    else: 
+                        hist[s].SetBinContent(i+1, 0.)
+                        hist[s].SetBinError(i+1, 0.)
             else:
                 fileName = "combinedCards_"+options.name+"/fitDiagnostics_"+options.file+".root" if not s=='data_obs' else "rootfiles_"+options.name+"/"+channel+binName+".root"
                 histName = "shapes_fit_b/"+channel+"/"+s if not s=='data_obs' else s
@@ -184,9 +189,11 @@ def plot(var, cut,norm=False, nm1=False):
             hist[s].Sumw2()
             redFactorString = ""
             redFactorValue = ""
-            if isBlind and 'data' in s:
-                redFactorString = " && Entry$ % 15 == 0"
-            if isBlind and 'data' not in s:
+            #if isBlind and 'data' in s:
+            if isBlind and 'data' in s and options.limit:
+                redFactorString = " && Entry$ % 15 == 1"
+            #if isBlind and 'data' not in s:
+            if isBlind and 'data' not in s and options.limit:
                 redFactorValue = " / 15"
             cutstring = "("+weight+redFactorValue+")" + ("*("+cut+redFactorString+")" if len(cut)>0 else "")
             if '-' in s: cutstring = cutstring.replace(cut, cut + "&& nBQuarks==" + s.split('-')[1][0])
@@ -214,10 +221,10 @@ def plot(var, cut,norm=False, nm1=False):
         #if 'WJetsToLNu' in s and 'SL' in channel and 'WR' in channel: hist[s].Scale(1.30)
         #if 'TTbar' in s and 'SL' in channel and 'TR' in channel: hist[s].Scale(0.91)
     
-    
     hist['BkgSum'] = hist[back[0]].Clone("BkgSum")
     hist['BkgSum'].Reset("MICES")
     for i, s in enumerate(back): hist['BkgSum'].Add(hist[s], 1)
+
     if fileRead:
         hist['PreFit'] = hist['BkgSum'].Clone("PreFit")
         if doBinned:
@@ -235,7 +242,7 @@ def plot(var, cut,norm=False, nm1=False):
         hist['PreFit'].SetLineColor(617)#923
         hist['PreFit'].SetLineWidth(3)
         hist['PreFit'].SetFillStyle(0)
-    hist['BkgSum'].SetFillStyle(3003)
+    hist['BkgSum'].SetFillStyle(3002)
     hist['BkgSum'].SetFillColor(1)
     
 
@@ -265,6 +272,11 @@ def plot(var, cut,norm=False, nm1=False):
 #            print "Applying SF:", sfnorm
 #            for i, s in enumerate(back+['BkgSum']): hist[s].Scale(sfnorm)
     
+    if SIGNAL>1:
+        if not var=="Events":
+            for i, s in enumerate(sign):
+                hist[s].Scale(SIGNAL)
+
     # Create stack
     bkg = THStack("Bkg", ";"+hist['BkgSum'].GetXaxis().GetTitle()+";Events")
     for i, s in enumerate(back): bkg.Add(hist[s])
@@ -279,13 +291,20 @@ def plot(var, cut,norm=False, nm1=False):
     leg.SetTextFont(42)
     if len(data) > 0:
         leg.AddEntry(hist[data[0]], sample[data[0]]['label'], "pe")
-    for i, s in reversed(list(enumerate(['BkgSum']+back))):
+    for i, s in reversed(list(enumerate(back))):
         leg.AddEntry(hist[s], sample[s]['label'], "f")
-    if 'PreFit' in hist: leg.AddEntry(hist['PreFit'], sample['PreFit']['label'], "l")
+    if 'PreFit' not in hist:
+        leg.AddEntry(hist['BkgSum'], sample['BkgSum']['label'], "f")
+    else:
+        leg.AddEntry(hist['BkgSum'], 'MC unc.', "l")
+        leg.AddEntry(hist['PreFit'], sample['PreFit']['label'], "l")
     if showSignal:
         for i, s in enumerate(sign):
-            if sample[s]['plot']: leg.AddEntry(hist[s], sample[s]['label'], "fl")
-        
+           if SIGNAL>1:
+               if sample[s]['plot']: leg.AddEntry(hist[s], '%s (x%d)' %(sample[s]['label'],SIGNAL), "l")
+           else:
+               if sample[s]['plot']: leg.AddEntry(hist[s], sample[s]['label'], "l")
+                        
     leg.SetY1(0.9-leg.GetNRows()*0.05)
     
     
@@ -313,8 +332,7 @@ def plot(var, cut,norm=False, nm1=False):
     # Draw
     bkg.Draw("HIST") # stack
     hist['BkgSum'].Draw("SAME, E2") # sum of bkg
-    #if not isBlind and len(data) > 0: hist[data[0]].Draw("SAME, PE") # data
-    if len(data) > 0: hist[data[0]].Draw("SAME, PE") # data
+    if not isBlind and len(data) > 0: hist[data[0]].Draw("SAME, PE") # data
     #data_graph.Draw("SAME, PE")
     if 'PreFit' in hist: hist['PreFit'].Draw("SAME, HIST")
     if showSignal:
@@ -325,12 +343,14 @@ def plot(var, cut,norm=False, nm1=False):
     if len(sign) > 0 and bkg.GetMaximum() < max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum()): bkg.SetMaximum(max(hist[sign[0]].GetMaximum(), hist[sign[-1]].GetMaximum())*1.25)
     bkg.SetMinimum(max(min(hist['BkgSum'].GetBinContent(hist['BkgSum'].GetMinimumBin()), hist[data[0]].GetMinimum()), 5.e-1)  if log else 0.)
     if log:
-        bkg.GetYaxis().SetNoExponent(bkg.GetMaximum() < 1.e4)
+        #bkg.GetYaxis().SetNoExponent(bkg.GetMaximum() < 1.e4)
+        bkg.GetYaxis().SetNoExponent(bkg.GetMaximum() < 1.e3)
         bkg.GetYaxis().SetMoreLogLabels(True)
+    else:
+        bkg.GetYaxis().SetNoExponent(bkg.GetMaximum() < 1.e3)
     
     leg.Draw()
-    print 'fileread ', fileRead
-    if fileRead:
+    if fileRead and 'SR' in channel:
         drawCMS(LUMI/15., "Preliminary")
     else:
         drawCMS(LUMI, "Preliminary")
@@ -379,16 +399,17 @@ def plot(var, cut,norm=False, nm1=False):
     
     c1.Update()
 
-    if RESIDUAL:
+    if RATIO and RESIDUAL:
         c1.cd(3)
         c1.SetGrid(1,0)
         resFit = hist[data[0]].Clone("Residues")
         resFit.Reset("MICES")
         resFit.SetTitle("")
-        resFit.GetYaxis().SetTitle("Residuals")
+        #resFit.GetYaxis().SetTitle("Residuals")
+        resFit.GetYaxis().SetTitle("#frac{Data - Bkg}{#sqrt{#sigma_{Data}^{2}+#sigma_{Bkg}^{2}}}")
         for i in range(0, res.GetNbinsX()+1):
             if hist['BkgSum'].GetBinContent(i) > 0:
-                resFit.SetBinContent(i, (hist[data[0]].GetBinContent(i)-hist['BkgSum'].GetBinContent(i))/hist['BkgSum'].GetBinError(i))
+                resFit.SetBinContent(i, (hist[data[0]].GetBinContent(i)-hist['BkgSum'].GetBinContent(i))/( math.sqrt( math.pow(hist['BkgSum'].GetBinError(i),2)+math.pow(hist[data[0]].GetBinError(i),2)) ) )
         setFitResStyle(resFit)
         resFit.SetLineColor(15)
         resFit.SetFillColor(15)
@@ -522,6 +543,7 @@ eight"
         histDown[s] = hist[s].Clone(s+'Down')
         redFactorString = ""
         redFactorValue = ""
+        #if isBlind and 'data' not in s and options.limit:
         if isBlind and 'data' not in s:
             redFactorValue = " / 15"
         cutstring = ("*("+cut+")" if len(cut)>0 else "")
@@ -913,9 +935,9 @@ def plotAll():
 #            plot(h, c)
     
     for r in selection.keys():
-        print 'sel ',r
         #for v in ['Lepton1_pt', 'Lepton1_pfIso', 'Lepton2_pt', 'Lepton2_pfIso', 'Jet1_pt', 'Jet1_csv', 'Jet2_pt', 'Jet2_csv', 'Jet3_pt', 'Jet3_csv', 'Jet4_pt', 'Jet4_csv', 'JetF_pt', 'mZ', 'V_pt', 'mT', 'mT2', 'MinDPhi', 'MinDPhi12', 'MET_pt', 'MET_sign', 'FakeMET_pt', 'nPV', 'nJets', 'nForwardJets', 'nBTagJets', 'nElectrons', 'nMuons', 'nTaus', 'HT', 'ST']:
-        for v in ['MET_pt']:
+        for v in ['MET_pt','MET_sign','MinDPhi12','mTb','mT','ratio_jet1pt_HT', 'mT2']:
+        #for v in ['MET_pt','MET_sign', 'FakeMET_pt']:
 #            plot(v, r)
             p = multiprocessing.Process(target=plot, args=(v,r,))
             jobs.append(p)
