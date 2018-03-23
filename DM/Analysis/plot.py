@@ -50,15 +50,12 @@ NORM        = options.norm
 PARALLELIZE = False
 BLIND       = True
 LUMI        = 35867
-RESIDUAL    = True
+RESIDUAL    = False
 
 ########## SAMPLES ##########
 data = ["data_obs"]
-back = ["QCD","DYJetsToNuNu_HT", "DYJetsToLL_HT","VV","ST","WJetsToLNu_HT","TTbarSL"]
-#back = ["QCD","DYJetsToNuNu_HT", "DYJetsToLL_HT","VV","ST","WJetsToLNu_HT","TTbarV", "TTbar2L", "TTbar1L"]
-#sign = ['ttDM_MChi1_MPhi10_scalar', 'ttDM_MChi1_MPhi20_scalar', 'ttDM_MChi1_MPhi50_scalar', 'ttDM_MChi1_MPhi100_scalar', 'ttDM_MChi1_MPhi200_scalar', 'ttDM_MChi1_MPhi300_scalar', 'ttDM_MChi1_MPhi500_scalar', 'tDM_MChi1_MPhi10_scalar', 'tDM_MChi1_MPhi20_scalar', 'tDM_MChi1_MPhi50_scalar', 'tDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi300_scalar', 'tDM_MChi1_MPhi500_scalar', 'tttDM_MChi1_MPhi10_scalar', 'tttDM_MChi1_MPhi20_scalar', 'tttDM_MChi1_MPhi50_scalar', 'tttDM_MChi1_MPhi100_scalar', 'tttDM_MChi1_MPhi200_scalar', 'tttDM_MChi1_MPhi300_scalar', 'tttDM_MChi1_MPhi500_scalar','ttDM_MChi1_MPhi10_pseudo', 'ttDM_MChi1_MPhi20_pseudo', 'ttDM_MChi1_MPhi50_pseudo', 'ttDM_MChi1_MPhi100_pseudo', 'ttDM_MChi1_MPhi200_pseudo', 'ttDM_MChi1_MPhi300_pseudo', 'ttDM_MChi1_MPhi500_pseudo', 'tDM_MChi1_MPhi10_pseudo', 'tDM_MChi1_MPhi20_pseudo', 'tDM_MChi1_MPhi50_pseudo', 'tDM_MChi1_MPhi100_pseudo', 'tDM_MChi1_MPhi200_pseudo', 'tDM_MChi1_MPhi300_pseudo', 'tDM_MChi1_MPhi500_pseudo', 'tttDM_MChi1_MPhi10_pseudo', 'tttDM_MChi1_MPhi20_pseudo', 'tttDM_MChi1_MPhi50_pseudo', 'tttDM_MChi1_MPhi100_pseudo', 'tttDM_MChi1_MPhi200_pseudo', 'tttDM_MChi1_MPhi300_pseudo', 'tttDM_MChi1_MPhi500_pseudo']
-#sign = ['tttDM_MChi1_MPhi200_scalar', 'ttDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi200_scalar']
-sign = ['ttDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi100_scalar']
+back = ["QCD","DYJetsToNuNu_HT", "DYJetsToLL_HT","VV","ST","WJetsToLNu_HT","TTbarV", "TTbar2L", "TTbar1L"]
+sign = ['ttDM_MChi1_MPhi10_scalar', 'ttDM_MChi1_MPhi20_scalar', 'ttDM_MChi1_MPhi50_scalar', 'ttDM_MChi1_MPhi100_scalar', 'ttDM_MChi1_MPhi200_scalar', 'ttDM_MChi1_MPhi300_scalar', 'ttDM_MChi1_MPhi500_scalar', 'tDM_MChi1_MPhi10_scalar', 'tDM_MChi1_MPhi20_scalar', 'tDM_MChi1_MPhi50_scalar', 'tDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi300_scalar', 'tDM_MChi1_MPhi500_scalar', 'tttDM_MChi1_MPhi10_scalar', 'tttDM_MChi1_MPhi20_scalar', 'tttDM_MChi1_MPhi50_scalar', 'tttDM_MChi1_MPhi100_scalar', 'tttDM_MChi1_MPhi200_scalar', 'tttDM_MChi1_MPhi300_scalar', 'tttDM_MChi1_MPhi500_scalar','ttDM_MChi1_MPhi10_pseudo', 'ttDM_MChi1_MPhi20_pseudo', 'ttDM_MChi1_MPhi50_pseudo', 'ttDM_MChi1_MPhi100_pseudo', 'ttDM_MChi1_MPhi200_pseudo', 'ttDM_MChi1_MPhi300_pseudo', 'ttDM_MChi1_MPhi500_pseudo', 'tDM_MChi1_MPhi10_pseudo', 'tDM_MChi1_MPhi20_pseudo', 'tDM_MChi1_MPhi50_pseudo', 'tDM_MChi1_MPhi100_pseudo', 'tDM_MChi1_MPhi200_pseudo', 'tDM_MChi1_MPhi300_pseudo', 'tDM_MChi1_MPhi500_pseudo', 'tttDM_MChi1_MPhi10_pseudo', 'tttDM_MChi1_MPhi20_pseudo', 'tttDM_MChi1_MPhi50_pseudo', 'tttDM_MChi1_MPhi100_pseudo', 'tttDM_MChi1_MPhi200_pseudo', 'tttDM_MChi1_MPhi300_pseudo', 'tttDM_MChi1_MPhi500_pseudo']
 
 ########## ######## ##########
 
@@ -67,17 +64,26 @@ sign = ['ttDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi100_scalar']
 jobs = []
 
 def plot(var, cut,norm=False, nm1=False):
-    if (options.cut).find('>250') or (options.cut).startswith('AH'):
-        #back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarSL","DYJetsToNuNu_HT"]
-        back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarV", "TTbar2L", "TTbar1L","DYJetsToNuNu_HT"]
     ### Preliminary Operations ###
     doBinned = False
     if options.mode == "binned": doBinned = True
 
     fileRead = os.path.exists("combinedCards_"+options.name+"/fitDiagnostics_"+options.file+".root")
-    print 'file',options.file
-    print 'fileread ', fileRead
     treeRead = not any(x==cut for x in ['0l', '1e', '1m', '2e', '2m', '1e1m', 'Gen', 'Trigger'])#(var in variable.keys()) # Read from tree
+
+    #signal definition
+    if fileRead:
+        sign = ['ttDM_MChi1_MPhi200_scalar', 'tDM_MChi1_MPhi200_scalar'] #for postfit plot
+    if not fileRead and not options.limit:
+        sign = ['ttDM_MChi1_MPhi100_scalar', 'tDM_MChi1_MPhi100_scalar'] #for normal plotting
+    #bkg definition
+    if fileRead or options.limit:
+        back = ["QCD","DYJetsToNuNu_HT", "DYJetsToLL_HT","VV","ST","WJetsToLNu_HT","TTbarSL"] #for postfit or limit
+    if (cut).find('>250') or (cut).startswith('AH'):#for hadronic selections
+        back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarV", "TTbar2L", "TTbar1L","DYJetsToNuNu_HT"]
+        if fileRead or options.limit:
+            back = ["QCD","DYJetsToLL_HT", "VV","ST","WJetsToLNu_HT","TTbarSL","DYJetsToNuNu_HT"] #for postfit or limit 
+
     binLow = ""
     binHigh = ""
     binName = ""
@@ -97,6 +103,14 @@ def plot(var, cut,norm=False, nm1=False):
     if fileRead:
         isBlind = False
         options.saveplots = True
+        RESIDUAL = True
+    elif isBlind:
+        RATIO = 0
+        SIGNAL = 20
+    else: 
+        RATIO = 4
+        SIGNAL = 1
+        RESIDUAL = False
     showSignal = True#('SR' in channel)
     cutSplit = cut.split()
     for s in cutSplit:
@@ -386,8 +400,12 @@ def plot(var, cut,norm=False, nm1=False):
         #err.GetXaxis().SetTitleOffset(err.GetXaxis().GetTitleOffset()*2)
         err.Draw("E2")
         if 'PreFit' in hist:
-            respre = hist['PreFit'].Clone("ResiduesPreFit")
-            respre.Divide(hist['BkgSum'])
+            respre = hist[data[0]].Clone("ResiduesPreFit")
+            respre.Divide(hist['PreFit'])
+            respre.SetLineStyle(2)
+            respre.SetLineColor(617)#923
+            respre.SetLineWidth(3)
+            respre.SetFillStyle(0)
             respre.Draw("SAME, HIST")
         errLine.Draw("SAME, HIST")
         if not isBlind and len(data) > 0:
