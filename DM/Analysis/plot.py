@@ -51,6 +51,7 @@ PARALLELIZE = False
 BLIND       = True
 LUMI        = 35867
 RESIDUAL    = False
+USEGARWOOD  = True
 
 ########## SAMPLES ##########
 data = ["data_obs"]
@@ -346,7 +347,9 @@ def plot(var, cut,norm=False, nm1=False):
     # Draw
     bkg.Draw("HIST") # stack
     hist['BkgSum'].Draw("SAME, E2") # sum of bkg
-    if not isBlind and len(data) > 0: hist[data[0]].Draw("SAME, PE") # data
+    if not isBlind and len(data) > 0:
+        graph = fixData(hist[data[0]], USEGARWOOD)
+        graph.Draw("SAME, PE")
     #data_graph.Draw("SAME, PE")
     if 'PreFit' in hist: hist['PreFit'].Draw("SAME, HIST")
     if showSignal:
