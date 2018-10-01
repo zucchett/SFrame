@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE JobConfiguration PUBLIC "" "JobConfig.dtd">
+<JobConfiguration JobName="VHAnalysisJob" OutputLevel="WARNING">
+  <Library Name="libNtupleVariables" />
+  <Library Name="libGoodRunsLists" />
+  <Library Name="libPileupReweightingTool" />
+  <Library Name="libBTaggingTools" />
+  <Library Name="libVHResonances" />
+  <Library Name="libSVFit"/>
+  <Library Name="libScaleFactorTool"/>
+  <Library Name="libCorrectionTool"/>
+  <Library Name="libVariableTool"/>
+
+  <Package Name="SFrameCore.par" />
+  <Package Name="NtupleVariables.par" />
+  <Package Name="GoodRunsLists.par" />
+  <Package Name="PileupReweightingTool.par" />
+  <Package Name="BTaggingTools.par" />
+  <Package Name="VHResonances.par" />
+  <Package Name="SVFit.par" />
+  <Package Name="ScaleFactorTool.par" />
+  <Package Name="CorrectionTool.par" />
+  <Package Name="VariableTool.par" />
+
+
+  <Cycle Name="VHAnalysis" OutputDirectory="./output/" PostFix="" ProofServer="lite" ProofWorkDir="" RunMode="LOCAL" TargetLumi="1.0">
+    <InputData Lumi="0.0" NEventsMax="-1" Type="VH" Version="1" SkipValid="True">
+<!--       <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/t3groups/uniz-higgs/Summer16/Ntuple_80_20170206/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/TT_TuneCUETP8M2T4_13TeV-powheg-pythia8/170206_181747/0000/flatTuple_110.root" Lumi="1.0" /> -->
+      <In FileName="dcap://t3se01.psi.ch:22125//pnfs/psi.ch/cms/trivcat/store/user/dpinna/Ntuple_DM_15Nov/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/TTToSemilepton_TuneCUETP8M2_ttHtranche3_13TeV-powheg-pythia8/171115_154917/0001/flatTuple_1333.root" Lumi="1.0" />
+      <InputTree Name="ntuplizer/tree" />
+      <OutputTree Name="tree" />
+    </InputData>
+    <UserConfig>
+      <Item Name="RecoTreeName" Value="tree"/>
+      <Item Name="OutputTreeName" Value="tree"/>
+      <Item Name="IsData" Value="False"/>
+      <Item Name="IsSignal" Value="False"/>
+
+      <Item Name="JSONFileName" Value="../GoodRunsLists/JSON/Cert_271036-284044_13TeV_PromptReco_Collisions16_JSON.txt"/>
+
+
+    </UserConfig>
+  </Cycle>
+</JobConfiguration>
